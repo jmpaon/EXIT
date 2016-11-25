@@ -1,1 +1,96 @@
-Reading impact matrix data from file src/exit/inputfile12.csv
+Reading impact matrix data from file src/exit/PARTY_exit_matrix_15.csv
+Read 15 variables from input file.
+Direct impact matrix:
+Cross-impact matrix with maximum impact 4.00 (greatest impact 4.00)
+                                                            	V1	V2	V3	V4	V5	V6	V7	V8	V9	V10	V11	V12	V13	V14	V15	
+          Kaupan merkitys ruuan jakelukanavana pienenee (V1)	+0.00	+2.00	+0.00	+2.00	+1.00	+1.00	+0.00	+0.00	+1.00	+3.00	+4.00	+0.00	+2.00	+0.00	-1.00	
+Ruokakulttuuri muuttuu perinteitä, läheisyyttä ja tu... (V2)	+1.00	+0.00	+0.00	+3.00	+1.00	+2.00	+2.00	+1.00	+3.00	+2.00	+0.00	+1.00	+3.00	+0.00	+0.00	
+Tuotekehitys synnyttää ympäristäystävällisiä erikois... (V3)	+0.00	+0.00	+0.00	+0.00	+0.00	+0.00	+1.00	-1.00	+1.00	+0.00	+0.00	+1.00	+1.00	+1.00	+0.00	
+                       Maakuntabrändätty ruoka yleistyy (V4)	+0.00	+0.00	+0.00	+0.00	+1.00	+2.00	+1.00	+0.00	+3.00	+1.00	+0.00	+1.00	+3.00	+0.00	+0.00	
+Ruokaketju on läpinäkyvä, myös alkutuottajan osuus k... (V5)	+0.00	+1.00	+1.00	+2.00	+0.00	+1.00	+1.00	+0.00	+4.00	+1.00	+0.00	+0.00	+2.00	+1.00	+0.00	
+                  Ruokamatkailu kasvaa ja monipuolistuu (V6)	+1.00	+1.00	+0.00	+1.00	+1.00	+0.00	+1.00	+1.00	+2.00	+2.00	+0.00	+0.00	+3.00	+0.00	+0.00	
+               Kumppanuus ruokajärjestelmässä lisääntyy (V7)	+1.00	+1.00	+0.00	+0.00	+1.00	+1.00	+0.00	+1.00	+1.00	+1.00	+1.00	+0.00	+1.00	+1.00	+0.00	
+Itse tuotettu ruoka yleistyy kodeissa, kouluissa, ra... (V8)	+2.00	+2.00	+0.00	+0.00	+4.00	+1.00	+1.00	+0.00	+4.00	+4.00	+3.00	+3.00	+2.00	+0.00	+0.00	
+        Kaikki ruoka on alkuperän suhteen jäljitettävää (V9)	+0.00	+2.00	+0.00	+1.00	+3.00	+1.00	+1.00	-1.00	+0.00	+0.00	+0.00	+1.00	+1.00	+2.00	+0.00	
+                Alueellinen ruokaomavaraisuus lisääntyy (V10)	+0.00	+1.00	+0.00	+1.00	+1.00	+1.00	+2.00	+0.00	+1.00	+0.00	+0.00	+0.00	+1.00	+0.00	+0.00	
+ Kaupan valta ja ohjausvaikutus ruokaketjussa heikkenee (V11)	+2.00	+1.00	+0.00	+0.00	+3.00	+1.00	+3.00	+0.00	+3.00	+1.00	+0.00	-2.00	+0.00	+0.00	+0.00	
+          Hinnan ohjausvaikutus ruokaketjussa heikkenee (V12)	+2.00	+1.00	+3.00	+1.00	+1.00	+0.00	+2.00	+1.00	+1.00	+1.00	+3.00	+0.00	+2.00	+0.00	+0.00	
+          Ruokatuotteisiin liittyvät tarinat yleistyvät (V13)	+0.00	+1.00	+1.00	+1.00	+1.00	+3.00	+1.00	+1.00	+1.00	+1.00	+1.00	+1.00	+0.00	+1.00	+0.00	
+Uusi teknologia (esineiden internet, paikkatieto ym.... (V14)	+2.00	+1.00	+3.00	+1.00	+1.00	+2.00	+1.00	+2.00	+2.00	+2.00	+3.00	+1.00	+1.00	+0.00	+1.00	
+                   Yhteiskunnan kaupungistuminen jatkuu (V15)	-2.00	+0.00	+2.00	+1.00	+0.00	+2.00	+1.00	+1.00	+0.00	-1.00	-2.00	-1.00	+2.00	+1.00	+0.00	
+
+Calculating significant indirect impacts of V1(Kaupan merki...)...      35177 significant (threshold 0.0100) impact chains found
+Calculating significant indirect impacts of V2(Ruokakulttuu...)...      29305 significant (threshold 0.0100) impact chains found
+Calculating significant indirect impacts of V3(Tuotekehitys...)...      11477 significant (threshold 0.0100) impact chains found
+Calculating significant indirect impacts of V4(Maakuntabrän...)...      18798 significant (threshold 0.0100) impact chains found
+Calculating significant indirect impacts of V5(Ruokaketju o...)...      18217 significant (threshold 0.0100) impact chains found
+Calculating significant indirect impacts of V6(Ruokamatkail...)...      17563 significant (threshold 0.0100) impact chains found
+Calculating significant indirect impacts of V7(Kumppanuus r...)...      14896 significant (threshold 0.0100) impact chains found
+Calculating significant indirect impacts of V8(Itse tuotett...)...      53777 significant (threshold 0.0100) impact chains found
+Calculating significant indirect impacts of V9(Kaikki ruoka...)...      14644 significant (threshold 0.0100) impact chains found
+Calculating significant indirect impacts of V10(Alueellinen ...)...       9591 significant (threshold 0.0100) impact chains found
+Calculating significant indirect impacts of V11(Kaupan valta...)...      24837 significant (threshold 0.0100) impact chains found
+Calculating significant indirect impacts of V12(Hinnan ohjau...)...      34165 significant (threshold 0.0100) impact chains found
+Calculating significant indirect impacts of V13(Ruokatuottei...)...      15482 significant (threshold 0.0100) impact chains found
+Calculating significant indirect impacts of V14(Uusi teknolo...)...      44217 significant (threshold 0.0100) impact chains found
+Calculating significant indirect impacts of V15(Yhteiskunnan...)...      40252 significant (threshold 0.0100) impact chains found
+382398 significant (threshold 0.0100) impact chains found in the matrix.
+The total number of possible chains in this matrix is approximately 3.55 x 10^12.
+Summed impact matrix
+Cross-impact matrix with maximum impact 137.24 (greatest impact 137.24)
+                                                            	V1	V2	V3	V4	V5	V6	V7	V8	V9	V10	V11	V12	V13	V14	V15	
+          Kaupan merkitys ruuan jakelukanavana pienenee (V1)	+0.00	+26.50	+35.14	+34.01	+47.24	+51.77	+53.99	+14.81	+59.45	+51.64	+22.76	+22.59	+55.69	+27.14	+1.60	
+Ruokakulttuuri muuttuu perinteitä, läheisyyttä ja tu... (V2)	+23.39	+0.00	+26.27	+26.08	+53.71	+40.02	+51.42	+8.49	+61.55	+51.77	+40.75	+8.41	+41.17	+25.32	+0.36	
+Tuotekehitys synnyttää ympäristäystävällisiä erikois... (V3)	+0.66	+3.37	+0.00	+4.35	+6.67	+4.51	+1.89	+1.65	+8.64	+4.86	+1.55	+0.81	+5.10	+0.33	-0.04	
+                       Maakuntabrändätty ruoka yleistyy (V4)	+15.37	+22.70	+13.98	+0.00	+34.72	+21.22	+36.49	+6.49	+33.09	+36.33	+25.80	+4.89	+21.59	+13.58	+0.06	
+Ruokaketju on läpinäkyvä, myös alkutuottajan osuus k... (V5)	+15.31	+16.79	+10.04	+16.80	+0.00	+25.47	+35.48	+7.82	+23.49	+36.50	+27.98	+6.23	+26.63	+8.74	-0.24	
+                  Ruokamatkailu kasvaa ja monipuolistuu (V6)	+12.46	+18.68	+15.57	+25.25	+31.28	+0.00	+32.49	+4.37	+35.84	+26.36	+23.44	+6.74	+27.37	+14.48	+0.31	
+               Kumppanuus ruokajärjestelmässä lisääntyy (V7)	+8.07	+13.67	+11.87	+20.05	+22.96	+28.19	+0.00	+3.52	+31.79	+26.60	+15.89	+6.38	+33.23	+10.11	+0.18	
+Itse tuotettu ruoka yleistyy kodeissa, kouluissa, ra... (V8)	+40.86	+60.02	+54.01	+84.85	+77.45	+126.35	+118.43	+0.00	+100.91	+109.20	+63.32	+18.83	+137.24	+50.25	+0.65	
+        Kaikki ruoka on alkuperän suhteen jäljitettävää (V9)	+10.43	+10.11	+7.35	+15.99	+19.52	+20.66	+25.55	+6.64	+0.00	+27.86	+18.58	+4.31	+23.87	+3.78	-0.31	
+                Alueellinen ruokaomavaraisuus lisääntyy (V10)	+7.02	+9.08	+7.93	+11.81	+17.54	+16.06	+11.54	+3.02	+22.22	+0.00	+14.20	+3.44	+19.25	+7.96	+0.16	
+ Kaupan valta ja ohjausvaikutus ruokaketjussa heikkenee (V11)	+13.82	+17.31	+20.57	+23.98	+18.99	+33.68	+26.85	+9.66	+26.95	+40.71	+0.00	+17.04	+40.67	+12.90	+0.08	
+          Hinnan ohjausvaikutus ruokaketjussa heikkenee (V12)	+15.55	+34.72	+25.11	+46.81	+54.21	+67.15	+49.80	+13.66	+74.24	+66.92	+20.69	+0.00	+72.47	+28.19	+0.81	
+          Ruokatuotteisiin liittyvät tarinat yleistyvät (V13)	+11.43	+17.93	+11.90	+24.65	+28.57	+17.15	+29.03	+3.12	+35.08	+27.51	+18.25	+5.16	+0.00	+12.05	+0.22	
+Uusi teknologia (esineiden internet, paikkatieto ym.... (V14)	+19.16	+39.03	+23.51	+53.99	+62.94	+63.67	+67.65	+8.95	+90.56	+62.51	+26.64	+20.14	+82.37	+0.00	-0.56	
+                   Yhteiskunnan kaupungistuminen jatkuu (V15)	+5.90	+5.00	-2.68	+5.42	+7.99	-5.60	+6.16	-4.25	+10.08	-0.54	+12.48	-4.57	-3.75	-0.33	+0.00	
+
+Result impact matrix with summed direct and indirect impacts between variables, scaled to 4.000000:
+Cross-impact matrix with maximum impact 4.00 (greatest impact 4.00)
+                                                            	V1	V2	V3	V4	V5	V6	V7	V8	V9	V10	V11	V12	V13	V14	V15	
+          Kaupan merkitys ruuan jakelukanavana pienenee (V1)	+0.00	+0.77	+1.02	+0.99	+1.38	+1.51	+1.57	+0.43	+1.73	+1.50	+0.66	+0.66	+1.62	+0.79	+0.05	
+Ruokakulttuuri muuttuu perinteitä, läheisyyttä ja tu... (V2)	+0.68	+0.00	+0.77	+0.76	+1.57	+1.17	+1.50	+0.25	+1.79	+1.51	+1.19	+0.25	+1.20	+0.74	+0.01	
+Tuotekehitys synnyttää ympäristäystävällisiä erikois... (V3)	+0.02	+0.10	+0.00	+0.13	+0.19	+0.13	+0.06	+0.05	+0.25	+0.14	+0.05	+0.02	+0.15	+0.01	-0.00	
+                       Maakuntabrändätty ruoka yleistyy (V4)	+0.45	+0.66	+0.41	+0.00	+1.01	+0.62	+1.06	+0.19	+0.96	+1.06	+0.75	+0.14	+0.63	+0.40	+0.00	
+Ruokaketju on läpinäkyvä, myös alkutuottajan osuus k... (V5)	+0.45	+0.49	+0.29	+0.49	+0.00	+0.74	+1.03	+0.23	+0.68	+1.06	+0.82	+0.18	+0.78	+0.25	-0.01	
+                  Ruokamatkailu kasvaa ja monipuolistuu (V6)	+0.36	+0.54	+0.45	+0.74	+0.91	+0.00	+0.95	+0.13	+1.04	+0.77	+0.68	+0.20	+0.80	+0.42	+0.01	
+               Kumppanuus ruokajärjestelmässä lisääntyy (V7)	+0.24	+0.40	+0.35	+0.58	+0.67	+0.82	+0.00	+0.10	+0.93	+0.78	+0.46	+0.19	+0.97	+0.29	+0.01	
+Itse tuotettu ruoka yleistyy kodeissa, kouluissa, ra... (V8)	+1.19	+1.75	+1.57	+2.47	+2.26	+3.68	+3.45	+0.00	+2.94	+3.18	+1.85	+0.55	+4.00	+1.46	+0.02	
+        Kaikki ruoka on alkuperän suhteen jäljitettävää (V9)	+0.30	+0.29	+0.21	+0.47	+0.57	+0.60	+0.74	+0.19	+0.00	+0.81	+0.54	+0.13	+0.70	+0.11	-0.01	
+                Alueellinen ruokaomavaraisuus lisääntyy (V10)	+0.20	+0.26	+0.23	+0.34	+0.51	+0.47	+0.34	+0.09	+0.65	+0.00	+0.41	+0.10	+0.56	+0.23	+0.00	
+ Kaupan valta ja ohjausvaikutus ruokaketjussa heikkenee (V11)	+0.40	+0.50	+0.60	+0.70	+0.55	+0.98	+0.78	+0.28	+0.79	+1.19	+0.00	+0.50	+1.19	+0.38	+0.00	
+          Hinnan ohjausvaikutus ruokaketjussa heikkenee (V12)	+0.45	+1.01	+0.73	+1.36	+1.58	+1.96	+1.45	+0.40	+2.16	+1.95	+0.60	+0.00	+2.11	+0.82	+0.02	
+          Ruokatuotteisiin liittyvät tarinat yleistyvät (V13)	+0.33	+0.52	+0.35	+0.72	+0.83	+0.50	+0.85	+0.09	+1.02	+0.80	+0.53	+0.15	+0.00	+0.35	+0.01	
+Uusi teknologia (esineiden internet, paikkatieto ym.... (V14)	+0.56	+1.14	+0.69	+1.57	+1.83	+1.86	+1.97	+0.26	+2.64	+1.82	+0.78	+0.59	+2.40	+0.00	-0.02	
+                   Yhteiskunnan kaupungistuminen jatkuu (V15)	+0.17	+0.15	-0.08	+0.16	+0.23	-0.16	+0.18	-0.12	+0.29	-0.02	+0.36	-0.13	-0.11	-0.01	+0.00	
+
+
+Difference matrix of normalized result matrix and normalized input matrix, scaled to 4.000000:
+Cross-impact matrix with maximum impact 8.00 (greatest impact 3.34)
+                                                            	V1	V2	V3	V4	V5	V6	V7	V8	V9	V10	V11	V12	V13	V14	V15	
+          Kaupan merkitys ruuan jakelukanavana pienenee (V1)	+0.00	-1.23	+1.02	-1.01	+0.38	+0.51	+1.57	+0.43	+0.73	-1.50	-3.34	+0.66	-0.38	+0.79	+1.05	
+Ruokakulttuuri muuttuu perinteitä, läheisyyttä ja tu... (V2)	-0.32	+0.00	+0.77	-2.24	+0.57	-0.83	-0.50	-0.75	-1.21	-0.49	+1.19	-0.75	-1.80	+0.74	+0.01	
+Tuotekehitys synnyttää ympäristäystävällisiä erikois... (V3)	+0.02	+0.10	+0.00	+0.13	+0.19	+0.13	-0.94	+1.05	-0.75	+0.14	+0.05	-0.98	-0.85	-0.99	-0.00	
+                       Maakuntabrändätty ruoka yleistyy (V4)	+0.45	+0.66	+0.41	+0.00	+0.01	-1.38	+0.06	+0.19	-2.04	+0.06	+0.75	-0.86	-2.37	+0.40	+0.00	
+Ruokaketju on läpinäkyvä, myös alkutuottajan osuus k... (V5)	+0.45	-0.51	-0.71	-1.51	+0.00	-0.26	+0.03	+0.23	-3.32	+0.06	+0.82	+0.18	-1.22	-0.75	-0.01	
+                  Ruokamatkailu kasvaa ja monipuolistuu (V6)	-0.64	-0.46	+0.45	-0.26	-0.09	+0.00	-0.05	-0.87	-0.96	-1.23	+0.68	+0.20	-2.20	+0.42	+0.01	
+               Kumppanuus ruokajärjestelmässä lisääntyy (V7)	-0.76	-0.60	+0.35	+0.58	-0.33	-0.18	+0.00	-0.90	-0.07	-0.22	-0.54	+0.19	-0.03	-0.71	+0.01	
+Itse tuotettu ruoka yleistyy kodeissa, kouluissa, ra... (V8)	-0.81	-0.25	+1.57	+2.47	-1.74	+2.68	+2.45	+0.00	-1.06	-0.82	-1.15	-2.45	+2.00	+1.46	+0.02	
+        Kaikki ruoka on alkuperän suhteen jäljitettävää (V9)	+0.30	-1.71	+0.21	-0.53	-2.43	-0.40	-0.26	+1.19	+0.00	+0.81	+0.54	-0.87	-0.30	-1.89	-0.01	
+                Alueellinen ruokaomavaraisuus lisääntyy (V10)	+0.20	-0.74	+0.23	-0.66	-0.49	-0.53	-1.66	+0.09	-0.35	+0.00	+0.41	+0.10	-0.44	+0.23	+0.00	
+ Kaupan valta ja ohjausvaikutus ruokaketjussa heikkenee (V11)	-1.60	-0.50	+0.60	+0.70	-2.45	-0.02	-2.22	+0.28	-2.21	+0.19	+0.00	+2.50	+1.19	+0.38	+0.00	
+          Hinnan ohjausvaikutus ruokaketjussa heikkenee (V12)	-1.55	+0.01	-2.27	+0.36	+0.58	+1.96	-0.55	-0.60	+1.16	+0.95	-2.40	+0.00	+0.11	+0.82	+0.02	
+          Ruokatuotteisiin liittyvät tarinat yleistyvät (V13)	+0.33	-0.48	-0.65	-0.28	-0.17	-2.50	-0.15	-0.91	+0.02	-0.20	-0.47	-0.85	+0.00	-0.65	+0.01	
+Uusi teknologia (esineiden internet, paikkatieto ym.... (V14)	-1.44	+0.14	-2.31	+0.57	+0.83	-0.14	+0.97	-1.74	+0.64	-0.18	-2.22	-0.41	+1.40	+0.00	-1.02	
+                   Yhteiskunnan kaupungistuminen jatkuu (V15)	+2.17	+0.15	-2.08	-0.84	+0.23	-2.16	-0.82	-1.12	+0.29	+0.98	+2.36	+0.87	-2.11	-1.01	+0.00	
+

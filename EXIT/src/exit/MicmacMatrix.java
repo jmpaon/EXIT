@@ -45,15 +45,15 @@ public class MicmacMatrix extends CrossImpactMatrix {
     }
     
     public MicmacMatrix(SquareMatrix matrix) {
-        super(matrix.varCount, matrix.allValuesAreIntegers(), matrix.names.clone(), matrix.values.clone());
+        super(matrix.varCount, matrix.names.clone(), matrix.values.clone(), matrix.allValuesAreIntegers());
     }
     
     public MicmacMatrix(int varCount, boolean onlyIntegers, String[] names, double[] values) {
-        super(varCount, onlyIntegers, names, values);
+        super(varCount, names, values, onlyIntegers);
     }
     
     public MicmacMatrix(int varCount, boolean onlyIntegers, String[] names) {
-        super(varCount, onlyIntegers, names);
+        super(varCount, names, onlyIntegers);
     }
     
     
@@ -178,8 +178,8 @@ public class MicmacMatrix extends CrossImpactMatrix {
      */
     public MicmacMatrix booleanImpactMatrix(double threshold) {
         if(threshold<=0) throw new IllegalArgumentException("Threshold value must be greater than 0");
-        if(threshold>this.greatestValue()) 
-            throw new IllegalStateException(String.format("Threshold value is %2.2f when the greatest value in the matrix is %2.2f", threshold, greatestValue()));
+        if(threshold>this.matrixMax()) 
+            throw new IllegalStateException(String.format("Threshold value is %2.2f when the greatest value in the matrix is %2.2f", threshold, matrixMax()));
         
         MicmacMatrix transformedMatrix = new MicmacMatrix(this);
         for (int i = 0; i < transformedMatrix.values.length ; i++) {

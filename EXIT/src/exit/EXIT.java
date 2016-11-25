@@ -85,7 +85,7 @@ public class EXIT {
             
             if(arguments.extraReports) {
                 output.printf("Importance matrix derived from input matrix; max value %f:%n", arguments.maxImpact);
-                output.println(inputMatrix.importanceMatrix().round(arguments.maxImpact.intValue()));
+                output.println(inputMatrix.newImportanceMatrix().round(arguments.maxImpact.intValue()));
                 
                 output.println("Input matrix driver-driven report:");
                 output.println(new EXITImpactMatrix(inputMatrix.scale(1)).driverDriven().toString());
@@ -150,7 +150,7 @@ public class EXIT {
                 
                 if(arguments.extraReports) {
                     output.printf("%nImportance matrix derived from result matrix; max value %f:%n", arguments.maxImpact);
-                    output.println(resultMatrix.importanceMatrix().scale(arguments.maxImpact));
+                    output.println(resultMatrix.newImportanceMatrix().scale(arguments.maxImpact));
                 }
                 
                 output.printf("%nDifference matrix of normalized result matrix and normalized input matrix, scaled to %f:%n", inputMatrix.getMaxImpact());
@@ -207,7 +207,7 @@ public class EXIT {
             output.println(inputMatrix.toString());
             if(arguments.extraReports) {
                 output.printf("Importance matrix derived from input matrix; max value %f:%n", arguments.maxImpact);
-                output.println(inputMatrix.importanceMatrix().round(arguments.maxImpact.intValue()));
+                output.println(inputMatrix.newImportanceMatrix().round(arguments.maxImpact.intValue()));
                 
                 output.println("Input matrix driver-driven report:");
                 output.println(inputMatrix.scale(1).driverDriven().toString());                
@@ -273,7 +273,7 @@ public class EXIT {
                 
                 if(arguments.extraReports) {
                     output.printf("Importance matrix derived from result matrix; max value %f:%n", arguments.maxImpact);
-                    output.println(resultMatrix.importanceMatrix().scale(arguments.maxImpact));
+                    output.println(resultMatrix.newImportanceMatrix().scale(arguments.maxImpact));
                 }
                 
                 output.printf("Difference matrix of result matrix and input matrix, both scaled to max value %f:%n", arguments.maxImpact);
@@ -338,8 +338,8 @@ public class EXIT {
             }
             
             System.out.printf("Importance matrix for iteration %d%n", iterations);
-            System.out.println(result.importanceMatrix());
-            System.out.println(result.importanceMatrix().round(5));
+            System.out.println(result.newImportanceMatrix());
+            System.out.println(result.newImportanceMatrix().round(5));
             System.out.println("Iteration results in a noticeably different matrix until iteration " + sameIt);
             
             

@@ -14,40 +14,57 @@ import java.util.List;
  * @author juha
  */
 public class CrossImpactMatrix extends SquareMatrix{
-    /** List of descriptions of transformations done to this matrix */
-    protected final List<String> transformations;
+
     /** Are only integers allowed as matrix values? */
     protected final boolean onlyIntegers;
+    
     /** Is the matrix locked? If locked, matrix contents cannot be changed */
     private boolean isLocked;
 
-    public CrossImpactMatrix(int varCount, boolean onlyIntegers, String[] names, double[] values) {
-        super(varCount, onlyIntegers, names, values);
+    
+    public CrossImpactMatrix(int varCount, String[] names, double[] values, boolean onlyIntegers) {
+        super(varCount, names, values);
         this.onlyIntegers = onlyIntegers;
-        this.transformations = new LinkedList<>();
     }
 
-    public CrossImpactMatrix(int varCount, boolean onlyIntegers, String[] names) {
-        this(varCount, onlyIntegers, names, new double[varCount*varCount]);
+    public CrossImpactMatrix(int varCount, String[] names, boolean onlyIntegers) {
+        this(varCount, names, new double[varCount*varCount], onlyIntegers);
     }
 
     public CrossImpactMatrix(int varCount, boolean onlyIntegers) {
-        this(varCount, onlyIntegers, createNames(varCount), new double[varCount*varCount]);
+        this(varCount, createNames(varCount), new double[varCount*varCount], onlyIntegers);
     }
 
     public CrossImpactMatrix(int varCount, String[] names) {
-        this(varCount, false, names, new double[varCount*varCount]);
+        this(varCount, names, new double[varCount*varCount], false);
     }
 
     public CrossImpactMatrix(int varCount) {
-        this(varCount, false, createNames(varCount), new double[varCount*varCount]);
+        this(varCount, createNames(varCount), new double[varCount*varCount], false);
     }
 
     public CrossImpactMatrix(boolean onlyIntegers, String[] names, double[][] values) {
-        this(values.length, onlyIntegers, names, flattenArray(values));
+        this(values.length, names, flattenArray(values), onlyIntegers);
     }
     
-    public void setImpact(int impactor, int impacted, double value) {
+    public CrossImpactMatrix(SquareMatrix matrix) {
+        this(matrix.varCount, matrix.names, matrix.values, false);
+    }
+    
+    public CrossImpactMatrix(CrossImpactMatrix matrix) {
+        this(matrix.varCount, matrix.names, matrix.values, matrix.onlyIntegers);
+    }
+    
+    /**
+     * Sets an impact value in an entry of the <tt>CrossImpactMatrix</tt>.
+     * Non-zero values cannot be set to any matrix entry (i,j) in case i==j.
+     * @param impactor Index of the impactor variable (matrix row index)
+     * @param impacted Index of the impacted variable (matrix column index)
+     * @param value Value of the matrix entry
+     */
+    @Override
+    public void setValue(int impactor, int impacted, double value) {
+        
         // Variables cannot have an impact on themselves
         if (impactor == impacted && value != 0) {
             throw new IllegalArgumentException(String.format("Attempt to set an impact (%s) of variable (%s) on itself", value, impactor));
@@ -55,29 +72,6 @@ public class CrossImpactMatrix extends SquareMatrix{
         super.setValue(impactor, impacted, value);
     }
     
-
-    /**
-     * Returns a String containing a list of descriptions of transformations
-     * performed on this matrix
-     * @return String description of transformations
-     */
-    public String getTransformations() {
-        StringBuilder sb = new StringBuilder();
-        transformations.stream().forEach((String s) -> {
-            sb.append(" * ").append(s).append("\n");
-        });
-        return sb.toString();
-    }
-
-    /**
-     * Adds a description of a transformation performed on this matrix
-     * @param description
-     */
-    public void noteTransformation(String description) {
-        assert description != null;
-        assert !description.equalsIgnoreCase("");
-        this.transformations.add(description);
-    }
 
     /**
      * Returns true if <code>SquareMatrix</code> is locked, false otherwise.
@@ -96,6 +90,19 @@ public class CrossImpactMatrix extends SquareMatrix{
         this.isLocked = true;
     }
 
+    public void toImportanceMatrix() {
+        for (int impacted = 1; impacted <= this.varCount; impacted++) {
+            double columnSum = this.columnSum(impacted, true);
+            for (int impactor = 1; impactor <= this.varCount; impactor++) {
+                double shareOfAbsoluteSum = columnSum != 0 ? this.getValue(impactor, impacted) / columnSum : 0;
+                double absShare = Math.abs(shareOfAbsoluteSum);
+                double importance = shareOfAbsoluteSum < 0 ? -absShare : absShare;
+                this.setValue(impactor, impacted, importance);
+            }
+        }
+    }
+    
+    
     /**
      * Returns an importance matrix for the impact matrix.
      * Importance for each impactor-impacted pair or matrix entry
@@ -103,19 +110,9 @@ public class CrossImpactMatrix extends SquareMatrix{
      * by the sum of the absolute impacts on the impacted variable.
      * @return Importance matrix derived from this <code>EXITImpactMatrix</code>
      */
-    public CrossImpactMatrix importanceMatrix() {
-        CrossImpactMatrix importanceMatrix = 
-                new CrossImpactMatrix(varCount, onlyIntegers, names, values);
-        // (this.getMaxImpact() * this.varCount, this.varCount, this.onlyIntegers, this.names);
-        for (int impacted = 1; impacted <= this.varCount; impacted++) {
-            for (int impactor = 1; impactor <= this.varCount; impactor++) {
-                double shareOfAbsoluteSum = this.columnSum(impacted, true) != 0 ? this.getValue(impactor, impacted) / this.columnSum(impacted, true) : 0;
-                double absShare = Math.abs(shareOfAbsoluteSum);
-                double importance = shareOfAbsoluteSum < 0 ? -absShare : absShare;
-                importanceMatrix.setValue(impactor, impacted, importance);
-            }
-        }
-        importanceMatrix.noteTransformation("Derived as an importance matrix");
+    public CrossImpactMatrix newImportanceMatrix() {
+        CrossImpactMatrix importanceMatrix = new CrossImpactMatrix(this);
+        importanceMatrix.toImportanceMatrix();
         return importanceMatrix;
     }
 
@@ -127,12 +124,11 @@ public class CrossImpactMatrix extends SquareMatrix{
      */
     public CrossImpactMatrix normalize() {
         double[] normalizedValues = this.values.clone();
-        double averageDistanceFromZero = this.matrixAverage(true);
+        double averageDistanceFromZero = this.matrixMean(true);
         for (int i=0; i < normalizedValues.length; i++) {
             normalizedValues[i] /= averageDistanceFromZero;
         }
-        CrossImpactMatrix normalized = new CrossImpactMatrix(this.varCount, false, this.names, normalizedValues);
-        normalized.noteTransformation("normalized");
+        CrossImpactMatrix normalized = new CrossImpactMatrix(this.varCount, this.names, normalizedValues, false);
         return normalized;
     }
 
@@ -155,7 +151,7 @@ public class CrossImpactMatrix extends SquareMatrix{
      * @return New <code>EXITImpactMatrix</code> where impact values are rounded to the nearest integer
      */
     public CrossImpactMatrix round() {
-        return this.round((int) Math.round(this.greatestValue()));
+        return this.round((int) Math.round(this.matrixMax()));
     }
 
     /**
@@ -188,12 +184,12 @@ public class CrossImpactMatrix extends SquareMatrix{
         if (scaleTo == 0) {
             throw new IllegalArgumentException("scaleTo cannot be 0");
         }
-        double max = greatestValue();
+        double max = matrixMax();
         double[] scaledImpacts = this.values.clone();
         for (int i = 0; i < values.length; i++) {
             scaledImpacts[i] = values[i] / max * scaleTo;
         }
-        return new CrossImpactMatrix(this.varCount, this.onlyIntegers, this.names, scaledImpacts);
+        return new CrossImpactMatrix(this.varCount, this.names, scaledImpacts, this.onlyIntegers);
     }
 
     /**
@@ -208,11 +204,10 @@ public class CrossImpactMatrix extends SquareMatrix{
         }
         
         boolean bothMatricesIntegral = this.onlyIntegers && subtractMatrix.onlyIntegers;
-        CrossImpactMatrix differenceMatrix = new CrossImpactMatrix(this.varCount, bothMatricesIntegral, this.names, this.values);
+        CrossImpactMatrix differenceMatrix = new CrossImpactMatrix(this.varCount, this.names, this.values, bothMatricesIntegral);
         for (int i = 0; i < differenceMatrix.values.length; i++) {
             differenceMatrix.values[i] -= subtractMatrix.values[i];
         }
-        differenceMatrix.noteTransformation("Derived as a difference matrix");
         return differenceMatrix;
     }
 

@@ -30,11 +30,10 @@ public class SquareMatrix {
     /**
      * Constructor for <code>SquareDataMatrix</code>.
      * @param varCount Number of rows, columns and variables in the matrix
-     * @param onlyIntegers Are only integers allowed?
      * @param names Array of row/column/variable names or labels, length must be equal to varCount
      * @param values Array of values, length must be equal to varCount^2
      */
-    public SquareMatrix(int varCount, boolean onlyIntegers, String[] names, double[] values) {
+    public SquareMatrix(int varCount, String[] names, double[] values) {
         if (varCount < 1) { throw new IllegalArgumentException("varCount cannot be smaller than 1"); }
         if(values == null) throw new NullPointerException("values array is null");
         if(names == null) throw new NullPointerException("names array is null");
@@ -57,42 +56,20 @@ public class SquareMatrix {
     /**
      * Constructor for <code>SquareDataMatrix</code>.
      * @param varCount Number of rows, columns and variables in the matrix
-     * @param onlyIntegers Are only integers allowed?
-     * @param names Array of row/column/variable names or labels, length must be equal to varCount
-     */
-    public SquareMatrix(int varCount, boolean onlyIntegers, String[] names) {
-        this(varCount, onlyIntegers, names, new double[varCount*varCount]);
-    }
-    
-    
-    /**
-     * Constructor for <code>SquareDataMatrix</code>
-     * @param varCount Number of rows, columns and variables in the matrix
-     * @param onlyIntegers Are only integers allowed?
-     */    
-    public SquareMatrix(int varCount, boolean onlyIntegers) {
-        this(varCount, onlyIntegers, createNames(varCount), new double[varCount*varCount]);
-    }
-    
-    
-    /**
-     * Constructor for <code>SquareDataMatrix</code>
-     * @param varCount Number of rows, columns and variables in the matrix
      * @param names Array of row/column/variable names or labels, length must be equal to varCount
      */
     public SquareMatrix(int varCount, String[] names) {
-        this(varCount, false, names);
+        this(varCount, names, new double[varCount*varCount]);
     }
     
     
     /**
      * Constructor for <code>SquareDataMatrix</code>
      * @param varCount Number of rows, columns and variables in the matrix
-     */
+     */    
     public SquareMatrix(int varCount) {
-        this(varCount, createNames(varCount));
+        this(varCount, createNames(varCount), new double[varCount*varCount]);
     }
-    
     
     /**
      * Constructor for <code>SquareDataMatrix</code>
@@ -100,11 +77,20 @@ public class SquareMatrix {
      * @param names Array of row/column/variable names or labels, length must be equal to rows and columns in <b>values</b>
      * @param values 2-dimensional array. Each column must have the same number of elements as  there are rows in the array.
      */
-    public SquareMatrix(boolean onlyIntegers, String[] names, double[][] values) {
-        this(values.length, onlyIntegers, names, flattenArray(values));
-    }    
-    
+    public SquareMatrix(String[] names, double[][] values) {
+        this(values.length, names, flattenArray(values));
+    }
 
+    /**
+     * Is a number a perfect square?
+     * @param number Number to test
+     * @return <b>true</b> if number is a perfect square
+     */
+    static protected boolean isPerfectSquare(int number) {
+        double sqrt = Math.sqrt(number);
+        int x = (int) sqrt;
+        return (Math.pow(sqrt,2) == Math.pow(x,2));
+    }
 
     
     /**
@@ -198,7 +184,7 @@ public class SquareMatrix {
      * @param absolute If <i>true</i>, average of absolute values is returned, otherwise average is returned
      * @return Average of values in the matrix
      */
-    public double matrixAverage(boolean absolute) {
+    public double matrixMean(boolean absolute) {
         double sum = 0;
         for(Double val : this.values) {
             sum += absolute ? Math.abs(val) : val ;
@@ -228,6 +214,28 @@ public class SquareMatrix {
         }
     }
     
+    
+    /**
+     * @return The maximum <u>absolute</u> value in the matrix.
+     */
+    public double matrixMax() {
+        return matrixMax(true);
+    }
+    
+    /**
+     * @param absolute If <i>true</i> maximum of absolute values is returned
+     * @return The maximum value or maximum absolute value in the matrix
+     */
+    public double matrixMax(boolean absolute) {
+        double max = absolute ? Math.abs(values[0]) : values[0];
+        for(int i=1;i<values.length;i++) {
+            double v = absolute ? Math.abs(values[i]) : values[i];
+            if(v > max) {
+                max = v;
+            }
+        }
+        return max;
+    }
     
     /**
      * Creates variable names for the matrix. Variable names are
@@ -307,11 +315,11 @@ public class SquareMatrix {
      * @param len Length of <b>exceptionMsg</b> after truncation.
      * @return Truncated String/name.
      */
-    public String truncateName(String s, int len) {
+    public static String truncateName(String s, int len) {
         return s.length()<=len ? s : s.substring(0, len-3) + "...";
-    }    
+    }
     
-
+    
     /**
      * Returns the index of variable with name <b>varName</b>.
      * @param varName Name/label of variable
@@ -418,26 +426,14 @@ public class SquareMatrix {
         return d == (int) d;
     }
 
-    /**
-     * @return The greatest <u>absolute</u> value in the matrix.
-     */
-    public double greatestValue() {
-        double greatest = Math.abs(values[0]);
-        for (int i = 1; i < values.length; i++) {
-            double v = Math.abs(values[i]);
-            if (v > greatest) {
-                greatest = v;
-            }
-        }
-        return greatest;
-    }
+
 
     /**
      * Returns a copy of the matrix contents (the values) 
      * in a 2-dimensional array.
      * @return Matrix contents in a 2-dimensional array.
      */
-    public double[][] valuesToArray() {
+    public double[][] toArray() {
         double[][] copy = new double[varCount][varCount];
         int i = 0;
         int r = 0;
