@@ -34,7 +34,7 @@ public class EXIT {
         test_new_features();
         
         /* New standard calculation */
-        new_exit_analysis(args);
+        // new_exit_analysis(args);
         
         /* Normal calculation procedure */
         //standard_exit_analysis(args);
@@ -56,9 +56,11 @@ public class EXIT {
         d[1][1] = 22;
         String[] nam = {"mem","moo"};
         
+        SquareMatrix sm = new SquareMatrix(nam, d);
+        CrossImpactMatrix cm = new CrossImpactMatrix(sm);
+        System.out.println(cm.scale(1).toString());
         
-        SquareMatrix sm = new SquareMatrix(true, nam, d);
-        System.out.println(sm.toString());
+        // System.out.println(sm.toString());
     }
     
     public static void new_exit_analysis(String[] args) {
@@ -400,7 +402,7 @@ public class EXIT {
             System.out.println(resultMatrix.normalize().round(10));
             
             // System.out.println("Difference matrix of norm-5 result matrix and norm-5 input matrix scaled,rounded to 10");
-            // System.out.println(resultMatrix.normalize(5).differenceMatrix(directImpactMatrix.normalize(5)).round(10));
+            // System.out.println(resultMatrix.normalize(5).differenceMatrix(directImpactMatrix.normalize(5)).oldRound(10));
             
             System.out.println("Difference matrix of norm+scaled(10) result matrix and norm+scaled(10) input matrix");
             System.out.println( resultMatrix.normalize().round(10).differenceMatrix( directImpactMatrix.normalize().round(10) ) );

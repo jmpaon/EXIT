@@ -63,7 +63,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
      * @param impacts array containing matrix contents
      */
     public EXITImpactMatrix(double maxImpact, int varCount, boolean onlyIntegers, String[] names, double[] impacts) {
-        super(varCount, onlyIntegers, names, impacts);
+        super(varCount, names, impacts, onlyIntegers);
         
         if(maxImpact <= 0) {throw new IllegalArgumentException("maxImpact must be greater than 0");}
         if(varCount < 2) {throw new IllegalArgumentException("Cross-impact matrix must have at least 2 variables");}
@@ -117,7 +117,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
      * @param matrix <tt>SquareMatrix</tt> that is a valid <tt>EXITImpactMatrix</tt>
      */
     public EXITImpactMatrix(SquareMatrix matrix) {
-        this(matrix, matrix.greatestValue());
+        this(matrix, matrix.matrixMax());
     }
     /**
      * Creates a <tt>CrossImpactMatrix</tt> from a <tt>SquareMatrix</tt>.
@@ -157,7 +157,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
      * @return <code>EXITImpactMatrix</code> with the summed direct and indirect values between variables
      */
     public CrossImpactMatrix summedImpactMatrix(double impactThreshold) {
-        CrossImpactMatrix resultMatrix = new CrossImpactMatrix(varCount, false, names);
+        CrossImpactMatrix resultMatrix = new CrossImpactMatrix(varCount, names, false);
         double totalCount=0;
         for (int impactor=1; impactor<=this.varCount; impactor++) {
             Reporter.msg("Calculating significant indirect impacts of %s(%s)... ", getNameShort(impactor), truncateName(getName(impactor), 15));
@@ -168,7 +168,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
         }
         Reporter.msg("%s significant (threshold %1.4f) impact chains found in the matrix.%n", Math.round(totalCount), impactThreshold);
         Reporter.msg("The total number of possible chains in this matrix is %s.%n", approximateChainCountString());
-        // resultMatrix.setMaxImpact(resultMatrix.greatestValue());
+        // resultMatrix.setMaxImpact(resultMatrix.matrixMax());
         return resultMatrix;
     }
     
@@ -199,7 +199,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
                 //if(resultMatrix.maxImpact < Math.abs(newValue)) {
                 //    resultMatrix.setMaxImpact(Math.abs(Math.round((accumulatedValue + additionValue)*1.5)));
                 //}
-                resultMatrix.setImpact(impactor, impacted, newValue);
+                resultMatrix.setValue(impactor, impacted, newValue);
             }
             
             if(chain.hasExpansion()) {
@@ -281,7 +281,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
      * @param value New value for impact
      */
     @Override
-    public void setImpact(int impactor, int impacted, double value) {
+    public void setValue(int impactor, int impacted, double value) {
         
         // Absolute value of impact cannot be greater than maxImpact
         if (maxImpact < Math.abs(value)) {
@@ -377,7 +377,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
         String stringRepresentation="";
         
         // String representation "label" 
-        stringRepresentation += String.format("Cross-impact matrix with maximum impact %1.2f (greatest impact %1.2f)%n", this.maxImpact, this.greatestValue());
+        stringRepresentation += String.format("Cross-impact matrix with maximum impact %1.2f (greatest impact %1.2f)%n", this.maxImpact, this.matrixMax());
         
         stringRepresentation += String.format("%"+labelWidth+"s     \t", " ");
         for(c=0; c<varCount;c++) {
