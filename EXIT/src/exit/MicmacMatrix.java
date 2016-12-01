@@ -32,28 +32,28 @@ import java.util.Objects;
  */
 public class MicmacMatrix extends CrossImpactMatrix {
     
-    public static enum Orientation {
-        byDependence,
-        byInfluence;
-        
-        @Override
-        public String toString() {
-            if(this==byDependence) return "by dependence";
-            if(this==byInfluence)  return "by influence";
-            return "Unknown";
-        }
-    }
+//    public static enum Orientation {
+//        byDependence,
+//        byInfluence;
+//        
+//        @Override
+//        public String toString() {
+//            if(this==byDependence) return "by dependence";
+//            if(this==byInfluence)  return "by influence";
+//            return "Unknown";
+//        }
+//    }
     
     public MicmacMatrix(SquareMatrix matrix) {
-        super(matrix.varCount, matrix.allValuesAreIntegers(), matrix.names.clone(), matrix.values.clone());
+        super(matrix.varCount, matrix.names.clone(), matrix.values.clone(), matrix.allValuesAreIntegers());
     }
     
-    public MicmacMatrix(int varCount, boolean onlyIntegers, String[] names, double[] values) {
-        super(varCount, onlyIntegers, names, values);
+    public MicmacMatrix(int varCount, String[] names, double[] values, boolean onlyIntegers) {
+        super(varCount, names, values, onlyIntegers);
     }
     
-    public MicmacMatrix(int varCount, boolean onlyIntegers, String[] names) {
-        super(varCount, onlyIntegers, names);
+    public MicmacMatrix(int varCount, String[] names, boolean onlyIntegers) {
+        super(varCount, names, onlyIntegers);
     }
     
     
@@ -64,7 +64,7 @@ public class MicmacMatrix extends CrossImpactMatrix {
      * @return <code>VarInfoTable</code> containing initial and MICMAC rankings of the matrix variables
      * @see MicmacMatrix#altMICMAC(exit.MicmacMatrix.Orientation) alternative implementation
      */
-    public VarInfoTable<String> MICMACranking(Orientation orientation) {
+    public VarInfoTable<String> MICMACranking(CrossImpactMatrix.Orientation orientation) {
         
         Ordering initialOrdering = new Ordering(this, orientation);
         
