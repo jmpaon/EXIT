@@ -51,7 +51,7 @@ public class InputFileReader {
             int imp=0;
             while(sc.hasNextDouble()) {
                 imp++;
-                cim.setImpact(var, imp, sc.nextDouble());
+                cim.setValue(var, imp, sc.nextDouble());
             }
 
             if (imp != variableCount) {
