@@ -5,10 +5,14 @@
  */
 package exit;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.DoubleSupplier;
 import java.util.function.IntFunction;
@@ -37,17 +41,29 @@ public class CrossImpactMatrix extends SquareMatrix{
         
         @Override
         public String toString() {
-            if(this == CRITICAL) return "Critical";
-            if(this == REACTIVE) return "Reactive";
-            if(this == DRIVER)   return "Driver";
-            if(this == STABLE)   return "Stable";
-            return "Unknown";
+            switch(this) {
+                case CRITICAL: return "Critical";
+                case REACTIVE: return "Reactive";
+                case DRIVER:   return "Driver";
+                case STABLE:   return "Stable";
+            }
+            throw new EnumConstantNotPresentException(this.getClass(), this.name());
         }
+         
     }
     
     public enum Orientation {
         INFLUENCE,
-        DEPENDENCE
+        DEPENDENCE;
+        
+        @Override
+        public String toString() {
+            switch(this) {
+                case INFLUENCE:  return "Influence";
+                case DEPENDENCE: return "Dependence";
+            }
+            throw new EnumConstantNotPresentException(this.getClass(), this.name());
+        }
     }
 
     public CrossImpactMatrix(int varCount, String[] names, double[] values, boolean onlyIntegers) {
@@ -260,6 +276,111 @@ public class CrossImpactMatrix extends SquareMatrix{
             }
         }
         return classification;
+    }
+    
+    public Ordering getOrdering(Orientation orientation) {
+        return new Ordering(this, orientation);
+    }
+    
+    
+    /**
+     * This class represents an ordering of the matrix variables.
+     */
+    public class Ordering implements Comparable<Ordering> {
+        
+        public final CrossImpactMatrix matrix;
+        public final Orientation orientation;
+        public final List<VarDetails> ordering;
+        
+        public Ordering(CrossImpactMatrix matrix, Orientation orientation) {
+            this.matrix = matrix;
+            this.orientation = orientation;
+            this.ordering = new ArrayList<>();
+            determineOrdering();
+        }
+        
+        
+        /**
+         * Returns a distance measure between two orderings.
+         * @param o Ordering to compare this ordering against
+         * @return Distance measure; 0 if the orderings are identical
+         */
+        @Override
+        public int compareTo(Ordering o) {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        
+        @Override
+        public boolean equals(Object o) {
+            if (!o.getClass().isAssignableFrom(this.getClass())) return false;
+            
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 19 * hash + Objects.hashCode(this.matrix);
+            hash = 19 * hash + Objects.hashCode(this.orientation);
+            hash = 19 * hash + Objects.hashCode(this.ordering);
+            return hash;
+        }
+        
+        
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            for(VarDetails v : ordering) {
+                sb.append(v.position).append(": " + "V").append(v.index).append(" (").append(v.sum).append(") ");
+            }
+            return sb.toString();
+        }
+        
+        
+        /**
+         * Determines the ordering of <i>matrix</i> variables
+         * according to the <i>orientation</i> of this <tt>Ordering</tt>.
+         */
+        private void determineOrdering() {
+            List<VarDetails> sorted = new ArrayList<>();
+            
+            // Collect the values for the ordering
+            for(int i=1;i<=matrix.varCount;i++) {
+                switch(orientation) {
+                    case INFLUENCE:  this.ordering.add(new VarDetails(i, matrix.rowSum(i, true)));
+                    case DEPENDENCE: this.ordering.add(new VarDetails(i, matrix.columnSum(i, true)));
+                    default: throw new EnumConstantNotPresentException(orientation.getClass(), orientation.name());
+                }
+            }
+            
+            // Sort the ordering by sums (row or column sums)
+            Collections.sort(ordering);
+            
+            // Put greatest value first
+            Collections.reverse(ordering);
+        }
+
+
+        /**
+         * Container for details of a <i>matrix</i> variable in an <tt>Ordering</tt>
+         */
+        class VarDetails implements Comparable<VarDetails> {
+            public final Integer index;
+            public final Double sum;
+            public Integer position;
+            
+            public VarDetails(int index, double sum) {
+                this.index = index;
+                this.sum = sum;
+            }
+            
+            @Override
+            public int compareTo(VarDetails o) {
+                int comparison = this.sum.compareTo(o.sum);
+                return comparison != 0 ? comparison : this.index.compareTo(o.index);
+            }            
+            
+        }
+        
     }
     
 }

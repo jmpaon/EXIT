@@ -28,7 +28,7 @@ public class SquareMatrix {
 
     
     /**
-     * Constructor for <code>SquareDataMatrix</code>.
+     * Constructor for <code>SquareMatrix</code>.
      * @param varCount Number of rows, columns and variables in the matrix
      * @param names Array of row/column/variable names or labels, length must be equal to varCount
      * @param values Array of values, length must be equal to varCount^2
@@ -54,7 +54,7 @@ public class SquareMatrix {
     
     
     /**
-     * Constructor for <code>SquareDataMatrix</code>.
+     * Constructor for <code>SquareMatrix</code>.
      * @param varCount Number of rows, columns and variables in the matrix
      * @param names Array of row/column/variable names or labels, length must be equal to varCount
      */
@@ -64,15 +64,16 @@ public class SquareMatrix {
     
     
     /**
-     * Constructor for <code>SquareDataMatrix</code>
+     * Constructor for <code>SquareMatrix</code>
      * @param varCount Number of rows, columns and variables in the matrix
-     */    
+     */
     public SquareMatrix(int varCount) {
         this(varCount, createNames(varCount), new double[varCount*varCount]);
     }
     
+    
     /**
-     * Constructor for <code>SquareDataMatrix</code>
+     * Constructor for <code>SquareMatrix</code>
      * @param names Array of row/column/variable names or labels, length must be equal to rows and columns in <b>values</b>
      * @param values 2-dimensional array. Each column must have the same number of elements as  there are rows in the array.
      */
@@ -80,6 +81,7 @@ public class SquareMatrix {
         this(values.length, names, flattenArray(values));
     }
 
+    
     /**
      * Is a number a perfect square?
      * @param number Number to test
@@ -133,7 +135,7 @@ public class SquareMatrix {
     public double rowAverage(int row, boolean absolute) {
         return rowSum(row, absolute) / varCount;
     }
-
+    
     
     /**
      * Returns the average of values on specific column.
@@ -235,7 +237,20 @@ public class SquareMatrix {
         }
         return max;
     }
-
+    
+    
+    /**
+     * Returns the smallest value in the matrix
+     * @return The smallest value in the matrix
+     */
+    public double matrixMin() {
+        double min = values[0];
+        for(int i=1;i<values.length;i++) {
+            if(values[i] < min) min = values[i];
+        }
+        return min;
+    }
+    
     
     /**
      * Creates variable names for the matrix. Variable names are
@@ -244,11 +259,22 @@ public class SquareMatrix {
      * @return Array containing variable names
      */
     protected static String[] createNames(int nameCount) {
-        int i = 0;
+        return createNames(nameCount, "Variable ");
+//        int i = 0;
+//        String[] n = new String[nameCount];
+//        while (i < nameCount) {
+//            n[i] = "Variable " + (i + 1);
+//            i++;
+//        }
+//        return n;
+    }
+    
+    protected static String[] createNames(int nameCount, String preamble) {
+        if (preamble == null) preamble = "V";
+        int i  = 1;
         String[] n = new String[nameCount];
-        while (i < nameCount) {
-            n[i] = "Variable " + (i + 1);
-            i++;
+        while(i <= nameCount) {
+            n[i] = preamble + i++;
         }
         return n;
     }
@@ -279,11 +305,11 @@ public class SquareMatrix {
      */
     public String getNamePrint(int varIndex) {
         String varName = getName(varIndex);
-        int longestNameLen = 0;
+        int longestNameLength = 0;
         for(String name : names) {
-            longestNameLen = name.length() > longestNameLen ? name.length() : longestNameLen;
+            longestNameLength = name.length() > longestNameLength ? name.length() : longestNameLength;
         }
-        int whitespaceChars = longestNameLen - varName.length();
+        int whitespaceChars = longestNameLength - varName.length();
         StringBuilder sb = new StringBuilder();
         while(whitespaceChars>0) {
             sb.append(" ");

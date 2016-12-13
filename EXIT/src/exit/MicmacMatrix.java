@@ -32,17 +32,7 @@ import java.util.Objects;
  */
 public class MicmacMatrix extends CrossImpactMatrix {
     
-//    public static enum Orientation {
-//        byDependence,
-//        byInfluence;
-//        
-//        @Override
-//        public String toString() {
-//            if(this==byDependence) return "by dependence";
-//            if(this==byInfluence)  return "by influence";
-//            return "Unknown";
-//        }
-//    }
+
     
     public MicmacMatrix(SquareMatrix matrix) {
         super(matrix.varCount, matrix.names.clone(), matrix.values.clone(), matrix.allValuesAreIntegers());
@@ -74,7 +64,7 @@ public class MicmacMatrix extends CrossImpactMatrix {
         /* Place the first power matrix in the iterated matrix variable */
         MicmacMatrix iterMatrix = this.power();
         
-        int iter=0;
+        int iter = 0;
         
         /* 
         System.out.println("MICMAC calculation, " + orientation.toString());
@@ -177,9 +167,9 @@ public class MicmacMatrix extends CrossImpactMatrix {
      * @return Matrix representing presence of impacts in a boolean fashion
      */
     public MicmacMatrix booleanImpactMatrix(double threshold) {
-        if(threshold<=0) throw new IllegalArgumentException("Threshold value must be greater than 0");
-        if(threshold>this.greatestValue()) 
-            throw new IllegalStateException(String.format("Threshold value is %2.2f when the greatest value in the matrix is %2.2f", threshold, greatestValue()));
+        if(threshold <= 0) throw new IllegalArgumentException("Threshold value must be greater than 0");
+        if(threshold > this.matrixMax()) 
+            throw new IllegalStateException(String.format("Threshold value is %2.2f when the greatest value in the matrix is %2.2f", threshold, matrixMax()));
         
         MicmacMatrix transformedMatrix = new MicmacMatrix(this);
         for (int i = 0; i < transformedMatrix.values.length ; i++) {
@@ -517,13 +507,25 @@ public class MicmacMatrix extends CrossImpactMatrix {
          * @return 
          */
         public boolean isUnambiguous() {
+            return !isAmbiguous();
+//            List<Integer> usedPositions = new ArrayList<>();
+//            for(Integer i : this.positions) {
+//                if(usedPositions.contains(i)) return false;
+//                usedPositions.add(i);
+//            }
+//            return true;
+        }
+        
+        public boolean isAmbiguous() {
+            
             List<Integer> usedPositions = new ArrayList<>();
             for(Integer i : this.positions) {
-                if(usedPositions.contains(i)) return false;
+                if(usedPositions.contains(i)) return true;
                 usedPositions.add(i);
             }
-            return true;
+            return false;            
         }
+        
         
         @Override
         public boolean equals(Object o) {
