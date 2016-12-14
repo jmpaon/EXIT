@@ -437,15 +437,9 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
         hash = 29 * hash + Arrays.deepHashCode(this.names);
         return hash;
     }
-    
-    
-    /**
-     * Returns a clone of the cross-impact matrix.
-     * @return Clone of the matrix
-     */
+
     @Override
-    public EXITImpactMatrix clone() throws CloneNotSupportedException {
-        super.clone();
+    public EXITImpactMatrix copy() {
         return new EXITImpactMatrix(maxImpact, varCount, onlyIntegers, this.names.clone(), this.values.clone());
     }
 

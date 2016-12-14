@@ -42,10 +42,10 @@ public class CrossImpactMatrix extends SquareMatrix{
         @Override
         public String toString() {
             switch(this) {
-                case CRITICAL: return "Critical";
-                case REACTIVE: return "Reactive";
-                case DRIVER:   return "Driver";
-                case STABLE:   return "Stable";
+                case CRITICAL: return "Critical"; 
+                case REACTIVE: return "Reactive"; 
+                case DRIVER:   return "Driver";   
+                case STABLE:   return "Stable";   
             }
             throw new EnumConstantNotPresentException(this.getClass(), this.name());
         }
@@ -59,8 +59,8 @@ public class CrossImpactMatrix extends SquareMatrix{
         @Override
         public String toString() {
             switch(this) {
-                case INFLUENCE:  return "Influence";
-                case DEPENDENCE: return "Dependence";
+                case INFLUENCE:  return "Influence";  
+                case DEPENDENCE: return "Dependence"; 
             }
             throw new EnumConstantNotPresentException(this.getClass(), this.name());
         }
@@ -101,6 +101,13 @@ public class CrossImpactMatrix extends SquareMatrix{
     public CrossImpactMatrix(CrossImpactMatrix matrix) {
         this(matrix.varCount, matrix.names, matrix.values, matrix.onlyIntegers);
     }
+    
+    @Override
+    public CrossImpactMatrix copy() {
+        return new CrossImpactMatrix(this);
+    }
+    
+    
     
     /**
      * Sets an impact value in an entry of the <tt>CrossImpactMatrix</tt>.
@@ -178,6 +185,34 @@ public class CrossImpactMatrix extends SquareMatrix{
         }
         return differenceMatrix;
     }
+    
+    /**
+     * Booleanizes (see {@link CrossImpactMatrix#booleanize(double)}) 
+     * using 0 as the threshold value
+     * @return Booleanized matrix
+     */
+    public CrossImpactMatrix booleanize() {
+        return this.booleanize(0);
+    }
+    
+    /**
+     * Booleanizes the cross-impact matrix:
+     * the transformed matrix will have only values 0 and 1, 0 for each value of the original matrix
+     * that is less than or equal to <b>threshold</b> and 1 for each value that is greater than threshold.
+     * The transformed matrix shows the presence of an impact of some strength and direction, 
+     * the required strength defined by the threshold value.
+     * @param threshold Threshold value for booleanization
+     * @return Booleanized matrix
+     */
+    public CrossImpactMatrix booleanize(double threshold) {
+        assert threshold > 0 : "Threshold value is less than or equal to 0";
+        double[] booleanizedValues = this.values.clone();
+        for(int i=0;i<booleanizedValues.length;i++) {
+            booleanizedValues[i] = Math.abs(booleanizedValues[i]) >= threshold ? 1 : 0;
+        }
+        return new CrossImpactMatrix(varCount, names.clone(), booleanizedValues, true);
+    }
+    
     
     
     /**
@@ -278,6 +313,51 @@ public class CrossImpactMatrix extends SquareMatrix{
         return classification;
     }
     
+    
+    /**
+     * Returns a distribution of values in the matrix.
+     * The returned <tt>Map</tt> contains an entry for each value present in the matrix
+     * and a count of occurrence for that value.
+     * @return <tt>Map</tt> where matrix impact values are <i>keys</i> and their counts are <i>values</i>.
+     */
+    public Map<Double, Integer> valueDistribution() {
+        Map<Double, Integer> distribution = new TreeMap<>();
+        for(Double d : this.values) {
+            if( distribution.containsKey(d)) {
+                distribution.put(d, distribution.get(d) + 1);
+            } else {
+                distribution.put(d, 1);
+            }
+        }
+        return distribution;
+    }
+    
+    /**
+     * Returns the <b>density</b> of the matrix,
+     * i.e.the percentage of non-zero impact values in entries that can have an impact value
+     * (where row != column).
+     * @return Percentage of non-zero impact values in the matrix.
+     */
+    public double getDensity() {
+        return getDensity(0);
+    }
+    
+    /**
+     * Returns the density of the matrix:
+     * the percentage of impact values greater than 
+     * <b>countThreshold</b> is returned
+     * @param countThreshold Values greater than countThreshold are counted
+     * @return Density value of the matrix (using countThreshold)
+     */
+    public double getDensity(double countThreshold) {
+        int counted = 0;
+        for(double value : values) {
+            if ( Math.abs(value) > countThreshold ) counted++;
+        }
+        return counted / (varCount*varCount-varCount);
+    }
+    
+    
     public Ordering getOrdering(Orientation orientation) {
         return new Ordering(this, orientation);
     }
@@ -290,7 +370,7 @@ public class CrossImpactMatrix extends SquareMatrix{
         
         public final CrossImpactMatrix matrix;
         public final Orientation orientation;
-        public final List<VarDetails> ordering;
+        public final List<OrderingVariable> ordering;
         
         public Ordering(CrossImpactMatrix matrix, Orientation orientation) {
             this.matrix = matrix;
@@ -312,24 +392,24 @@ public class CrossImpactMatrix extends SquareMatrix{
         
         @Override
         public boolean equals(Object o) {
-            if (!o.getClass().isAssignableFrom(this.getClass())) return false;
-            
+            if (o == this) return true;
+            if (!(o instanceof Ordering)) return false;
+            Ordering ord = (Ordering)o;
+            return this.matrix == ord.matrix &&
+                    this.orientation == ord.orientation &&
+                    Objects.equals(this.ordering, ord.ordering);
         }
 
         @Override
         public int hashCode() {
-            int hash = 5;
-            hash = 19 * hash + Objects.hashCode(this.matrix);
-            hash = 19 * hash + Objects.hashCode(this.orientation);
-            hash = 19 * hash + Objects.hashCode(this.ordering);
-            return hash;
+            return Objects.hash(matrix, orientation, ordering);
         }
         
         
         @Override
         public String toString() {
             StringBuilder sb = new StringBuilder();
-            for(VarDetails v : ordering) {
+            for(OrderingVariable v : ordering) {
                 sb.append(v.position).append(": " + "V").append(v.index).append(" (").append(v.sum).append(") ");
             }
             return sb.toString();
@@ -341,13 +421,15 @@ public class CrossImpactMatrix extends SquareMatrix{
          * according to the <i>orientation</i> of this <tt>Ordering</tt>.
          */
         private void determineOrdering() {
-            List<VarDetails> sorted = new ArrayList<>();
+            List<OrderingVariable> sorted = new ArrayList<>();
             
             // Collect the values for the ordering
             for(int i=1;i<=matrix.varCount;i++) {
                 switch(orientation) {
-                    case INFLUENCE:  this.ordering.add(new VarDetails(i, matrix.rowSum(i, true)));
-                    case DEPENDENCE: this.ordering.add(new VarDetails(i, matrix.columnSum(i, true)));
+                    case INFLUENCE:  this.ordering.add(new OrderingVariable(i, matrix.rowSum(i, true)));
+                    break;
+                    case DEPENDENCE: this.ordering.add(new OrderingVariable(i, matrix.columnSum(i, true)));
+                    break;
                     default: throw new EnumConstantNotPresentException(orientation.getClass(), orientation.name());
                 }
             }
@@ -357,24 +439,36 @@ public class CrossImpactMatrix extends SquareMatrix{
             
             // Put greatest value first
             Collections.reverse(ordering);
+            
+            /* Assign positions for the items in ordering; 
+            if the sum for two consecutive items is the same, 
+            they get the same position value */
+            int position=1;
+            for(int i=0; i < ordering.size();i++) {
+                ordering.get(i).position = position;
+                if(i<ordering.size()-1 && !Objects.equals(ordering.get(i).sum, ordering.get(i+1).sum))
+                    position++;
+            }            
+            
+            
         }
 
 
         /**
          * Container for details of a <i>matrix</i> variable in an <tt>Ordering</tt>
          */
-        class VarDetails implements Comparable<VarDetails> {
+        class OrderingVariable implements Comparable<OrderingVariable> {
             public final Integer index;
             public final Double sum;
             public Integer position;
             
-            public VarDetails(int index, double sum) {
+            public OrderingVariable(int index, double sum) {
                 this.index = index;
                 this.sum = sum;
             }
             
             @Override
-            public int compareTo(VarDetails o) {
+            public int compareTo(OrderingVariable o) {
                 int comparison = this.sum.compareTo(o.sum);
                 return comparison != 0 ? comparison : this.index.compareTo(o.index);
             }            

@@ -47,6 +47,13 @@ public class MicmacMatrix extends CrossImpactMatrix {
     }
     
     
+    public Ordering MICMACordering(Orientation orientation) {
+        throw new UnsupportedOperationException();
+    }
+    
+    
+    
+    
     
     /**
      * Returns a info table about the MICMAC rankings of the variables.
@@ -54,6 +61,7 @@ public class MicmacMatrix extends CrossImpactMatrix {
      * @return <code>VarInfoTable</code> containing initial and MICMAC rankings of the matrix variables
      * @see MicmacMatrix#altMICMAC(exit.MicmacMatrix.Orientation) alternative implementation
      */
+    @Deprecated
     public VarInfoTable<String> MICMACranking(CrossImpactMatrix.Orientation orientation) {
         
         Ordering initialOrdering = new Ordering(this, orientation);
@@ -117,12 +125,10 @@ public class MicmacMatrix extends CrossImpactMatrix {
      * @return Squared matrix
      */
     public MicmacMatrix power() {
-        
         MicmacMatrix powerMatrix = new MicmacMatrix(this);
-        
         for (int row = 1; row <= varCount; row++) {
             for (int col = 1; col <= varCount; col++) {
-                powerMatrix.setValue(row, col, this.matrixMultiplication(row, col));
+                powerMatrix.setValue(row, col, this.multiplyEntries(row, col));
             }
         }
         return powerMatrix;
@@ -135,8 +141,8 @@ public class MicmacMatrix extends CrossImpactMatrix {
      * @return 
      */
     public MicmacMatrix iteratedPowerMatrix(Orientation orientation) {
-        AltOrdering initialOrdering = new AltOrdering(this, orientation);
-        AltOrdering powerOrdering = new AltOrdering(this.power(), orientation);
+        Ordering initialOrdering = new Ordering(this, orientation);
+        Ordering powerOrdering = new Ordering(this.power(), orientation);
         
         MicmacMatrix powerMatrix = new MicmacMatrix(this);
         
@@ -147,101 +153,14 @@ public class MicmacMatrix extends CrossImpactMatrix {
          * the ordering of the previous power matrix.
          */
         while(!initialOrdering.equals(powerOrdering)) {
-            initialOrdering = powerMatrix.getAltOrdering(orientation);
+            initialOrdering = powerMatrix.getOrdering(orientation);
             powerMatrix     = powerMatrix.power();            
-            powerOrdering   = powerMatrix.getAltOrdering(orientation);
+            powerOrdering   = powerMatrix.getOrdering(orientation);
         }
         
         return powerMatrix;
     }
     
-    
-    /**
-     * Returns a representation of the matrix where 
-     * only the presence of impacts are described.
-     * This transformation can be useful in MICMAC analysis.
-     * For all matrix values, the transformed matrix will contain
-     * <i>1</i> if the original value is greater or equal to <b>threshold</b>
-     * and <i>0</i> if the original value is smaller than <b>threshold</b>.
-     * @param threshold The value used in booleanization of the matrix values
-     * @return Matrix representing presence of impacts in a boolean fashion
-     */
-    public MicmacMatrix booleanImpactMatrix(double threshold) {
-        if(threshold <= 0) throw new IllegalArgumentException("Threshold value must be greater than 0");
-        if(threshold > this.matrixMax()) 
-            throw new IllegalStateException(String.format("Threshold value is %2.2f when the greatest value in the matrix is %2.2f", threshold, matrixMax()));
-        
-        MicmacMatrix transformedMatrix = new MicmacMatrix(this);
-        for (int i = 0; i < transformedMatrix.values.length ; i++) {
-            transformedMatrix.values[i] = Math.abs(transformedMatrix.values[i]) >= threshold ? 1 : 0;
-        }
-        return transformedMatrix;
-    }
-    
-    
-    /**
-     * Returns a representation of the matrix where 
-     * only the presence of impacts are described.
-     * 
-     * @param factor Values greater than or equal to factor * median will be transformed to 1,
-     * smaller will be transformed to 0.
-     * @return Matrix representing presence of impacts in a boolean fashion
-     */
-    public MicmacMatrix booleanImpactMatrix_byMedian(double factor) {
-        if(factor<=0) throw new IllegalArgumentException(String.format("Factor (value=%2.2f) must be greater than 0", factor));
-        double threshold = this.matrixMedian(true) * factor;
-        return booleanImpactMatrix(threshold);
-    }
-    
-    
-    /**
-     * Returns a representation of the matrix where 
-     * only the presence of impacts are described.
-     * This method returns a boolean impact matrix with desired
-     * density (share of entries with impacts per total entries).
-     * If density is <i>0.5</i>, about 50% of the entries will have value 1 
-     * indicating presence of impact and the rest will have value 0.
-     * @param density Desired share of matrix entries which should have an impact
-     * @return Matrix representing presence of impacts in a boolean fashion
-     */
-    public MicmacMatrix booleanImpactMatrix_byDensity(double density) {
-        if(density <= 0 || density >= 1) throw new IllegalArgumentException(String.format("Density value (%2.2f) must be in range ]0..1[", density));
-        
-        double[] sortedValues = this.values.clone();
-        for(int i=0;i<sortedValues.length;i++) 
-            sortedValues[i] = Math.abs(sortedValues[i]);
-        
-        double threshold = sortedValues[(int)(Math.round(sortedValues.length * density)-1)];
-        return booleanImpactMatrix(threshold);
-    }
-    
-    
-    
-    /**
-     * Tests if matrix is "boolean", i.e.contains only values 0 and 1.
-     * Boolean matrices are useful in MICMAC-style cross-impact analysis.
-     * @return 
-     */
-    public boolean isMatrixBoolean() {
-        for(Double val : values) {
-            if(!(val == 1 || val == 0)) return false;
-        }
-        return true;
-    }
-    
-    
-    
-    /**
-     * Returns the ordering of the variables in this matrix.
-     * Ordering of a variable is based on either the apparent influence
-     * (row sum) or the apparent dependency (column sum) in the cross-impact system.
-     * <b>Orientation</b> determines which ordering is returned.
-     * @param orientation <i>[byInfluence|byDependence]</i> 
-     * @return Ordering of the variables in this matrix
-     */
-    Ordering getOrdering(Orientation orientation) {
-        return new Ordering(this, orientation);
-    }
     
     
     /**
@@ -321,15 +240,7 @@ public class MicmacMatrix extends CrossImpactMatrix {
         }
         return rankings;
     }
-    
-    /**
-     * 
-     * @param orientation
-     * @return 
-     */
-    public AltOrdering getAltOrdering(Orientation orientation) {
-        return new AltOrdering(this, orientation);
-    }
+
     
     
     /**
@@ -339,225 +250,12 @@ public class MicmacMatrix extends CrossImpactMatrix {
      * @param col Index of col
      * @return Sum of pairwise products of entries in row <b>row</b> and column <b>col</b>.
      */
-    private double matrixMultiplication(int row, int col) {
+    private double multiplyEntries(int row, int col) {
         double result=0;
         for (int i = 1; i <= varCount; i++) {
             result += getValue(row, i) * getValue(i, col);
         }
         return result;
-    }
-    
-    
-    /**
-     * This class represents a MICMAC ordering.
-     * The orderings can be such that several variables in the matrix
-     * have the same position, if their "scores" 
-     * (row or column sums, depending on the orientation)
-     * are equal.
-     */
-    class Ordering {
-        
-        /** Matrix from which the ordering is derived */
-        public final MicmacMatrix matrix;
-        
-        /** The ordering */
-        public final List<Info> ordering;
-        
-        
-        /**
-         * Constructor for <code>Ordering</code>.
-         * @param matrix The matrix this ordering relates to
-         * @param orientation <i>[byInfluence|byDependence]</i> Is the ordering constructed based on influence or dependency?
-         */
-        public Ordering(MicmacMatrix matrix, Orientation orientation) {
-            if(matrix==null) throw new NullPointerException("matrix argument is null");
-            this.matrix = matrix;
-            this.ordering = new ArrayList<>();
-            
-            // Collect the values for the ordering
-            for(int i=1;i<=matrix.varCount;i++) {
-                this.ordering.add(new Info(i, orientation==Orientation.byInfluence ? matrix.rowSum(i, true) : matrix.columnSum(i, true)));
-            }
-            
-            // Sort the ordering by sums (row or column sums), greatest value first
-            Collections.sort(ordering);
-            
-            /* Assign positions for the items in ordering; 
-            if the sum for two consecutive items is the same, 
-            they get the same position value */
-            int position=1;
-            for(int i=0;i<ordering.size();i++) {
-                ordering.get(i).position = position;
-                if(i<ordering.size()-1 && !Objects.equals(ordering.get(i).sum, ordering.get(i+1).sum))
-                    position++;
-            }
-        }
-        
-        
-        /**
-         * Returns a comparator that compares ordering <code>Info</code> entries 
-         * by variable indices
-         * @return Comparator for {@link Ordering$info} based on variable indices
-         */
-        public Comparator<Info> getVariableIndexComparator() {
-            return (Info o1, Info o2) -> o1.index.compareTo(o2.index);
-        }        
-        
-        
-        /**
-         * Two <code>Ordering</code>s are equal if they have the same 
-         * variable index values and ordering position values 
-         * in the same array indices.
-         * @param o Compared object, only <code>Ordering</code>s can be equal
-         * @return <i>true</i> if the orderings have the same positions and indices in the same order
-         */
-        @Override
-        public boolean equals(Object o) {
-            if(o==null) return false;
-            if(!(o instanceof Ordering)) return false;
-            
-            final Ordering ord = (Ordering)o;
-            if(this.ordering.size() != ord.ordering.size()) return false;
-            for(int i=0;i<this.ordering.size();i++) {
-                if(this.ordering.get(i).position != ord.ordering.get(i).position) return false;
-                if(this.ordering.get(i).index != ord.ordering.get(i).index) return false;
-            }
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 5;
-            hash = 83 * hash + Objects.hashCode(this.matrix);
-            hash = 83 * hash + Objects.hashCode(this.ordering);
-            return hash;
-        }
-        
-        
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            for(Info info : this.ordering) {
-                sb.append(info.position).append(": ").append(this.matrix.getNameShort(info.index)).append(String.format(" (%2.2f)     ", info.sum));
-            }
-            return sb.append("\n").toString();
-        }
-        
-        /**
-         * This class holds the information for ordering of the matrix variables.
-         */
-        class Info implements Comparable<Info> {
-            public final Integer index;
-            public final Double sum;
-            public Integer position;
-
-            public Info(int index, double sum) {
-                this.index = index;
-                this.sum = sum;
-            }
-
-            @Override
-            public int compareTo(Info o) {
-                if(this.sum > o.sum) return -1;
-                if(this.sum < o.sum) return  1;
-                return this.index.compareTo(o.index);
-            }
-            
-        }
-        
-    }
-    
-    class AltOrdering {
-        
-        public final MicmacMatrix matrix;
-        public final Orientation orientation;
-        public final int[] positions;
-        public final double[] sums;
-        
-        
-        public AltOrdering(MicmacMatrix matrix, Orientation orientation) {
-            
-            if(matrix==null) throw new NullPointerException("matrix argument is null");
-            this.matrix = matrix;
-            this.orientation = orientation;
-            this.positions = new int[this.matrix.varCount];
-            this.sums = new double[this.matrix.varCount];
-            
-            for (int i = 0; i < this.matrix.varCount; i++) {
-                positions[i] = this.matrix.sumRanking(i+1, orientation);
-                sums[i] = this.orientation == Orientation.byInfluence ?
-                        this.matrix.rowSum(i+1, true) :
-                        this.matrix.columnSum(i+1, true);
-            }
-        }
-        
-        
-        /**
-         * Tests if the ordering is unambiguous:
-         * returns <i>true</i> if no ranking is shared.
-         * It would be ideal that the MICMAC iteration would 
-         * continue even after the first stable ranking, 
-         * if some rankings are shared between variables at that point.
-         * It is however possible that iteration will not ever result
-         * in an unambiguous ranking 
-         * and the termination condition for the iteration
-         * is never reached.
-         * This will also happen if the double values in the iteratively
-         * squared matrix overflow to infinity, causing them all to rank equally.
-         * @return 
-         */
-        public boolean isUnambiguous() {
-            return !isAmbiguous();
-//            List<Integer> usedPositions = new ArrayList<>();
-//            for(Integer i : this.positions) {
-//                if(usedPositions.contains(i)) return false;
-//                usedPositions.add(i);
-//            }
-//            return true;
-        }
-        
-        public boolean isAmbiguous() {
-            
-            List<Integer> usedPositions = new ArrayList<>();
-            for(Integer i : this.positions) {
-                if(usedPositions.contains(i)) return true;
-                usedPositions.add(i);
-            }
-            return false;            
-        }
-        
-        
-        @Override
-        public boolean equals(Object o) {
-            if(! (o instanceof AltOrdering)) return false;
-            AltOrdering ao = (AltOrdering) o;
-            
-            if(!ao.orientation.equals(this.orientation)) return false;
-            if(!Arrays.equals(ao.positions, this.positions)) return false;
-            
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 3;
-            hash = 89 * hash + Objects.hashCode(this.orientation);
-            hash = 89 * hash + Arrays.hashCode(this.positions);
-            return hash;
-        }
-        
-        
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            for(int i=0;i<positions.length;i++) {
-                sb.append(String.format("%s: %d (%2.1f)", this.matrix.getNameShort(i+1), positions[i], sums[i] ));
-                if(i < positions.length) sb.append(", ");
-            }
-            return sb.toString();
-        }
-        
-        
     }
     
     

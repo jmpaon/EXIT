@@ -224,7 +224,8 @@ public class SquareMatrix {
     }
     
     /**
-     * @param absolute If <i>true</i> maximum of absolute values is returned
+     * @param absolute If <i>true</i> maximum of absolute values is returned; 
+     * else maximum of values is returned
      * @return The maximum value or maximum absolute value in the matrix
      */
     public double matrixMax(boolean absolute) {
@@ -512,6 +513,13 @@ public class SquareMatrix {
         return true;
     }
 
+    /**
+     * Returns a copy of this <tt>SquareMatrix</tt>
+     * @return 
+     */
+    public SquareMatrix copy() {
+        return new SquareMatrix(this.varCount, this.names.clone(), this.values.clone());
+    }
     
     @Override
     public String toString() {
