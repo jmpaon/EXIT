@@ -145,7 +145,7 @@ public class CrossImpactMatrix extends SquareMatrix{
     public void lock() {
         this.isLocked = true;
     }
-
+    
     
     /**
      * Returns an importanceValue matrix for the impact matrix.
