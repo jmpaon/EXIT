@@ -47,76 +47,15 @@ public class MicmacMatrix extends CrossImpactMatrix {
     }
     
     
-    public Ordering MICMACordering(Orientation orientation) {
-        throw new UnsupportedOperationException();
-    }
-    
-    
-    
-    
-    
     /**
-     * Returns a info table about the MICMAC rankings of the variables.
-     * @param orientation [byInfluence|byDependence]
-     * @return <code>VarInfoTable</code> containing initial and MICMAC rankings of the matrix variables
-     * @see MicmacMatrix#altMICMAC(exit.MicmacMatrix.Orientation) alternative implementation
+     * Returns the MICMAC ordering
+     * @param orientation MICMAC ordering by influence or dependence?
+     * @return Ordering
      */
-    @Deprecated
-    public VarInfoTable<String> MICMACranking(CrossImpactMatrix.Orientation orientation) {
-        
-        Ordering initialOrdering = new Ordering(this, orientation);
-        
-        /* Place initial ordering to the iterated ordering variable */
-        Ordering iterOrdering = new Ordering(this, orientation);
-        
-        /* Place the first power matrix in the iterated matrix variable */
-        MicmacMatrix iterMatrix = this.power();
-        
-        int iter = 0;
-        
-        /* 
-        System.out.println("MICMAC calculation, " + orientation.toString());
-        System.out.println("MICMAC iteration 0 (Initial matrix)");
-        System.out.println(this);
-        System.out.println(this.getOrdering(orientation));
-        */
-        
-        while(true) {
-            
-            /*
-            System.out.println("MICMAC iteration " + ++iter);
-            System.out.println(iterMatrix);
-            System.out.println(iterMatrix.getOrdering(orientation));
-            */
-            
-            /* Stop MICMAC iteration if the previous ordering is equal to current power matrix' ordering:
-            This means that the ordering has become stable and the MICMAC end condition has been reached. */
-            if(iterOrdering.equals(iterMatrix.getOrdering(orientation))) break;
-            
-            /* Save this iteration's ordering */
-            iterOrdering = new Ordering(iterMatrix, orientation);
-            
-            /* Iterate to the next power matrix */
-            iterMatrix = iterMatrix.power();
-            
-            
-        }
-        
-        VarInfoTable<String> rankings = new VarInfoTable<>(String.format("Initial ranking and MICMAC ranking of variables %s", orientation.toString()), Arrays.asList("Initial", "MICMAC"));
-        
-        Collections.sort(initialOrdering.ordering, initialOrdering.getVariableIndexComparator());
-        Collections.sort(iterOrdering.ordering, iterOrdering.getVariableIndexComparator());
-        
-        for(int i = 0; i < initialOrdering.ordering.size(); i++) {
-            String varName = this.getNamePrint(i+1);
-            String initPos   = String.valueOf(initialOrdering.ordering.get(i).position);
-            String micmacPos = String.valueOf(iterOrdering.ordering.get(i).position);
-            rankings.put(varName, Arrays.asList(initPos, micmacPos));
-        }
-        
-        return rankings;
-        
+    public Ordering MICMACordering(Orientation orientation) {
+        return iteratedPowerMatrix(orientation).getOrdering(orientation);
     }
+    
     
     /**
      * Multiplies the matrix by itself (resulting in power matrix).
@@ -141,7 +80,8 @@ public class MicmacMatrix extends CrossImpactMatrix {
      * @return 
      */
     public MicmacMatrix iteratedPowerMatrix(Orientation orientation) {
-        Ordering initialOrdering = new Ordering(this, orientation);
+        
+        Ordering currentOrdering = new Ordering(this, orientation);
         Ordering powerOrdering = new Ordering(this.power(), orientation);
         
         MicmacMatrix powerMatrix = new MicmacMatrix(this);
@@ -152,96 +92,18 @@ public class MicmacMatrix extends CrossImpactMatrix {
          * Iteration is stopped when the ordering isn't different from
          * the ordering of the previous power matrix.
          */
-        while(!initialOrdering.equals(powerOrdering)) {
-            initialOrdering = powerMatrix.getOrdering(orientation);
+        while(!currentOrdering.equals(powerOrdering)) {
+            currentOrdering = powerMatrix.getOrdering(orientation);
             powerMatrix     = powerMatrix.power();            
             powerOrdering   = powerMatrix.getOrdering(orientation);
+            
+            System.out.println(powerMatrix);
+            
         }
         
         return powerMatrix;
     }
-    
-    
-    
-    /**
-     * Returns the ranking of a variable in an ordering of the variables
-     * in the matrix by row or column sum.
-     * <b>orientation</b> determines whether row or column sum is used.
-     * For example, if the variable has 2 variables that have a 
-     * higher absolute row/column sum, the sumRanking for that variable will be
-     * 3 (2+1). The variable with the highest row/column sum will have ranking 1.
-     * @param varIndex Index of the variable for which the sumRanking is calculated
-     * @param orientation <i>[byInfluence|byDependence]</i> 
-     * if <i>byInfluence</i>, row sums are used;
-     * if <i>byDependence</i>, column sums are used;
-     * @return the ranking of the variable with index <b>varIndex</b>
-     */
-    public int sumRanking(int varIndex, Orientation orientation) {
-        if(varIndex < 1 || varIndex > this.varCount) 
-            throw new IndexOutOfBoundsException(String.format("varIndex %d is out of bounds (varCount %d)", varIndex, this.varCount));
-        
-        double sum = orientation == Orientation.byInfluence ? rowSum(varIndex, true) : columnSum(varIndex, true);
-        int greaterCount=0;
-        
-        for(int i=1 ; i<=this.varCount ; i++) {
-            double comparedSum = orientation == Orientation.byInfluence ? rowSum(i, true) : columnSum(i, true);
-            if(comparedSum > sum) greaterCount++;
-        }
-        
-        return greaterCount+1;
-        
-    }
-    
-    
-    /**
-     * Returns the initial ranking
-     * and the MICMAC ranking
-     * of the variables in this matrix
-     * in a <code>VarInfoTable</code>.
-     * Variable with rank 1 has the highest score
-     * by influence/dependency, rank 2 has the second highest score etc.
-     * @param orientation <i>[byInfluence|byDependence]</i> is the ranking based on row or column sums?
-     * Summing absolute row values gives a score indicating influence in the cross-impact system,
-     * summing absolute column values gives a score indicating dependency.
-     * @return Initial and MICMAC rankings of the matrix variables
-     * @see MicmacMatrix#MICMACranking(exit.MicmacMatrix.Orientation) Alternative implementation
-     */
-    public VarInfoTable altMICMAC(Orientation orientation) {
-        AltOrdering ord = new AltOrdering(this, orientation);
-        MicmacMatrix powerMatrix = this.power();
-        
-        /**
-         * Square the matrix and derive a new ordering from that 
-         * as long as the ordering changes.
-         * Iteration is stopped when the ordering isn't different from
-         * the ordering of the previous power matrix.
-         */
-        while(! ord.equals(powerMatrix.getAltOrdering(orientation))  ) {
-            System.out.println(powerMatrix);
-            System.out.println(ord);
-            System.out.println(ord.isUnambiguous());
-            
-            ord = powerMatrix.getAltOrdering(orientation);
-            powerMatrix = powerMatrix.power();
-        }
-        
-        VarInfoTable<Integer> rankings = new VarInfoTable<>(
-                String.format("Initial ranking and MICMAC ranking of variables %s (alternative method):", orientation), 
-                Arrays.asList("Initial","MICMAC")
-        );
-        
-        for(int i = 0; i < ord.positions.length; i++) {
-            String varname = this.getNameShort(i+1);
-            int micmacpos = ord.positions[i];
-            int initpos = this.getAltOrdering(orientation).positions[i];
-            
-            rankings.put(varname, Arrays.asList(initpos, micmacpos));
-            
-        }
-        return rankings;
-    }
 
-    
     
     /**
      * Sums the products of each entry in <b>row</b> and corresponding entry in <b>col</b>.

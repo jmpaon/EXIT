@@ -67,14 +67,43 @@ public class EXIT {
         d[3][2] = 0;
         d[3][3] = 3;
         String[] nam = {"mem","moo","mou","mau"};
+
+        double d2[][] = new double[4][4];
+        d2[0][0] = 0;
+        d2[0][1] = 1;
+        d2[0][2] = 3;
+        d2[0][3] = -1;
+        d2[1][0] = -3;
+        d2[1][1] = 0;
+        d2[1][2] = -4;
+        d2[1][3] = 3;
+        d2[2][0] = -3;
+        d2[2][1] = 3;
+        d2[2][2] = 0;
+        d2[2][3] = 1;
+        d2[3][0] = 3;
+        d2[3][1] = 1;
+        d2[3][2] = 4;
+        d2[3][3] = 0;
+        String[] nam2 = {"mem","moo","mou","mau"};
         
         SquareMatrix sm = new SquareMatrix(nam, d);
+        SquareMatrix sm2 = new SquareMatrix(nam2, d2);
         CrossImpactMatrix cm = new CrossImpactMatrix(sm);
+        CrossImpactMatrix cm2 = new CrossImpactMatrix(sm2);
         CrossImpactMatrix.Ordering ord = cm.getOrdering(CrossImpactMatrix.Orientation.INFLUENCE);
-        System.out.println(ord);
-        System.out.println(cm.scale(1).toString());
+        CrossImpactMatrix.Ordering ord2 = cm2.getOrdering(CrossImpactMatrix.Orientation.INFLUENCE);
         
-        // System.out.println(sm.toString());
+        System.out.println(ord);
+        System.out.println(ord2);
+        System.out.println(ord2.compareTo(ord));
+        
+        MicmacMatrix mmm = new MicmacMatrix(cm2);
+        System.out.println(cm2);
+        // mmm = new MicmacMatrix(mmm.booleanize());
+        System.out.println(mmm.iteratedPowerMatrix(CrossImpactMatrix.Orientation.DEPENDENCE));
+        
+        
     }
     
     public static void new_exit_analysis(String[] args) {

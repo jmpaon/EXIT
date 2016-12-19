@@ -381,22 +381,40 @@ public class CrossImpactMatrix extends SquareMatrix{
         
         
         /**
-         * Returns a distance measure between two orderings.
-         * @param o Ordering to compare this ordering against
-         * @return Distance measure; 0 if the orderings are identical
+         * Compares two orderings. 
+         * The variables are compared itemwise: 
+         * The variable indices at a position are unequal, their comparison is returned.
+         * Otherwise the variable indices at next ordering position are compared.
+         * @param o Compared ordering.
+         * @return int: -1 for smaller, 0 for equal, 1 greater.
          */
         @Override
         public int compareTo(Ordering o) {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            for(int i=1;i<=this.ordering.size();i++) {
+                if(o.ordering.size() < i) return 1;
+                int indexComparison = ordering.get(i-1).compareTo(o.ordering.get(i-1));
+                if (indexComparison != 0) return indexComparison;
+            }
+            return this.ordering.size() == o.ordering.size() ?  0 : -1; 
+            
         }
+
+        /**
+         * Returns a distance measure between two orderings.
+         * @param o Ordering to compare this ordering against
+         * @return Distance measure; 0 if the orderings are identical
+         */        
+        public double distance(Ordering o) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+        
         
         @Override
         public boolean equals(Object o) {
             if (o == this) return true;
             if (!(o instanceof Ordering)) return false;
             Ordering ord = (Ordering)o;
-            return this.matrix == ord.matrix &&
-                    this.orientation == ord.orientation &&
+            return this.orientation == ord.orientation &&
                     Objects.equals(this.ordering, ord.ordering);
         }
 
