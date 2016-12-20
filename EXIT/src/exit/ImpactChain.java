@@ -55,7 +55,7 @@ public class ImpactChain implements Comparable<ImpactChain>  {
             // Test that indices in chainMembers are present in matrix of this impactChain
             for(Integer i : chainMembers) {
                 if(i < 0 || i > matrix.getVarCount()) {
-                    throw new IndexOutOfBoundsException("Chain member %d not present in impact matrix");
+                    throw new IndexOutOfBoundsException("Chain member " +chainMembers.get(i)+ " not present in impact matrix");
                 }
             }
             this.chainMembers = chainMembers;
