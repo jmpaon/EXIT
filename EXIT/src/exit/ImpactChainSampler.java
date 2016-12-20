@@ -34,13 +34,15 @@ public class ImpactChainSampler {
     }
     
     
-    public EXITImpactMatrix testSampling(int sampleSize) {
-        EXITImpactMatrix im = matrix.copy().flush();
+    public SquareMatrix testSampling(int sampleSize) {
+        SquareMatrix im = new SquareMatrix(matrix.copy().flush());
         for(int impactor=1;impactor<=matrix.varCount;impactor++) {
             for(int impacted=1;impacted<=matrix.varCount;impacted++) {
                 if (impactor != impacted) {
                     
-                    
+                    double sampledValue = 999; // ???
+                    double currentValue = im.getValue(impactor, impacted);
+                    im.setValue(impactor, impacted, currentValue + sampledValue );
                     
                     
                 }
@@ -48,6 +50,13 @@ public class ImpactChainSampler {
         }
         
         //List<ImpactChain> sample = sampleChains(sampleSize, sampleSize, sampleSize, sampleSize)
+    }
+    
+    double estimateSummedImpact(int impactor, int impacted, int sampleSize) {
+        double summedImpact=0;
+        for(int length=2;length<=matrix.varCount;length++) {
+            
+        }
     }
     
     double sampleAverage(List<ImpactChain> sample) {
