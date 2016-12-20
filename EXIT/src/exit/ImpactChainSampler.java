@@ -8,6 +8,7 @@ package exit;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 
 /**
  *
@@ -32,10 +33,40 @@ public class ImpactChainSampler {
         throw new UnsupportedOperationException();
     }
     
+    
+    public EXITImpactMatrix testSampling(int sampleSize) {
+        EXITImpactMatrix im = matrix.copy().flush();
+        for(int impactor=1;impactor<=matrix.varCount;impactor++) {
+            for(int impacted=1;impacted<=matrix.varCount;impacted++) {
+                if (impactor != impacted) {
+                    
+                    
+                    
+                    
+                }
+            }
+        }
+        
+        //List<ImpactChain> sample = sampleChains(sampleSize, sampleSize, sampleSize, sampleSize)
+    }
+    
+    double sampleAverage(List<ImpactChain> sample) {
+        double sum=0;
+        for(ImpactChain i : sample) {
+            sum += i.impact();
+        }
+        return sum / sample.size();
+    }
+    
+    
+    
+    
     public List<ImpactChain> sampleChains(int impactorIndex, int impactedIndex, int length, int count) {
-        
-        
-        throw new UnsupportedOperationException();
+        List<ImpactChain> sample = new LinkedList<ImpactChain>();
+        while(count-- > 0) {
+            sample.add(generateChain(impactorIndex, impactedIndex, length));
+        }
+        return sample;
     }
     
     public ImpactChain generateChain(int impactorIndex, int impactedIndex, int length) {
@@ -75,7 +106,7 @@ public class ImpactChainSampler {
     
     private boolean indexIsValid(int index) {
         return index > 0 && index <= matrix.varCount;
-    }    
+    }
     
     
 }

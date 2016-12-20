@@ -520,6 +520,11 @@ public class SquareMatrix {
         return new SquareMatrix(this.varCount, this.names.clone(), this.values.clone());
     }
     
+    public SquareMatrix flush() {
+        return new SquareMatrix(this.varCount, this.names.clone());
+    }
+    
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
