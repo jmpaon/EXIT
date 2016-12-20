@@ -101,7 +101,7 @@ public class EXIT {
         MicmacMatrix mmm = new MicmacMatrix(cm2);
         System.out.println(cm2);
         // mmm = new MicmacMatrix(mmm.booleanize());
-        System.out.println(mmm.iteratedPowerMatrix(CrossImpactMatrix.Orientation.DEPENDENCE));
+        System.out.println(mmm.MICMACiteration(CrossImpactMatrix.Orientation.DEPENDENCE));
         
         
     }

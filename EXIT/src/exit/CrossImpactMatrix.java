@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -188,7 +189,7 @@ public class CrossImpactMatrix extends SquareMatrix{
     
     /**
      * Booleanizes (see {@link CrossImpactMatrix#booleanize(double)}) 
-     * using 0 as the threshold value
+     * using 1 as the threshold value
      * @return 
      */
     public CrossImpactMatrix booleanize() {
@@ -208,7 +209,7 @@ public class CrossImpactMatrix extends SquareMatrix{
         assert threshold > 0 : "Threshold value is less than or equal to 0";
         double[] booleanizedValues = this.values.clone();
         for(int i=0;i<booleanizedValues.length;i++) {
-            booleanizedValues[i] = Math.abs(booleanizedValues[i]) >= threshold ? 1 : 0;
+            booleanizedValues[i] = Math.abs(booleanizedValues[i]) > threshold ? 1 : 0;
         }
         return new CrossImpactMatrix(varCount, names.clone(), booleanizedValues, true);
     }
@@ -363,6 +364,8 @@ public class CrossImpactMatrix extends SquareMatrix{
     }
     
     
+    
+    
     /**
      * This class represents an ordering of the matrix variables.
      */
@@ -392,7 +395,13 @@ public class CrossImpactMatrix extends SquareMatrix{
         public int compareTo(Ordering o) {
             for(int i=1;i<=this.ordering.size();i++) {
                 if(o.ordering.size() < i) return 1;
-                int indexComparison = ordering.get(i-1).compareTo(o.ordering.get(i-1));
+
+                OrderingVariable o1 = this.ordering.get(i-1);
+                OrderingVariable o2 = o.ordering.get(i-1);
+                int indexComparison = Objects.compare(o1, o2, getComparator_index());
+                
+
+
                 if (indexComparison != 0) return indexComparison;
             }
             return this.ordering.size() == o.ordering.size() ?  0 : -1; 
@@ -408,14 +417,34 @@ public class CrossImpactMatrix extends SquareMatrix{
             throw new UnsupportedOperationException("Not supported yet.");
         }
         
+
+        /**
+         * Tests whether this ordering is identical to <b>o</b>.
+         * Orderings are identical if they have the same number of variables
+         * and 
+         * @param o Ordering tested for identicalness
+         * @return <i>true</i> if orderings are identical, false
+         */
+        public boolean orderingIsIdentical(Ordering o) {
+            return this.compareTo(o) == 0;
+        }
+        
+
+
         
         @Override
         public boolean equals(Object o) {
             if (o == this) return true;
-            if (!(o instanceof Ordering)) return false;
+            if (!(o instanceof Ordering)) { return false; }
+            
             Ordering ord = (Ordering)o;
+
+            
             return this.orientation == ord.orientation &&
-                    Objects.equals(this.ordering, ord.ordering);
+                    this.compareTo(ord) == 0;
+
+
+
         }
 
         @Override
@@ -439,7 +468,6 @@ public class CrossImpactMatrix extends SquareMatrix{
          * according to the <i>orientation</i> of this <tt>Ordering</tt>.
          */
         private void determineOrdering() {
-            List<OrderingVariable> sorted = new ArrayList<>();
             
             // Collect the values for the ordering
             for(int i=1;i<=matrix.varCount;i++) {
@@ -453,7 +481,7 @@ public class CrossImpactMatrix extends SquareMatrix{
             }
             
             // Sort the ordering by sums (row or column sums)
-            Collections.sort(ordering);
+            Collections.sort(ordering, this.getComparator_sum());
             
             // Put greatest value first
             Collections.reverse(ordering);
@@ -470,12 +498,33 @@ public class CrossImpactMatrix extends SquareMatrix{
             
             
         }
+        
+        public Comparator<OrderingVariable> getComparator_sum() {
+            return (OrderingVariable a,OrderingVariable b) -> { return a.sum.compareTo(b.sum); };
+        }
+        
+        public Comparator<OrderingVariable> getComparator_index() {
+            return (OrderingVariable a,OrderingVariable b) -> { return a.index.compareTo(b.index); };            
+        }
+        
+        /**
+         * Comparator that compares <tt>OrderingVariable</tt> sums first,
+         * and if they are equal, returns the <tt>compare</tt> result
+         * for indices.
+         * @return int
+         */
+        public Comparator<OrderingVariable> getComparator_sum_index() {
+            return (OrderingVariable a, OrderingVariable b) -> {
+                int sumComparison = a.sum.compareTo(b.sum);
+                return sumComparison != 0 ? sumComparison : a.index.compareTo(b.index);
+            };
+        }
 
 
         /**
          * Container for details of a <i>matrix</i> variable in an <tt>Ordering</tt>
          */
-        class OrderingVariable implements Comparable<OrderingVariable> {
+        public class OrderingVariable {
             public final Integer index;
             public final Double sum;
             public Integer position;
@@ -484,12 +533,6 @@ public class CrossImpactMatrix extends SquareMatrix{
                 this.index = index;
                 this.sum = sum;
             }
-            
-            @Override
-            public int compareTo(OrderingVariable o) {
-                int comparison = this.sum.compareTo(o.sum);
-                return comparison != 0 ? comparison : this.index.compareTo(o.index);
-            }            
             
         }
         

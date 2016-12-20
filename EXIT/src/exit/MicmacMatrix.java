@@ -53,7 +53,7 @@ public class MicmacMatrix extends CrossImpactMatrix {
      * @return Ordering
      */
     public Ordering MICMACordering(Orientation orientation) {
-        return iteratedPowerMatrix(orientation).getOrdering(orientation);
+        return MICMACiteration(orientation).getOrdering(orientation);
     }
     
     
@@ -75,11 +75,18 @@ public class MicmacMatrix extends CrossImpactMatrix {
     
     
     /**
-     * 
-     * @param orientation
-     * @return 
+     * Squares the MICMAC matrix iteratively 
+     * and compares the ordering of the power matrix to the previous matrix
+     * until the ordering of variables no longer changes.
+     * This stable ordering is the MICMAC ordering.
+     * In MICMAC analysis the original ordering of the variables 
+     * is compared to the MICMAC ordering, to show how the
+     * ranking of variables by influence or dependency changes 
+     * as indirect or higher-order interactions are taken into account.
+     * @param orientation Are variables ranked by <b>influence</b> or <b>dependence</b>?
+     * @return The iteratively squared matrix with the MICMAC-stable variable ordering
      */
-    public MicmacMatrix iteratedPowerMatrix(Orientation orientation) {
+    public MicmacMatrix MICMACiteration(Orientation orientation) {
         
         Ordering currentOrdering = new Ordering(this, orientation);
         Ordering powerOrdering = new Ordering(this.power(), orientation);
@@ -92,7 +99,13 @@ public class MicmacMatrix extends CrossImpactMatrix {
          * Iteration is stopped when the ordering isn't different from
          * the ordering of the previous power matrix.
          */
+        
+            
         while(!currentOrdering.equals(powerOrdering)) {
+            System.out.println("Current ordering " + currentOrdering.toString());
+            System.out.println("Power ordering " + powerOrdering.toString());
+            System.out.println(currentOrdering.equals(powerOrdering));
+            
             currentOrdering = powerMatrix.getOrdering(orientation);
             powerMatrix     = powerMatrix.power();            
             powerOrdering   = powerMatrix.getOrdering(orientation);
@@ -100,6 +113,12 @@ public class MicmacMatrix extends CrossImpactMatrix {
             System.out.println(powerMatrix);
             
         }
+        
+        System.out.println("MEM");
+        System.out.println("Current ordering " + currentOrdering.toString());
+        System.out.println("Power ordering " + powerOrdering.toString());        
+        System.out.println("cOrd eq pOrd: " + currentOrdering.equals(powerOrdering));
+        
         
         return powerMatrix;
     }
