@@ -95,18 +95,34 @@ public class EXIT {
         d2[4][1] = 4;
         d2[4][2] = -2;
         d2[4][3] = -4;
-        d2[4][4] = 3;
+        d2[4][4] = 0;
         String[] nam2 = {"mem","moo","mou","mau", "muu"};
         
-        SquareMatrix sm = new SquareMatrix(nam, d);
         SquareMatrix sm2 = new SquareMatrix(nam2, d2);
+        
         EXITImpactMatrix eim = new EXITImpactMatrix(sm2, 4);
         ImpactChainSampler s = new ImpactChainSampler(eim);
-        ImpactChain ic = s.generateChain(1, 4, 4);
+        
+        System.out.println("Input matrix");
         System.out.println(eim);
-        System.out.println(ic);
         
+        System.out.println("Summed impact matrix, pruning");
+        System.out.println(eim.summedImpactMatrix(0.0000000000000001));
         
+        System.out.println("Sample mean 1->5: " + s.sampleMean(s.sampleChains(1, 5, 5, 100000)));
+        System.out.println("Sample mean 1->5, divided by 6: " + s.sampleMean(s.sampleChains(1, 5, 5, 100000))/ 6);
+        System.out.println("Estimated summed impact: " + s.estimateSummedImpact(1, 4, 200000));
+        
+        System.out.println(s.testSampling(30000));
+        
+        //System.out.println("Pruning strategy");
+        //System.out.println(eim.summedImpactMatrix(0.00000000001).normalize());
+        
+        //System.out.println("Sampling strategy run 1");
+        //System.out.println(s.testSampling(10000).normalize());
+        
+        //System.out.println("Sampling strategy run 2");
+        //System.out.println(s.testSampling(100000).normalize());
         
         
     }

@@ -25,41 +25,40 @@ public class ImpactChainSampler {
     
     
     
-    public List<ImpactChain> generateChains(int impactorIndex, int impactedIndex, int length) {
-        assert length < matrix.varCount - 2;
-        
-        
-        
-        throw new UnsupportedOperationException();
-    }
+
     
     
-    public SquareMatrix testSampling(int sampleSize) {
-        SquareMatrix im = new SquareMatrix(matrix.copy().flush());
+    public CrossImpactMatrix testSampling(int sampleSize) {
+        CrossImpactMatrix im = new CrossImpactMatrix(matrix.copy().flush());
         for(int impactor=1;impactor<=matrix.varCount;impactor++) {
             for(int impacted=1;impacted<=matrix.varCount;impacted++) {
                 if (impactor != impacted) {
-                    
-                    double sampledValue = 999; // ???
-                    double currentValue = im.getValue(impactor, impacted);
-                    im.setValue(impactor, impacted, currentValue + sampledValue );
-                    
-                    
+                    im.setValue(impactor, impacted, estimateSummedImpact(impactor, impacted, sampleSize));
                 }
             }
         }
-        
-        //List<ImpactChain> sample = sampleChains(sampleSize, sampleSize, sampleSize, sampleSize)
+        return im;
     }
     
+
     double estimateSummedImpact(int impactor, int impacted, int sampleSize) {
         double summedImpact=0;
-        for(int length=2;length<=matrix.varCount;length++) {
-            
+        for(int length=2;length<=matrix.varCount-2;length++) {
+            double sampledMean = sampleMean(sampleChains(impactor, impacted, length, sampleSize));
+            double chainCount = EXITImpactMatrix.approximateChainCountBetweenTwo(matrix.varCount, length);
+            summedImpact += sampledMean * chainCount;
         }
+        return summedImpact;
     }
     
-    double sampleAverage(List<ImpactChain> sample) {
+    double estimateImpactOfChains(int impactor, int impacted, int length, int sampleSize) {
+        double sampledMean = sampleMean(sampleChains(impactor, impacted, length, sampleSize));
+        double chainCount = EXITImpactMatrix.approximateChainCountBetweenTwo(matrix.varCount, length);
+        return 999; // FIXME
+    }
+    
+    
+    double sampleMean(List<ImpactChain> sample) {
         double sum=0;
         for(ImpactChain i : sample) {
             sum += i.impact();
@@ -68,28 +67,26 @@ public class ImpactChainSampler {
     }
     
     
-    
-    
-    public List<ImpactChain> sampleChains(int impactorIndex, int impactedIndex, int length, int count) {
+    List<ImpactChain> sampleChains(int impactorIndex, int impactedIndex, int length, int count) {
         List<ImpactChain> sample = new LinkedList<ImpactChain>();
         while(count-- > 0) {
-            sample.add(generateChain(impactorIndex, impactedIndex, length));
+            sample.add(randomChain(impactorIndex, impactedIndex, length));
         }
         return sample;
     }
     
-    public ImpactChain generateChain(int impactorIndex, int impactedIndex, int length) {
+    ImpactChain randomChain(int impactorIndex, int impactedIndex, int length) {
         assert indexIsValid(impactorIndex);
         assert indexIsValid(impactedIndex);
         assert length > 1;
-        assert length < matrix.varCount-2;
+        assert length <= matrix.varCount: "length is " + length;
         length -= 2;
         List<Integer> chainMembers = new ArrayList<>();
         List<Integer> l = availableIndices(impactorIndex, impactedIndex);
         int i=0;
         Collections.shuffle(l);
         chainMembers.add(impactorIndex);
-        while(length-- > 0) chainMembers.add(l.get(i++));
+        while(length-- > 0) {chainMembers.add(l.get(i++));}
         chainMembers.add(impactedIndex);
         return new ImpactChain(matrix, chainMembers);
     }

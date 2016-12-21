@@ -245,6 +245,22 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
     }
     
     
+    public static double approximateChainCount(int varCount) {
+        int n = 0;
+        double count = 0;
+        while(n <= varCount-2) {
+            count += (factorial(varCount) / factorial(n));
+            n++;
+        }
+        return count;        
+    }
+    
+    public static double approximateChainCountBetweenTwo(int varCount, int length) {
+        assert length <= varCount-2 : "length is " + length;
+        if (length > varCount-2) length = varCount-2;
+        return factorial(varCount - length) / factorial((varCount-2)-length);
+    }
+    
     /**
      * Calculates the approximate number of possible impact chains
      * that can be formed from this cross-impact matrix.
@@ -253,14 +269,15 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
      * so they aren't included in the count.
      * @return The number of possible impact chains in this matrix.
      */
-    private double approximateChainCount() {
-        int n = 0;
-        double count = 0;
-        while(n <= this.varCount-2) {
-            count += (factorial(varCount) / factorial(n));
-            n++;
-        }
-        return count;
+    double approximateChainCount() {
+        return approximateChainCount(this.varCount);
+//        int n = 0;
+//        double count = 0;
+//        while(n <= this.varCount-2) {
+//            count += (factorial(varCount) / factorial(n));
+//            n++;
+//        }
+//        return count;
     }
     
     /**
@@ -268,7 +285,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
      * @param n 
      * @return Factorial of <i>n</i>.
      */
-    private double factorial(int n) {
+    private static double factorial(int n) {
         if(n == 1 || n == 0) return 1;
         return n * factorial(n-1);
     }
