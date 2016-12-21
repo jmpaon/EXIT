@@ -442,6 +442,11 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
     public EXITImpactMatrix copy() {
         return new EXITImpactMatrix(maxImpact, varCount, onlyIntegers, this.names.clone(), this.values.clone());
     }
+    
+    @Override
+    public EXITImpactMatrix flush() {
+        return new EXITImpactMatrix(maxImpact, varCount, onlyIntegers, names.clone());
+    }
 
     
 }

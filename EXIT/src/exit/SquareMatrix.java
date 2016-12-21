@@ -80,6 +80,14 @@ public class SquareMatrix {
     public SquareMatrix(String[] names, double[][] values) {
         this(values.length, names, flattenArray(values));
     }
+    
+    /**
+     * 
+     * @param matrix 
+     */
+    public SquareMatrix(SquareMatrix matrix) {
+        this(matrix.varCount, matrix.names.clone(), matrix.values.clone());
+    }
 
     
     /**
@@ -519,6 +527,11 @@ public class SquareMatrix {
     public SquareMatrix copy() {
         return new SquareMatrix(this.varCount, this.names.clone(), this.values.clone());
     }
+    
+    public SquareMatrix flush() {
+        return new SquareMatrix(this.varCount, this.names.clone());
+    }
+    
     
     @Override
     public String toString() {
