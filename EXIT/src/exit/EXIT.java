@@ -31,7 +31,7 @@ public class EXIT {
      */
     public static void main(String[] args)  {
         
-        test_new_features();
+        //test_new_features();
         
         /* New standard calculation */
         // new_exit_analysis(args);
@@ -43,8 +43,12 @@ public class EXIT {
         //JL_exit(3500);
         
         /* Test features */
-        //test_features(args);
+        test_features(args);
     
+    }
+    
+    public static void test_new_strategy() {
+        
     }
     
     
@@ -148,7 +152,7 @@ public class EXIT {
                 output.println(inputMatrix.importanceMatrix().round().scale(arguments.maxImpact.intValue()));
                 
                 output.println("Input matrix driver-driven report:");
-                output.println(new EXITImpactMatrix(inputMatrix.scale(1)).driverDriven().toString());
+                
             }
             
 
@@ -367,34 +371,26 @@ public class EXIT {
     private static void test_features(String[] args) {
         try {
             Reporter.requiredReportingLevel = 0;
-            String[] arggs = {"src/exit/eltran1.csv", "-max", "5", "-t", "0.00000000001" };
+            String[] arggs = {"/home/juha/Documents/studio/EXIT/EXIT/src/exit/eltran1.csv", "-max", "5", "-t", "0.00000000001" };
             EXITarguments arguments = new EXITarguments(arggs);
+            
+            
             
             InputFileReader ifr = new InputFileReader();
             EXITImpactMatrix directImpactMatrix = ifr.readInputFile(arguments);
-//            double mem[] = {0,1,0,1,0,1,1,0,0};
-//            String names[] = {"A","B","C"};
-//            double mem2[] = {0,3,-1,-2,1,-1,0,3,-3,2,3,2,0,2,-2,1,0,-1,0,2,-3,-2,0,-1,0};
-//            String names2[] = {"A","B","C","D","E"};
-//            double mem3[] = {0,3,0,4,0,0,4,0,1,2,0,3,4,0,4,0};
-//            String names3[] = {"A","B","C","D"};
-            //double article_data[] = {0,-2,2,1,5,3,0,-3,-2,1,0,1,0,-1,0,4,3,1,0,-5,2,-3,1,-1,0};
-            //String article_vars[] = {"VarA","VarB","VarC","VarD","VarE"};
-            //directImpactMatrix = new EXITImpactMatrix(5, 5, true, article_vars, article_data);
             
             
             System.out.println("Direct impact matrix");
             System.out.println(directImpactMatrix);
-            CrossImpactMatrix resultMatrix = directImpactMatrix.summedImpactMatrix(0.0000000001);
+            CrossImpactMatrix resultMatrix = directImpactMatrix.summedImpactMatrix(0.001);
+            ImpactChainSampler s = new ImpactChainSampler(directImpactMatrix);
             
-            System.out.println("Result matrix");
+            System.out.println("Result matrix, pruning strategy");
             System.out.println(resultMatrix);
             
-            System.out.println("Direct impact matrix normalized");
-            System.out.println(directImpactMatrix.normalize());
+            System.out.println("Result matrix, sampling strategy");
+            System.out.println(s.testSampling(300000));
             
-            System.out.println("Direct impact matrix normalized + scaled to 5");
-            System.out.println(directImpactMatrix.normalize().scale(5));
             
          
             

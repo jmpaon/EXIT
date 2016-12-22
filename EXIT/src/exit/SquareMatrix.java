@@ -268,13 +268,6 @@ public class SquareMatrix {
      */
     protected static String[] createNames(int nameCount) {
         return createNames(nameCount, "Variable ");
-//        int i = 0;
-//        String[] n = new String[nameCount];
-//        while (i < nameCount) {
-//            n[i] = "Variable " + (i + 1);
-//            i++;
-//        }
-//        return n;
     }
     
     protected static String[] createNames(int nameCount, String preamble) {
