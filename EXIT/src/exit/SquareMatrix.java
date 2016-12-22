@@ -279,10 +279,10 @@ public class SquareMatrix {
     
     protected static String[] createNames(int nameCount, String preamble) {
         if (preamble == null) preamble = "V";
-        int i  = 1;
+        int i  = 0;
         String[] n = new String[nameCount];
-        while(i <= nameCount) {
-            n[i] = preamble + i++;
+        while(i < nameCount) {
+            n[i] = preamble + ++i;
         }
         return n;
     }
