@@ -167,7 +167,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
             Reporter.msg("%10.0f significant (threshold %1.4f) impact chains found%n", count, impactThreshold);
         }
         Reporter.msg("%s significant (threshold %1.4f) impact chains found in the matrix.%n", Math.round(totalCount), impactThreshold);
-        Reporter.msg("The total number of possible chains in this matrix is %s.%n", approximateChainCountString());
+        Reporter.msg("The total number of possible chains in this matrix is %s.%n", chainCount_approximate());
         // resultMatrix.setMaxImpact(resultMatrix.matrixMax());
         return resultMatrix;
     }
@@ -228,9 +228,9 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
      * @return String for printing out information about count of possible chains
      * in the matrix
      */
-    String approximateChainCountString() {
+    String chainCount_approximate() {
         int n = varCount;
-        double chainCount = approximateChainCount() ;
+        double chainCount = chainCount() ;
         
         if(varCount < 15) {
             return new BigDecimal(chainCount).toBigInteger().toString();
@@ -245,7 +245,22 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
     }
     
     
-    public static double approximateChainCount(int varCount) {
+    /**
+     * Returns the approximate number of intermediary chains of length <b>length</b>
+     * between two variables in a cross-impact system of <b>varCount</b> variables.
+     * @param varCount The total number of variables in the cross-impact system
+     * @param length The length of the chains whose count is returned (maximum value is <b>varCount</b>-2)
+     * @return double
+     */
+    public static double chainCount_intermediary(int varCount, int length) {
+        assert !(length > varCount-2) : String.format("Intermediary chains of length %d not possible in a cross-impact system of %d variables", length, varCount);
+        double a = factorial(varCount-2);
+        double b = factorial((varCount-2) - length);
+        return a / b;
+    }
+
+
+    public static double chainCount(int varCount) {
         int n = 0;
         double count = 0;
         while(n <= varCount-2) {
@@ -253,12 +268,6 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
             n++;
         }
         return count;        
-    }
-    
-    public static double approximateChainCountBetweenTwo(int varCount, int length) {
-        assert length <= varCount-2 : "length is " + length;
-        if (length > varCount-2) length = varCount-2;
-        return factorial(varCount - length) / factorial((varCount-2)-length);
     }
     
     /**
@@ -269,15 +278,8 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
      * so they aren't included in the count.
      * @return The number of possible impact chains in this matrix.
      */
-    double approximateChainCount() {
-        return approximateChainCount(this.varCount);
-//        int n = 0;
-//        double count = 0;
-//        while(n <= this.varCount-2) {
-//            count += (factorial(varCount) / factorial(n));
-//            n++;
-//        }
-//        return count;
+    double chainCount() {
+        return EXITImpactMatrix.this.chainCount(this.varCount);
     }
     
     /**
@@ -285,7 +287,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
      * @param n 
      * @return Factorial of <i>n</i>.
      */
-    private static double factorial(int n) {
+    static double factorial(int n) {
         if(n == 1 || n == 0) return 1;
         return n * factorial(n-1);
     }

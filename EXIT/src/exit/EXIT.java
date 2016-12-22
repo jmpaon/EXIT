@@ -109,22 +109,16 @@ public class EXIT {
         System.out.println("Summed impact matrix, pruning");
         System.out.println(eim.summedImpactMatrix(0.0000000000000001));
         
-        System.out.println("Sample mean 1->5: " + s.sampleMean(s.sampleChains(1, 5, 5, 100000)));
-        System.out.println("Sample mean 1->5, divided by 6: " + s.sampleMean(s.sampleChains(1, 5, 5, 100000))/ 6);
-        System.out.println("Estimated summed impact: " + s.estimateSummedImpact(1, 4, 200000));
-        
-        System.out.println(s.testSampling(30000));
-        
-        //System.out.println("Pruning strategy");
-        //System.out.println(eim.summedImpactMatrix(0.00000000001).normalize());
-        
-        //System.out.println("Sampling strategy run 1");
-        //System.out.println(s.testSampling(10000).normalize());
-        
-        //System.out.println("Sampling strategy run 2");
-        //System.out.println(s.testSampling(100000).normalize());
+        System.out.println("Estimated summed impact matrix");
+        System.out.println(s.testSampling(1000000));
         
         
+    }
+    
+    public static void printList(List<? extends Object> l) {
+        for(Object o : l) {
+            System.out.println(o.toString());
+        }
     }
     
     public static void new_exit_analysis(String[] args) {
