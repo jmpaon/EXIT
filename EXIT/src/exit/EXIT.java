@@ -31,7 +31,7 @@ public class EXIT {
      */
     public static void main(String[] args)  {
         
-        //test_new_features();
+        test_new_features();
         
         /* New standard calculation */
         // new_exit_analysis(args);
@@ -43,14 +43,11 @@ public class EXIT {
         //JL_exit(3500);
         
         /* Test features */
-        test_features(args);
+        //test_features(args);
     
     }
     
-    public static void test_new_strategy() {
-        
-    }
-    
+
     
     
     
@@ -105,16 +102,18 @@ public class EXIT {
         SquareMatrix sm2 = new SquareMatrix(nam2, d2);
         
         EXITImpactMatrix eim = new EXITImpactMatrix(sm2, 4);
-        ImpactChainSampler s = new ImpactChainSampler(eim);
+        QuickSampler s = new QuickSampler(eim);
         
         System.out.println("Input matrix");
         System.out.println(eim);
         
-        System.out.println("Summed impact matrix, pruning");
-        System.out.println(eim.summedImpactMatrix(0.0000000000000001));
+        //System.out.println("Summed impact matrix, pruning");
+        //System.out.println(eim.summedImpactMatrix(0.000000000001));
         
-        System.out.println("Estimated summed impact matrix");
-        System.out.println(s.testSampling(1000000));
+        int[] chain = {3,2,1};
+        System.out.println(s.impactOfChain(chain));
+        
+        
         
         
     }
@@ -389,7 +388,7 @@ public class EXIT {
             System.out.println(resultMatrix);
             
             System.out.println("Result matrix, sampling strategy");
-            System.out.println(s.testSampling(300000));
+            System.out.println(s.estimateSummedImpacts(3000));
             
             
          

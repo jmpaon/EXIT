@@ -14,30 +14,28 @@ import java.util.LinkedList;
  *
  * @author juha
  */
-public class ImpactChainSampler {
-    
-    public final EXITImpactMatrix matrix;
-    
-    
-    public ImpactChainSampler(EXITImpactMatrix matrix) {
-        this.matrix = matrix;
-    }
-    
-    
-    
+public class ImpactChainSampler extends Sampler {
 
+    /**
+     * 
+     * @param matrix 
+     */
+    public ImpactChainSampler(EXITImpactMatrix matrix) {
+        super(matrix);
+    }
     
     /**
      * WORKS
      * @param sampleSize
      * @return 
      */
-    public CrossImpactMatrix testSampling(int sampleSize) {
+    @Override
+    public CrossImpactMatrix estimateSummedImpacts(int sampleSize) {
         CrossImpactMatrix im = new CrossImpactMatrix(matrix.copy().flush());
         for(int impactor=1;impactor<=matrix.varCount;impactor++) {
             for(int impacted=1;impacted<=matrix.varCount;impacted++) {
                 if (impactor != impacted) {
-                    im.setValue(impactor, impacted, estimateImpact(impactor, impacted, sampleSize));
+                    im.setValue(impactor, impacted, estimateSummedImpact(impactor, impacted, sampleSize));
                 }
             }
         }
@@ -45,10 +43,10 @@ public class ImpactChainSampler {
     }
     
 
-    double estimateImpact(int impactor, int impacted, int sampleSize) {
+    public double estimateSummedImpact(int impactor, int impacted, int sampleSize) {
         double summedImpact=0;
         for(int length=2;length<=matrix.varCount;length++) {
-            summedImpact += estimateImpact(impactor, impacted, length, sampleSize);
+            summedImpact += estimateSummedImpact(impactor, impacted, length, sampleSize);
         }
         return summedImpact;
     }
@@ -64,7 +62,7 @@ public class ImpactChainSampler {
      * @param sampleSize Size of the sample
      * @return double: estimated impact 
      */
-    double estimateImpact(int impactor, int impacted, int chainLength, int sampleSize) {
+    public double estimateSummedImpact(int impactor, int impacted, int chainLength, int sampleSize) {
         
         assert chainLength > 1 && chainLength <= matrix.varCount;
         
@@ -148,25 +146,27 @@ public class ImpactChainSampler {
      * @param impactedIndex Index of impacted variable of the chain
      * @return 
      */
-    private List<Integer> availableIndices(int impactorIndex, int impactedIndex) {
-        assert indexIsValid(impactorIndex) && indexIsValid(impactedIndex);
-        List<Integer> indices = new ArrayList<>();
-        for(int i=1;i<=matrix.varCount;i++) {
-            if(i != impactorIndex && i != impactedIndex) {
-                indices.add(i);
-            }
-        }
-        return indices;
-    }
+//    private List<Integer> availableIndices(int impactorIndex, int impactedIndex) {
+//        assert indexIsValid(impactorIndex) && indexIsValid(impactedIndex);
+//        List<Integer> indices = new ArrayList<>();
+//        for(int i=1;i<=matrix.varCount;i++) {
+//            if(i != impactorIndex && i != impactedIndex) {
+//                indices.add(i);
+//            }
+//        }
+//        return indices;
+//    }
 
     /**
      * Tests whether a variable index is a valid index in matrix <b>matrix</b>.
      * @param index Index to be tested 
      * @return true if the index is a valid index in <b>matrix</b>, false otherwise.
      */
-    private boolean indexIsValid(int index) {
-        return index > 0 && index <= matrix.varCount;
-    }
+    //private boolean indexIsValid(int index) {
+    //    return index > 0 && index <= matrix.varCount;
+    //}
+
+
     
     
 }
