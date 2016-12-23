@@ -6,6 +6,7 @@
 package exit;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,6 +38,20 @@ public abstract class Sampler {
     
     public abstract double estimateSummedImpact(int impactorIndex, int impactedIndex, int chainLength, int sampleSize);
     
+    
+    
+    protected List<Integer> randomIntermediaryChainIndices(int impactorIndex, int impactedIndex, int totalLength) {
+        assert indexIsValid(impactorIndex) && indexIsValid(impactedIndex);
+        assert totalLength > 1 && totalLength <= matrix.varCount;
+        List<Integer> indices = new ArrayList<>();
+        List<Integer> available = availableIndices(impactorIndex, impactedIndex);
+        int i=0;
+        Collections.shuffle(available);
+        indices.add(impactorIndex);
+        while(totalLength-- > 2) indices.add(available.get(i++));
+        indices.add(impactedIndex);
+        return indices;
+    }
     
     
     /**

@@ -5,6 +5,8 @@
  */
 package exit;
 
+import java.util.List;
+
 /**
  *
  * @author juha
@@ -30,8 +32,16 @@ public class QuickSampler extends Sampler {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
+    /* 
+    - luo kaikki parittaiset vaikutukset
+    - ota otos näistä (ilman ketjujen muodostamista)
+    - kerro keskenään mock-ketju muodostaen
+    - 
+    
+    */
+    
+    
     double impactOfChain(int[] indices) {
-        
         assert indices.length > 1 : "Chain length must be greater than 1";
         double impact = 1;
         double max = matrix.getMaxImpact();
@@ -40,5 +50,11 @@ public class QuickSampler extends Sampler {
         }
         return impact;
     }
+    
+    double impactOfChain(List<Integer> indices) {
+        
+    }
+    
+    
     
 }

@@ -110,8 +110,11 @@ public class EXIT {
         //System.out.println("Summed impact matrix, pruning");
         //System.out.println(eim.summedImpactMatrix(0.000000000001));
         
-        int[] chain = {3,2,1};
+        int[] chain = {2,4,1};
         System.out.println(s.impactOfChain(chain));
+        
+        System.out.println(s.randomIntermediaryChainIndices(1, 2, 3));
+        
         
         
         
