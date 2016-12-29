@@ -140,33 +140,4 @@ public class ImpactChainSampler extends Sampler {
     }
     
     
-    /**
-     * Returns a list of possible indices of intermediary variables for chain generation for <b>matrix</b>.
-     * @param impactorIndex Index of impactor variable of the chain
-     * @param impactedIndex Index of impacted variable of the chain
-     * @return 
-     */
-//    private List<Integer> availableIndices(int impactorIndex, int impactedIndex) {
-//        assert indexIsValid(impactorIndex) && indexIsValid(impactedIndex);
-//        List<Integer> indices = new ArrayList<>();
-//        for(int i=1;i<=matrix.varCount;i++) {
-//            if(i != impactorIndex && i != impactedIndex) {
-//                indices.add(i);
-//            }
-//        }
-//        return indices;
-//    }
-
-    /**
-     * Tests whether a variable index is a valid index in matrix <b>matrix</b>.
-     * @param index Index to be tested 
-     * @return true if the index is a valid index in <b>matrix</b>, false otherwise.
-     */
-    //private boolean indexIsValid(int index) {
-    //    return index > 0 && index <= matrix.varCount;
-    //}
-
-
-    
-    
 }

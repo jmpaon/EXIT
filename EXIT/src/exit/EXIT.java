@@ -102,7 +102,8 @@ public class EXIT {
         SquareMatrix sm2 = new SquareMatrix(nam2, d2);
         
         EXITImpactMatrix eim = new EXITImpactMatrix(sm2, 4);
-        QuickSampler s = new QuickSampler(eim);
+        QuickSampler qs = new QuickSampler(eim);
+        Sampler s = new ImpactChainSampler(eim);
         
         System.out.println("Input matrix");
         System.out.println(eim);
@@ -110,11 +111,15 @@ public class EXIT {
         //System.out.println("Summed impact matrix, pruning");
         //System.out.println(eim.summedImpactMatrix(0.000000000001));
         
-        int[] chain = {2,4,1};
-        System.out.println(s.impactOfChain(chain));
+        Timer t1 = new Timer();
+        System.out.println("Quicksampler");
+        System.out.println(qs.estimateSummedImpacts(1000000));
+        t1.stopTime();
         
-        System.out.println(s.randomIntermediaryChainIndices(1, 2, 3));
-        
+        Timer t2 = new Timer();
+        System.out.println("IS-sampler");
+        System.out.println(s.estimateSummedImpacts(1000000));
+        t2.stopTime();
         
         
         

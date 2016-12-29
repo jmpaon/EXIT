@@ -39,8 +39,17 @@ public abstract class Sampler {
     public abstract double estimateSummedImpact(int impactorIndex, int impactedIndex, int chainLength, int sampleSize);
     
     
-    
-    protected List<Integer> randomIntermediaryChainIndices(int impactorIndex, int impactedIndex, int totalLength) {
+    /**
+     * Returns a list of integers that are the indices of variables in an impact chain
+     * that starts with <b>impactorIndex</b>, ends with <b>impactedIndex</b>, 
+     * the intermediary indices (indices between impactor and impacted) are picked
+     * randomly without replacement from the variables of the <b>matrix</b>.
+     * @param impactorIndex Index of impactor variable of the chain
+     * @param impactedIndex Index of impacted variable of the chain
+     * @param totalLength Total length of the chain
+     * @return List of integers representing impact chain variable indices
+     */
+    protected List<Integer> randomChainIndices(int impactorIndex, int impactedIndex, int totalLength) {
         assert indexIsValid(impactorIndex) && indexIsValid(impactedIndex);
         assert totalLength > 1 && totalLength <= matrix.varCount;
         List<Integer> indices = new ArrayList<>();

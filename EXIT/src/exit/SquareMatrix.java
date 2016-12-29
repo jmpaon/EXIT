@@ -521,6 +521,10 @@ public class SquareMatrix {
         return new SquareMatrix(this.varCount, this.names.clone(), this.values.clone());
     }
     
+    /**
+     * Returns a copy of this <tt>SquareMatrix</tt> with no matrix entry values
+     * @return 
+     */
     public SquareMatrix flush() {
         return new SquareMatrix(this.varCount, this.names.clone());
     }
