@@ -102,32 +102,26 @@ public class EXIT {
         SquareMatrix sm2 = new SquareMatrix(nam2, d2);
         
         EXITImpactMatrix eim = new EXITImpactMatrix(sm2, 4);
-        QuickSampler qs = new QuickSampler(eim);
-        Sampler s = new ImpactChainSampler(eim);
+        EXITImpactMatrix big = RandomInputMatrixGenerator.generateEXITImpactMatrix(15, 0.13, 5, 5);
+        QuickSampler qs = new QuickSampler(big);
+        Sampler s = new ImpactChainSampler(big);
         
         
         
         System.out.println("Input matrix");
-        System.out.println(eim);
-        
-        System.out.println("Summed impact matrix, pruning");
-        System.out.println(eim.summedImpactMatrix(0.000000000001));
+        System.out.println(big);
+
         
         Timer t1 = new Timer();
         System.out.println("Quicksampler");
-        System.out.println(qs.estimateSummedImpacts(10000));
+        System.out.println(qs.estimateSummedImpacts(100000));
         t1.stopTime();
-        
-        //System.out.println("1 to 5 len 2 sum : " + qs.calculateImpactOfAll(1, 5, 2));
-        //System.out.println("1 to 5 len 3 sum : " + qs.calculateImpactOfAll(1, 5, 3));
-        //System.out.println("1 to 5 len 4 sum : " + qs.calculateImpactOfAll(1, 5, 4));
-        //System.out.println("1 to 5 len 5 sum : " + qs.calculateImpactOfAll(1, 5, 5));
+
+        System.out.println("Summed impact matrix, pruning");
+        System.out.println(big.summedImpactMatrix(0.0000000001));        
         
         
-        Timer t2 = new Timer();
-        System.out.println("IC-sampler");
-        System.out.println(s.estimateSummedImpacts(1000));
-        t2.stopTime();
+
         
         
         

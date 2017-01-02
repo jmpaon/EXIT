@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class QuickSampler extends Sampler {
     
-    private static final double SAMPLING_THRESHOLD = 50000;
+    private static final double SAMPLING_THRESHOLD = 8000;
 
     public QuickSampler(EXITImpactMatrix matrix) {
         super(matrix);
@@ -41,8 +41,10 @@ public class QuickSampler extends Sampler {
         for(int length=2;length<=matrix.varCount;length++) {
             if(EXITImpactMatrix.factorial(length-2) < SAMPLING_THRESHOLD ) {
                 summedImpact += calculateImpactOfAll(impactorIndex, impactedIndex, length);
+                System.out.printf("Computed all chains between %s and %s of length %d\n", matrix.getName(impactorIndex), matrix.getName(impactedIndex), length);
             } else {
                 summedImpact += estimateSummedImpact(impactorIndex, impactedIndex, length, sampleSize);
+                System.out.printf("Estimated sum of chains between %s and %s of length %d\n", matrix.getName(impactorIndex), matrix.getName(impactedIndex), length);
             }
         }
         return summedImpact;        
