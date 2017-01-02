@@ -115,13 +115,13 @@ public class EXIT {
         
         Timer t1 = new Timer();
         System.out.println("Quicksampler");
-        System.out.println(qs.estimateSummedImpacts(100000));
+        System.out.println(qs.estimateSummedImpacts(10000));
         t1.stopTime();
         
-        System.out.println("1 to 5 len 2 sum : " + qs.calculateImpactOfAll(1, 5, 2));
-        System.out.println("1 to 5 len 3 sum : " + qs.calculateImpactOfAll(1, 5, 3));
-        System.out.println("1 to 5 len 4 sum : " + qs.calculateImpactOfAll(1, 5, 4));
-        System.out.println("1 to 5 len 5 sum : " + qs.calculateImpactOfAll(1, 5, 5));
+        //System.out.println("1 to 5 len 2 sum : " + qs.calculateImpactOfAll(1, 5, 2));
+        //System.out.println("1 to 5 len 3 sum : " + qs.calculateImpactOfAll(1, 5, 3));
+        //System.out.println("1 to 5 len 4 sum : " + qs.calculateImpactOfAll(1, 5, 4));
+        //System.out.println("1 to 5 len 5 sum : " + qs.calculateImpactOfAll(1, 5, 5));
         
         
         Timer t2 = new Timer();

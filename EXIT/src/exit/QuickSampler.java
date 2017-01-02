@@ -13,11 +13,14 @@ import java.util.List;
  * @author juha
  */
 public class QuickSampler extends Sampler {
+    
+    private static final double SAMPLING_THRESHOLD = 50000;
 
     public QuickSampler(EXITImpactMatrix matrix) {
         super(matrix);
     }
-
+    
+    
     @Override
     public CrossImpactMatrix estimateSummedImpacts(int sampleSize) {
         assert sampleSize > 0 : "SampleSize must be greater than 0";
@@ -25,12 +28,26 @@ public class QuickSampler extends Sampler {
         for(int impactor = 1; impactor <= matrix.varCount; impactor++) {
             for(int impacted = 1; impacted <= matrix.varCount; impacted++) {
                 if(impactor != impacted) {
-                    summedImpactMatrix.setValue(impactor, impacted, estimateSummedImpact(impactor, impacted, sampleSize));
+                    //summedImpactMatrix.setValue(impactor, impacted, estimateSummedImpact(impactor, impacted, sampleSize));
+                    summedImpactMatrix.setValue(impactor, impacted, smartEstimationOfSummedImpact(impactor, impacted, sampleSize));
                 }
             }
         }
         return summedImpactMatrix;
     }
+    
+    public double smartEstimationOfSummedImpact(int impactorIndex, int impactedIndex, int sampleSize) {
+        double summedImpact = 0;
+        for(int length=2;length<=matrix.varCount;length++) {
+            if(EXITImpactMatrix.factorial(length-2) < SAMPLING_THRESHOLD ) {
+                summedImpact += calculateImpactOfAll(impactorIndex, impactedIndex, length);
+            } else {
+                summedImpact += estimateSummedImpact(impactorIndex, impactedIndex, length, sampleSize);
+            }
+        }
+        return summedImpact;        
+    }
+    
 
     @Override
     public double estimateSummedImpact(int impactorIndex, int impactedIndex, int sampleSize) {
@@ -46,7 +63,7 @@ public class QuickSampler extends Sampler {
         assert sampleSize > 0 : "Sample size 0 or smaller";
         assert chainLength > 1 : "Chain length must be greater than 1";
         
-        // Chains with length 2 need not be sampled
+        /* Chains with length 2 need not be sampled */
         if (chainLength == 2) {
             return matrix.getValue(impactorIndex, impactedIndex)/matrix.getMaxImpact();
         }
@@ -54,7 +71,6 @@ public class QuickSampler extends Sampler {
         int i=0;
         double mean=0;
         while(sampleSize-- > 0) {
-            //List<Integer> indices = randomChainIndices(impactorIndex, impactedIndex, chainLength);
             double rndImpact = impactOfChain(randomChainIndices(impactorIndex, impactedIndex, chainLength));
             mean = (rndImpact + mean * i) / (i+1);
             i++;

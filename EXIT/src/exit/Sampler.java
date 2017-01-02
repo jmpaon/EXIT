@@ -57,6 +57,24 @@ public abstract class Sampler {
         return sum / sample.size();
     }
     
+    
+    /**
+     * Computes the summed impact of all possible impact chains 
+     * starting from variable with index <b>impactorIndex</b>
+     * and ending to variable with index <b>impactedIndex</b>
+     * of length <b>length</b>.<br/>
+     * 
+     * This method can be used in the stratified sampling based strategy of
+     * computing the total impact: 
+     * for sets of short chains, it is faster to sum all possible chains 
+     * of that length
+     * than to accurately sample with replacement.
+     * 
+     * @param impactorIndex
+     * @param impactedIndex
+     * @param length
+     * @return 
+     */
     protected double calculateImpactOfAll(int impactorIndex, int impactedIndex, int length) {
         List<Integer> usedIndices = new ArrayList<>();
         usedIndices.add(impactorIndex);
@@ -69,15 +87,13 @@ public abstract class Sampler {
         assert usedIndices != null;
         
         List<Integer> available = availableIndices(usedIndices);
-        if( available.isEmpty() || (usedIndices.size()-2 >= length) ) {
-            System.out.printf("Return chain %s with impact %f\n", usedIndices, new ImpactChain(matrix, usedIndices).impact());
+        if( available.isEmpty() || (usedIndices.size() >= length) ) {
             return new ImpactChain(matrix, usedIndices).impact();
         } else {
             double impactSum = 0;
             for(Integer i : available) {
                 List<Integer> used = new ArrayList<>(usedIndices);
-                used.add(i);
-
+                used.add(used.size()-1, i);
                 impactSum += calculateImpactOfAll(impactorIndex, impactedIndex, length, used);
             }
             return impactSum;
