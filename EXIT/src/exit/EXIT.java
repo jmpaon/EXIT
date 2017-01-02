@@ -105,20 +105,28 @@ public class EXIT {
         QuickSampler qs = new QuickSampler(eim);
         Sampler s = new ImpactChainSampler(eim);
         
+        
+        
         System.out.println("Input matrix");
         System.out.println(eim);
         
-        //System.out.println("Summed impact matrix, pruning");
-        //System.out.println(eim.summedImpactMatrix(0.000000000001));
+        System.out.println("Summed impact matrix, pruning");
+        System.out.println(eim.summedImpactMatrix(0.000000000001));
         
         Timer t1 = new Timer();
         System.out.println("Quicksampler");
-        System.out.println(qs.estimateSummedImpacts(1000000));
+        System.out.println(qs.estimateSummedImpacts(100000));
         t1.stopTime();
         
+        System.out.println("1 to 5 len 2 sum : " + qs.calculateImpactOfAll(1, 5, 2));
+        System.out.println("1 to 5 len 3 sum : " + qs.calculateImpactOfAll(1, 5, 3));
+        System.out.println("1 to 5 len 4 sum : " + qs.calculateImpactOfAll(1, 5, 4));
+        System.out.println("1 to 5 len 5 sum : " + qs.calculateImpactOfAll(1, 5, 5));
+        
+        
         Timer t2 = new Timer();
-        System.out.println("IS-sampler");
-        System.out.println(s.estimateSummedImpacts(1000000));
+        System.out.println("IC-sampler");
+        System.out.println(s.estimateSummedImpacts(1000));
         t2.stopTime();
         
         

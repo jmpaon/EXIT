@@ -34,8 +34,8 @@ public class QuickSampler extends Sampler {
 
     @Override
     public double estimateSummedImpact(int impactorIndex, int impactedIndex, int sampleSize) {
-        double summedImpact = matrix.getValue(impactorIndex, impactedIndex);
-        for(int length=3;length<=matrix.varCount;length++) {
+        double summedImpact = 0;
+        for(int length=2;length<=matrix.varCount;length++) {
             summedImpact += estimateSummedImpact(impactorIndex, impactedIndex, length, sampleSize);
         }
         return summedImpact;
@@ -44,11 +44,20 @@ public class QuickSampler extends Sampler {
     @Override
     public double estimateSummedImpact(int impactorIndex, int impactedIndex, int chainLength, int sampleSize) {
         assert sampleSize > 0 : "Sample size 0 or smaller";
+        assert chainLength > 1 : "Chain length must be greater than 1";
+        
+        // Chains with length 2 need not be sampled
+        if (chainLength == 2) {
+            return matrix.getValue(impactorIndex, impactedIndex)/matrix.getMaxImpact();
+        }
+        
         int i=0;
         double mean=0;
-        while(sampleSize-- >0) {
+        while(sampleSize-- > 0) {
+            //List<Integer> indices = randomChainIndices(impactorIndex, impactedIndex, chainLength);
             double rndImpact = impactOfChain(randomChainIndices(impactorIndex, impactedIndex, chainLength));
             mean = (rndImpact + mean * i) / (i+1);
+            i++;
         }
         
         double chainCount = EXITImpactMatrix.chainCount_intermediary(matrix.varCount, chainLength-2);

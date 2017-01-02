@@ -342,36 +342,36 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
      * Generates and returns 
      * a list of impact chains possible in this matrix 
      * that have impact value greater than <b>threshold</b>.
-     * @param impactOf Index of impactor variable. 
+     * @param impactor Index of impactor variable. 
      * Only chains starting with this variable are included in returned list.
      * Can also be null; if null, chains starting with any variable 
      * are returned.
-     * @param impactOn Index of impacted variable. 
+     * @param impacted Index of impacted variable. 
      * Only chains ending in this variable are included in returned list.
      * Can also be null; if null, chains ending in any variable 
      * are returned.
      * @param threshold The required minimum impact a chain must have to be included in returned list.
      * @return A <code>List</code> of impact chains with impact higher than <i>threshold</i> and that have
-     * the impactor and impacted variables specified in the <b>impactOf</b> and <b>impactOn</b> arguments.
+     * the impactor and impacted variables specified in the <b>impactor</b> and <b>impacted</b> arguments.
      */
-    List<ImpactChain> indirectImpacts(Integer impactOf, Integer impactOn, double threshold) {
+    List<ImpactChain> indirectImpacts(Integer impactor, Integer impacted, double threshold) {
         
-        if(impactOf != null && (impactOf <1 || impactOf > varCount)) throw new IndexOutOfBoundsException("impactOf index is not present in the matrix");
-        if(impactOn != null && (impactOn <1 || impactOn > varCount)) throw new IndexOutOfBoundsException("impactOn index is not present in the matrix");
+        if(impactor != null && (impactor <1 || impactor > varCount)) throw new IndexOutOfBoundsException("impactOf index is not present in the matrix");
+        if(impacted != null && (impacted <1 || impacted > varCount)) throw new IndexOutOfBoundsException("impactOn index is not present in the matrix");
         if(threshold <=0 || threshold > 1) throw new IllegalArgumentException("threshold value is not in range ]0..1]");
         
         List<Integer> initialChain = null;
-        if(impactOf != null) {
-            initialChain = new LinkedList<>(Arrays.asList(impactOf));
+        if(impactor != null) {
+            initialChain = new LinkedList<>(Arrays.asList(impactor));
         }
         
         ImpactChain ic = new ImpactChain(this, initialChain);
         
         Set<ImpactChain> chains = ic.highImpactChains(threshold);
         
-        if(impactOn != null) {
+        if(impacted != null) {
             chains = chains.stream()
-                    .filter(c -> c.impactedIndex() == impactOn)
+                    .filter(c -> c.impactedIndex() == impacted)
                     .collect(Collectors.toSet());
         }
         

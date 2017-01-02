@@ -16,6 +16,8 @@ import java.util.List;
  * @author juha
  */
 public abstract class Sampler {
+
+
     
     public final EXITImpactMatrix matrix;
     
@@ -40,6 +42,51 @@ public abstract class Sampler {
     
     
     /**
+     * Calculates a sample mean from a sample of <tt>ImpactChain</tt>s.
+     * Sample mean is the sum of relative impacts of the impact chains
+     * in the sample divided by the sample size.
+     * in a <tt>List</tt>.
+     * @param sample <tt>List</tt> of <tt>ImpactChain</tt>s.
+     * @return double: sample mean
+     */
+    public static double sampleMean(List<ImpactChain> sample) {
+        double sum = 0;
+        for (ImpactChain i : sample) {
+            sum += i.impact();
+        }
+        return sum / sample.size();
+    }
+    
+    protected double calculateImpactOfAll(int impactorIndex, int impactedIndex, int length) {
+        List<Integer> usedIndices = new ArrayList<>();
+        usedIndices.add(impactorIndex);
+        usedIndices.add(impactedIndex);
+        return calculateImpactOfAll(impactorIndex, impactedIndex, length, usedIndices);
+    }
+    
+    private double calculateImpactOfAll(int impactorIndex, int impactedIndex, int length, List<Integer> usedIndices) {
+        
+        assert usedIndices != null;
+        
+        List<Integer> available = availableIndices(usedIndices);
+        if( available.isEmpty() || (usedIndices.size()-2 >= length) ) {
+            System.out.printf("Return chain %s with impact %f\n", usedIndices, new ImpactChain(matrix, usedIndices).impact());
+            return new ImpactChain(matrix, usedIndices).impact();
+        } else {
+            double impactSum = 0;
+            for(Integer i : available) {
+                List<Integer> used = new ArrayList<>(usedIndices);
+                used.add(i);
+
+                impactSum += calculateImpactOfAll(impactorIndex, impactedIndex, length, used);
+            }
+            return impactSum;
+        }
+    }
+    
+    
+    
+    /**
      * Returns a list of integers that are the indices of variables in an impact chain
      * that starts with <b>impactorIndex</b>, ends with <b>impactedIndex</b>, 
      * the intermediary indices (indices between impactor and impacted) are picked
@@ -53,7 +100,7 @@ public abstract class Sampler {
         assert indexIsValid(impactorIndex) && indexIsValid(impactedIndex);
         assert totalLength > 1 && totalLength <= matrix.varCount;
         List<Integer> indices = new ArrayList<>();
-        List<Integer> available = availableIndices(impactorIndex, impactedIndex);
+        List<Integer> available = intermediaryIndices(impactorIndex, impactedIndex);
         int i=0;
         Collections.shuffle(available);
         indices.add(impactorIndex);
@@ -69,7 +116,7 @@ public abstract class Sampler {
      * @param impactedIndex Index of impacted variable of the chain
      * @return 
      */
-    protected List<Integer> availableIndices(int impactorIndex, int impactedIndex) {
+    protected List<Integer> intermediaryIndices(int impactorIndex, int impactedIndex) {
         assert indexIsValid(impactorIndex) && indexIsValid(impactedIndex);
         List<Integer> indices = new ArrayList<>();
         for(int i=1;i<=matrix.varCount;i++) {
@@ -78,7 +125,20 @@ public abstract class Sampler {
             }
         }
         return indices;
-    }    
+    }
+    
+    /**
+     * Returns the variable indices that are available in <b>matrix</b>
+     * but are not present in <b>usedIndices</b>.
+     * @param usedIndices A list of used variable indices
+     * @return List of integers representing variable indices
+     */
+    protected List<Integer> availableIndices(List<Integer> usedIndices) {
+        List<Integer> available = new ArrayList<>();
+        if(usedIndices == null) usedIndices = new ArrayList<>();
+        for(int i=1;i<=matrix.varCount;i++) {if(!usedIndices.contains(i)) available.add(i);}
+        return available;
+    }
     
     /**
      * Tests whether a variable index is a valid index in matrix <b>matrix</b>.

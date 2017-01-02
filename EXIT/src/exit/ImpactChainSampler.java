@@ -45,6 +45,7 @@ public class ImpactChainSampler extends Sampler {
 
     public double estimateSummedImpact(int impactor, int impacted, int sampleSize) {
         double summedImpact=0;
+        
         for(int length=2;length<=matrix.varCount;length++) {
             summedImpact += estimateSummedImpact(impactor, impacted, length, sampleSize);
         }
@@ -75,21 +76,6 @@ public class ImpactChainSampler extends Sampler {
     }
     
     
-    /**
-     * Calculates a sample mean from a sample of <tt>ImpactChain<tt>s.
-     * Sample mean is the sum of relative impacts of the impact chains 
-     * in the sample divided by the sample size.
-     * in a <tt>List</tt>.
-     * @param sample <tt>List</tt> of <tt>ImpactChain</tt>s. 
-     * @return double: sample mean
-     */
-    double sampleMean(List<ImpactChain> sample) {
-        double sum=0;
-        for(ImpactChain i : sample) {
-            sum += i.impact();
-        }
-        return sum / sample.size();
-    }
     
     
     /**
@@ -130,7 +116,7 @@ public class ImpactChainSampler extends Sampler {
         
         length -= 2;
         List<Integer> chainMembers = new ArrayList<>();
-        List<Integer> l = availableIndices(impactorIndex, impactedIndex);
+        List<Integer> l = intermediaryIndices(impactorIndex, impactedIndex);
         int i=0;
         Collections.shuffle(l);
         chainMembers.add(impactorIndex);
