@@ -9,6 +9,6 @@ package exit.procedures;
  *
  * @author jmpaon
  */
-public class EXITprocedure {
-    
+public abstract class EXITprocedure {
+    public abstract EXITresult compute(EXITinput input);
 }
