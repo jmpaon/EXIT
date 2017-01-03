@@ -5,7 +5,7 @@
 package exit.matrices;
 
 
-import exit.Reporter;
+import exit.procedures.Reporter;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Arrays;

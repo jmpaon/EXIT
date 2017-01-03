@@ -6,6 +6,8 @@
 package exit;
 
 
+import exit.procedures.Reporter;
+import exit.procedures.Timer;
 import exit.matrices.RandomInputMatrixGenerator;
 import exit.matrices.CrossImpactMatrix;
 import exit.matrices.InputFileReader;

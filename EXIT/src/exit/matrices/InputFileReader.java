@@ -6,7 +6,7 @@ package exit.matrices;
 
 import exit.EXITarguments;
 import exit.EXITexception;
-import exit.Reporter;
+import exit.procedures.Reporter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
