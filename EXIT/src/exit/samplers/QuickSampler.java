@@ -3,8 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package exit;
+package exit.samplers;
 
+import exit.matrices.CrossImpactMatrix;
+import exit.matrices.EXITImpactMatrix;
+import exit.samplers.Sampler;
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,8 +42,8 @@ public class QuickSampler extends Sampler {
     public CrossImpactMatrix estimateSummedImpactMatrix(int sampleSize) {
         assert sampleSize > 0 : "SampleSize must be greater than 0";
         CrossImpactMatrix summedImpactMatrix = new CrossImpactMatrix(matrix.copy().flush());
-        for(int impactor = 1; impactor <= matrix.varCount; impactor++) {
-            for(int impacted = 1; impacted <= matrix.varCount; impacted++) {
+        for(int impactor = 1; impactor <= matrix.getVarCount(); impactor++) {
+            for(int impacted = 1; impacted <= matrix.getVarCount(); impacted++) {
                 if(impactor != impacted) {
                     summedImpactMatrix.setValue(impactor, impacted, computeOrSampleSummedImpact(impactor, impacted, sampleSize));
                 }
@@ -62,7 +65,7 @@ public class QuickSampler extends Sampler {
      */
     double computeOrSampleSummedImpact(int impactorIndex, int impactedIndex, int sampleSize) {
         double summedImpact = 0;
-        for(int length=2;length<=matrix.varCount;length++) {
+        for(int length=2;length<=matrix.getVarCount();length++) {
             if(EXITImpactMatrix.factorial(length-2) < SAMPLING_THRESHOLD ) {
                 summedImpact += computeAll(impactorIndex, impactedIndex, length);
                 //System.out.printf("Computed all chains between %s and %s of length %d\n", matrix.getName(impactorIndex), matrix.getName(impactedIndex), length);
@@ -84,7 +87,7 @@ public class QuickSampler extends Sampler {
      */
     double estimateSummedImpact(int impactorIndex, int impactedIndex, int sampleSize) {
         double summedImpact = 0;
-        for(int length=2;length<=matrix.varCount;length++) {
+        for(int length=2;length<=matrix.getVarCount();length++) {
             summedImpact += estimateSummedImpact(impactorIndex, impactedIndex, length, sampleSize);
         }
         return summedImpact;
@@ -120,7 +123,7 @@ public class QuickSampler extends Sampler {
             i++;
         }
         
-        double chainCount = EXITImpactMatrix.chainCount_intermediary(matrix.varCount, chainLength-2);
+        double chainCount = EXITImpactMatrix.chainCount_intermediary(matrix.getVarCount(), chainLength-2);
         
         return mean * chainCount;
     }

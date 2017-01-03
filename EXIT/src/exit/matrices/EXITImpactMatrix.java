@@ -2,9 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package exit;
+package exit.matrices;
 
 
+import exit.Reporter;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -287,7 +288,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
      * @param n 
      * @return Factorial of <i>n</i>.
      */
-    static double factorial(int n) {
+    public static double factorial(int n) {
         if(n == 1 || n == 0) return 1;
         return n * factorial(n-1);
     }

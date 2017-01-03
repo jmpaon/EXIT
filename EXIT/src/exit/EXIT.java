@@ -6,6 +6,15 @@
 package exit;
 
 
+import exit.matrices.RandomInputMatrixGenerator;
+import exit.matrices.CrossImpactMatrix;
+import exit.matrices.InputFileReader;
+
+import exit.matrices.EXITImpactMatrix;
+import exit.matrices.ImpactChain;
+import exit.samplers.QuickSampler;
+import exit.samplers.ImpactChainSampler;
+import exit.samplers.Sampler;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -66,7 +75,7 @@ public class EXIT {
 
         System.out.println("Pruning");
         Timer t1 = new Timer();
-        System.out.println(sme.summedImpactMatrix(0.00001));
+        //System.out.println(sme.summedImpactMatrix(0.00001));
         t1.stopTime();
         
         System.out.println("qs estimate");

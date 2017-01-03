@@ -3,15 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package exit;
+package exit.matrices;
 
+import exit.EXITarguments;
+import exit.EXITexception;
 import java.util.Map;
 
 /**
  *
  * @author jmpaon
  */
-class EXITargumentException extends EXITexception {
+public class EXITargumentException extends EXITexception {
 
     public EXITargumentException(String msg) {
         //super(msg);

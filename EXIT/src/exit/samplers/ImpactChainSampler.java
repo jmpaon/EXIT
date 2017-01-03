@@ -3,8 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package exit;
+package exit.samplers;
 
+import exit.matrices.CrossImpactMatrix;
+import exit.matrices.EXITImpactMatrix;
+import exit.matrices.ImpactChain;
+import exit.samplers.Sampler;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,8 +46,8 @@ public class ImpactChainSampler extends Sampler {
     @Override
     public CrossImpactMatrix estimateSummedImpactMatrix(int sampleSize) {
         CrossImpactMatrix im = new CrossImpactMatrix(matrix.copy().flush());
-        for(int impactor=1;impactor<=matrix.varCount;impactor++) {
-            for(int impacted=1;impacted<=matrix.varCount;impacted++) {
+        for(int impactor=1;impactor<=matrix.getVarCount();impactor++) {
+            for(int impacted=1;impacted<=matrix.getVarCount();impacted++) {
                 if (impactor != impacted) {
                     im.setValue(impactor, impacted, estimateSummedImpact(impactor, impacted, sampleSize));
                 }
@@ -63,7 +67,7 @@ public class ImpactChainSampler extends Sampler {
     double estimateSummedImpact(int impactor, int impacted, int sampleSize) {
         double summedImpact=0;
         
-        for(int length=2;length<=matrix.varCount;length++) {
+        for(int length=2;length<=matrix.getVarCount();length++) {
             summedImpact += estimateSummedImpact(impactor, impacted, length, sampleSize);
         }
         return summedImpact;
@@ -82,12 +86,12 @@ public class ImpactChainSampler extends Sampler {
      */
     double estimateSummedImpact(int impactor, int impacted, int chainLength, int sampleSize) {
         
-        assert chainLength > 1 && chainLength <= matrix.varCount;
+        assert chainLength > 1 && chainLength <= matrix.getVarCount();
 
         double sampledMean = sampleMean(drawSample(impactor, impacted, chainLength, sampleSize));
         
         // Get the count of possible intermediary chains between impactor and impacted
-        double chainCount = EXITImpactMatrix.chainCount_intermediary(matrix.varCount, chainLength-2);
+        double chainCount = EXITImpactMatrix.chainCount_intermediary(matrix.getVarCount(), chainLength-2);
         
         return sampledMean * chainCount;
     }
@@ -129,7 +133,7 @@ public class ImpactChainSampler extends Sampler {
         assert indexIsValid(impactorIndex);
         assert indexIsValid(impactedIndex);
         assert length > 1 : "Chain length > 1 required; length is " + length;
-        assert length <= matrix.varCount: "length is " + length;
+        assert length <= matrix.getVarCount(): "length is " + length;
         
         length -= 2;
         List<Integer> chainMembers = new ArrayList<>();

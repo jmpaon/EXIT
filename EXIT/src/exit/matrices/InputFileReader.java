@@ -2,8 +2,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package exit;
+package exit.matrices;
 
+import exit.EXITarguments;
+import exit.EXITexception;
+import exit.Reporter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

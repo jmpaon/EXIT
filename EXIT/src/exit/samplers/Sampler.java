@@ -3,8 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package exit;
+package exit.samplers;
 
+import exit.matrices.CrossImpactMatrix;
+import exit.matrices.EXITImpactMatrix;
+import exit.matrices.ImpactChain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -73,9 +76,9 @@ public abstract class Sampler {
         
         CrossImpactMatrix summedImpactMatrix = new CrossImpactMatrix(matrix.copy().flush());
         
-        for(int impactor=1; impactor<=summedImpactMatrix.varCount; impactor++) {
-            for(int impacted=1;impacted<=summedImpactMatrix.varCount;impacted++) {
-                for(int length=2;length<=summedImpactMatrix.varCount;length++) {
+        for(int impactor=1; impactor<=summedImpactMatrix.getVarCount(); impactor++) {
+            for(int impacted=1;impacted<=summedImpactMatrix.getVarCount();impacted++) {
+                for(int length=2;length<=summedImpactMatrix.getVarCount();length++) {
                     if(impactor != impacted) {
                         double currentValue = summedImpactMatrix.getValue(impactor, impacted);
                         double addedValue   = computeAll(impactor,impacted, length);
@@ -157,7 +160,7 @@ public abstract class Sampler {
      */
     protected List<Integer> randomIndices(int impactorIndex, int impactedIndex, int totalLength) {
         assert indexIsValid(impactorIndex) && indexIsValid(impactedIndex);
-        assert totalLength > 1 && totalLength <= matrix.varCount;
+        assert totalLength > 1 && totalLength <= matrix.getVarCount();
         List<Integer> indices = new ArrayList<>();
         List<Integer> available = intermediaryIndices(impactorIndex, impactedIndex);
         int i=0;
@@ -178,7 +181,7 @@ public abstract class Sampler {
     protected List<Integer> intermediaryIndices(int impactorIndex, int impactedIndex) {
         assert indexIsValid(impactorIndex) && indexIsValid(impactedIndex);
         List<Integer> indices = new ArrayList<>();
-        for(int i=1;i<=matrix.varCount;i++) {
+        for(int i=1;i<=matrix.getVarCount();i++) {
             if(i != impactorIndex && i != impactedIndex) {
                 indices.add(i);
             }
@@ -195,7 +198,7 @@ public abstract class Sampler {
     protected List<Integer> availableIndices(List<Integer> usedIndices) {
         List<Integer> available = new ArrayList<>();
         if(usedIndices == null) usedIndices = new ArrayList<>();
-        for(int i=1;i<=matrix.varCount;i++) {if(!usedIndices.contains(i)) available.add(i);}
+        for(int i=1;i<=matrix.getVarCount();i++) {if(!usedIndices.contains(i)) available.add(i);}
         return available;
     }
     
@@ -205,7 +208,7 @@ public abstract class Sampler {
      * @return true if the index is a valid index in <b>matrix</b>, false otherwise.
      */
     protected boolean indexIsValid(int index) {
-        return index > 0 && index <= matrix.varCount;
+        return index > 0 && index <= matrix.getVarCount();
     }
     
 }
