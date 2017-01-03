@@ -11,26 +11,36 @@ import java.util.Collections;
 import java.util.LinkedList;
 
 /**
- *
+ * Objects of this class estimate the summed direct and indirect impacts 
+ * in a cross-impact matrix
+ * on the basis of a stratified sample.
+ * This implementation is based on using the <tt>ImpactChain</tt> class.
+ * A more performant implementation of <tt>Sampler</tt> is the 
+ * <tt>QuickSampler</tt> class.
  * @author juha
  */
 public class ImpactChainSampler extends Sampler {
 
     /**
-     * 
-     * @param matrix 
+     * Constructor.
+     * @param matrix <tt>EXITImpactMatrix</tt> on which the sampling to be performed on.
      */
     public ImpactChainSampler(EXITImpactMatrix matrix) {
         super(matrix);
     }
     
+    
     /**
-     * WORKS
-     * @param sampleSize
-     * @return 
+     * Returns a <tt>CrossImpactMatrix</tt> that contains the <u>estimated</u> summed 
+     * direct and indirect impacts between the variables present in <b>matrix</b>. 
+     * The summed impacts are estimated based on a stratified sample.
+     * @param sampleSize Size of the drawn sample of chains of a specific length; 
+     * for each variable pair, the average impact of chains of length x is based on 
+     * a sample of size <b>sampleSize</b>.
+     * @return CrossImpactMatrix : matrix that contains summed direct and indirect impacts.
      */
     @Override
-    public CrossImpactMatrix estimateSummedImpacts(int sampleSize) {
+    public CrossImpactMatrix estimateSummedImpactMatrix(int sampleSize) {
         CrossImpactMatrix im = new CrossImpactMatrix(matrix.copy().flush());
         for(int impactor=1;impactor<=matrix.varCount;impactor++) {
             for(int impacted=1;impacted<=matrix.varCount;impacted++) {
@@ -43,7 +53,14 @@ public class ImpactChainSampler extends Sampler {
     }
     
 
-    public double estimateSummedImpact(int impactor, int impacted, int sampleSize) {
+    /**
+     * Estimates 
+     * @param impactor Index of impactor variable
+     * @param impacted Index of impacted variable
+     * @param sampleSize Size of sample that the estimation is based on
+     * @return double : estimate of summed impact 
+     */
+    double estimateSummedImpact(int impactor, int impacted, int sampleSize) {
         double summedImpact=0;
         
         for(int length=2;length<=matrix.varCount;length++) {
@@ -63,15 +80,15 @@ public class ImpactChainSampler extends Sampler {
      * @param sampleSize Size of the sample
      * @return double: estimated impact 
      */
-    public double estimateSummedImpact(int impactor, int impacted, int chainLength, int sampleSize) {
+    double estimateSummedImpact(int impactor, int impacted, int chainLength, int sampleSize) {
         
         assert chainLength > 1 && chainLength <= matrix.varCount;
-        
-        // 
+
         double sampledMean = sampleMean(drawSample(impactor, impacted, chainLength, sampleSize));
         
         // Get the count of possible intermediary chains between impactor and impacted
         double chainCount = EXITImpactMatrix.chainCount_intermediary(matrix.varCount, chainLength-2);
+        
         return sampledMean * chainCount;
     }
     

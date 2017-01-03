@@ -7,6 +7,7 @@ package exit;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
@@ -442,6 +443,8 @@ public class SquareMatrix {
     protected static boolean isInteger(double d) {
         return d == (int) d;
     }
+    
+
 
 
 
@@ -550,14 +553,14 @@ public class SquareMatrix {
             c=0;
             while(c < varCount) {
                 if(false ) { // if onlyIntegers
-                    DecimalFormat fmt = new DecimalFormat("+#,##0;-#");
+                    DecimalFormat fmt = new DecimalFormat("+###0;-#");
                     if(values[i] == 0) 
                         {sb.append(" 0\t");} 
                     else 
                         {sb.append(fmt.format((int)values[i])).append("\t");}
                     
                 } else {
-                    DecimalFormat fmt = new DecimalFormat("+#,##0.00;-#");
+                    DecimalFormat fmt = new DecimalFormat("+###0.00;-#");
                     sb.append(fmt.format(values[i])).append("\t");
                     
                 }

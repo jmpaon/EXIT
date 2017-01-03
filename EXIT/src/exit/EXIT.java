@@ -52,75 +52,30 @@ public class EXIT {
     
     
     public static void test_new_features() {
-        double d[][] = new double[4][4];
-        d[0][0] = 2;
-        d[0][1] = 3;
-        d[0][2] = 4;
-        d[0][3] = -1;
-        d[1][0] = -2;
-        d[1][1] = -3;
-        d[1][2] = -4;
-        d[1][3] = 5;
-        d[2][0] = -5;
-        d[2][1] = 3;
-        d[2][2] = 0;
-        d[2][3] = 0;
-        d[3][0] = 2;
-        d[3][1] = 1;
-        d[3][2] = 0;
-        d[3][3] = 3;
-        String[] nam = {"mem","moo","mou","mau"};
-
-        double d2[][] = new double[5][5];
-        d2[0][0] = 0;
-        d2[0][1] = 3;
-        d2[0][2] = 4;
-        d2[0][3] = -3;
-        d2[0][4] = -4;
-        d2[1][0] = -3;
-        d2[1][1] = 0;
-        d2[1][2] = -4;
-        d2[1][3] = 3;
-        d2[1][4] = 3;
-        d2[2][0] = -3;
-        d2[2][1] = 3;
-        d2[2][2] = 0;
-        d2[2][3] = 4;
-        d2[2][4] = -4;
-        d2[3][0] = -3;
-        d2[3][1] = -4;
-        d2[3][2] = 3;
-        d2[3][3] = 0;
-        d2[3][4] = -3;
-        d2[4][0] = 3;
-        d2[4][1] = 4;
-        d2[4][2] = -2;
-        d2[4][3] = -4;
-        d2[4][4] = 0;
-        String[] nam2 = {"mem","moo","mou","mau", "muu"};
         
-        SquareMatrix sm2 = new SquareMatrix(nam2, d2);
-        
-        EXITImpactMatrix eim = new EXITImpactMatrix(sm2, 4);
-        EXITImpactMatrix big = RandomInputMatrixGenerator.generateEXITImpactMatrix(15, 0.13, 5, 5);
-        QuickSampler qs = new QuickSampler(big);
-        Sampler s = new ImpactChainSampler(big);
-        
+        EXITImpactMatrix sme = new EXITImpactMatrix(RandomInputMatrixGenerator.generateCrossImpactMatrix(12, 1.,2.,0.,4.,5.,3.), 5);
+        Sampler s = new QuickSampler(sme);
+        Sampler s2 = new ImpactChainSampler(sme);
         
         
         System.out.println("Input matrix");
-        System.out.println(big);
+        System.out.println(sme);
+   
+        //System.out.println("All");
+        //System.out.println(s.computeAll());        
 
-        
+        System.out.println("Pruning");
         Timer t1 = new Timer();
-        System.out.println("Quicksampler");
-        System.out.println(qs.estimateSummedImpacts(100000));
+        System.out.println(sme.summedImpactMatrix(0.00001));
         t1.stopTime();
-
-        System.out.println("Summed impact matrix, pruning");
-        System.out.println(big.summedImpactMatrix(0.0000000001));        
         
+        System.out.println("qs estimate");
+        Timer t2 = new Timer();
+        System.out.println(s.estimateSummedImpactMatrix(100000));
+        t2.stopTime();
         
+        //System.out.println("ics estimate");
+        //System.out.println(s2.estimateSummedImpactMatrix(100000));        
 
         
         
@@ -398,7 +353,7 @@ public class EXIT {
             System.out.println(resultMatrix);
             
             System.out.println("Result matrix, sampling strategy");
-            System.out.println(s.estimateSummedImpacts(3000));
+            System.out.println(s.estimateSummedImpactMatrix(3000));
             
             
          

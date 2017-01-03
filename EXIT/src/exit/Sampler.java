@@ -16,11 +16,18 @@ import java.util.List;
  * @author juha
  */
 public abstract class Sampler {
-
-
     
+    /**
+     * The <tt>EXITImpactMatrix</tt> this sampler is linked to and 
+     * whose summed impact matrix is returned by the 
+     * <tt>estimateSummedImpactMatrix</tt> method.
+     */
     public final EXITImpactMatrix matrix;
     
+    /**
+     * Constructor
+     * @param matrix <tt>EXITImpactMatrix</tt>
+     */
     public Sampler(EXITImpactMatrix matrix) {
         assert matrix != null;
         this.matrix = matrix;
@@ -32,13 +39,9 @@ public abstract class Sampler {
      * describing the sum of direct and indirect impacts
      * in the cross-impact system the sampler is attached to.
      * @param sampleSize
-     * @return 
+     * @return CrossImpactMatrix : summed direct and indirect impact matrix
      */
-    public abstract CrossImpactMatrix estimateSummedImpacts(int sampleSize);
-    
-    public abstract double estimateSummedImpact(int impactorIndex, int impactedIndex, int sampleSize);
-    
-    public abstract double estimateSummedImpact(int impactorIndex, int impactedIndex, int chainLength, int sampleSize);
+    public abstract CrossImpactMatrix estimateSummedImpactMatrix(int sampleSize);
     
     
     /**
@@ -59,6 +62,34 @@ public abstract class Sampler {
     
     
     /**
+     * Computes a summed impact matrix from the direct impact matrix <b>matrix</b>
+     * by computing the relative impact of all possible impact chains.
+     * This process is slow and {@link Sampler#computeAll()} method 
+     * should be used mainly for testing the different pruning or sampling based 
+     * estimation strategies for the summed impacts.
+     * @return CrossImpactMatrix : summed direct and indirect impacts in <b>matrix</b>
+     */
+    public CrossImpactMatrix computeAll() {
+        
+        CrossImpactMatrix summedImpactMatrix = new CrossImpactMatrix(matrix.copy().flush());
+        
+        for(int impactor=1; impactor<=summedImpactMatrix.varCount; impactor++) {
+            for(int impacted=1;impacted<=summedImpactMatrix.varCount;impacted++) {
+                for(int length=2;length<=summedImpactMatrix.varCount;length++) {
+                    if(impactor != impacted) {
+                        double currentValue = summedImpactMatrix.getValue(impactor, impacted);
+                        double addedValue   = computeAll(impactor,impacted, length);
+                        summedImpactMatrix.setValue(impactor, impacted, currentValue + addedValue );
+                    }
+                        
+                }
+            }
+        }
+        return summedImpactMatrix;
+    }
+    
+    
+    /**
      * Computes the summed impact of all possible impact chains 
      * starting from variable with index <b>impactorIndex</b>
      * and ending to variable with index <b>impactedIndex</b>
@@ -70,19 +101,31 @@ public abstract class Sampler {
      * of that length
      * than to accurately sample with replacement.
      * 
-     * @param impactorIndex
-     * @param impactedIndex
-     * @param length
-     * @return 
+     * @param impactorIndex Index of impactor variable
+     * @param impactedIndex Index of impacted variable
+     * @param length Length of the chains that are computed 
+     * @return double : summed relative impacts of chains meeting the criteria
      */
-    protected double calculateImpactOfAll(int impactorIndex, int impactedIndex, int length) {
+    protected double computeAll(int impactorIndex, int impactedIndex, int length) {
         List<Integer> usedIndices = new ArrayList<>();
         usedIndices.add(impactorIndex);
         usedIndices.add(impactedIndex);
-        return calculateImpactOfAll(impactorIndex, impactedIndex, length, usedIndices);
+        //return Sampler.this.computeAll(impactorIndex, impactedIndex, length, usedIndices);
+        return computeAll(impactorIndex, impactedIndex, length, usedIndices);
     }
     
-    private double calculateImpactOfAll(int impactorIndex, int impactedIndex, int length, List<Integer> usedIndices) {
+    
+    /**
+     * Returns the relative impact of chain if chain is of length <b>length</b> 
+     * or recursively calls <tt>computeAll</tt> to expand chain by one of the 
+     * available indices.
+     * @param impactorIndex Index of impactor variable in the computed chains
+     * @param impactedIndex Index of impacted variable in the computed chains
+     * @param length Length of the computed chains
+     * @param usedIndices Indices of variables in <b>matrix</b> that are present in the chain that is being built by the method
+     * @return double : sum of relative impacts of meeting the criteria
+     */
+    private double computeAll(int impactorIndex, int impactedIndex, int length, List<Integer> usedIndices) {
         
         assert usedIndices != null;
         
@@ -94,7 +137,7 @@ public abstract class Sampler {
             for(Integer i : available) {
                 List<Integer> used = new ArrayList<>(usedIndices);
                 used.add(used.size()-1, i);
-                impactSum += calculateImpactOfAll(impactorIndex, impactedIndex, length, used);
+                impactSum += Sampler.this.computeAll(impactorIndex, impactedIndex, length, used);
             }
             return impactSum;
         }
@@ -112,7 +155,7 @@ public abstract class Sampler {
      * @param totalLength Total length of the chain
      * @return List of integers representing impact chain variable indices
      */
-    protected List<Integer> randomChainIndices(int impactorIndex, int impactedIndex, int totalLength) {
+    protected List<Integer> randomIndices(int impactorIndex, int impactedIndex, int totalLength) {
         assert indexIsValid(impactorIndex) && indexIsValid(impactedIndex);
         assert totalLength > 1 && totalLength <= matrix.varCount;
         List<Integer> indices = new ArrayList<>();
@@ -130,7 +173,7 @@ public abstract class Sampler {
      * Returns a list of possible indices of intermediary variables for chain generation for <b>matrix</b>.
      * @param impactorIndex Index of impactor variable of the chain
      * @param impactedIndex Index of impacted variable of the chain
-     * @return 
+     * @return List&lt;Integer&gt; : possible intermediary indices between impactor and impacted 
      */
     protected List<Integer> intermediaryIndices(int impactorIndex, int impactedIndex) {
         assert indexIsValid(impactorIndex) && indexIsValid(impactedIndex);
