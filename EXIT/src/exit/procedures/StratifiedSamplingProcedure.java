@@ -20,7 +20,7 @@ public class StratifiedSamplingProcedure extends EXITprocedure {
         
         Sampler sampler = new QuickSampler(input.directImpactMatrix, input.arguments.computeUpToLength);
         CrossImpactMatrix summedImpactMatrix = sampler.estimateSummedImpactMatrix(input.arguments.sampleSize);
-        EXITresult result = new StratifiedSamplingResult(
+        EXITresult result = new StratifiedSamplingResult(summedImpactMatrix);
         
     }
     
