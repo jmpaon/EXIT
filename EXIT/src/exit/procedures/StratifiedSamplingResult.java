@@ -5,14 +5,23 @@
  */
 package exit.procedures;
 
+import exit.matrices.CrossImpactMatrix;
+
 /**
  *
  * @author jmpaon
  */
-public class StratifiedSamplingStrategy extends EXITprocedure {
+public class StratifiedSamplingResult extends EXITresult {
+    
+    public final CrossImpactMatrix resultMatrix;
+    
+    public StratifiedSamplingResult(CrossImpactMatrix resultMatrix) {
+        super();
+        this.resultMatrix = resultMatrix;
+    }
 
     @Override
-    public EXITresult compute(EXITinput input) {
+    public void print() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

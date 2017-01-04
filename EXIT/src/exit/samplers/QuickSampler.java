@@ -22,9 +22,29 @@ import java.util.List;
 public class QuickSampler extends Sampler {
     
     private static final double SAMPLING_THRESHOLD = 150; /* Chains of length 7 are computed and longer chains sampled */
+    private final int computeUpToLength;
 
+    
+    /**
+     * Constructor for <tt>QuickSampler</tt>
+     * @param matrix Direct impact matrix that is sampled by this sampler
+     */
     public QuickSampler(EXITImpactMatrix matrix) {
         super(matrix);
+        this.computeUpToLength = 7; /* Chains of length 7 are computed and longer chains sampled */
+    }
+    
+    
+    /**
+     * Constructor for <tt>QuickSampler</tt>
+     * @param matrix Direct impact matrix that is sampled by this sampler
+     * @param computeUpToLength The maximum length of chains that are computed 
+     * (instead of estimated by sampling) 
+     * when summed impacts are determined
+     */
+    public QuickSampler(EXITImpactMatrix matrix, int computeUpToLength) {
+        super(matrix);
+        this.computeUpToLength = computeUpToLength;
     }
     
     
@@ -66,12 +86,11 @@ public class QuickSampler extends Sampler {
     double computeOrSampleSummedImpact(int impactorIndex, int impactedIndex, int sampleSize) {
         double summedImpact = 0;
         for(int length=2;length<=matrix.getVarCount();length++) {
-            if(EXITImpactMatrix.factorial(length-2) < SAMPLING_THRESHOLD ) {
+            //if(EXITImpactMatrix.factorial(length-2) < SAMPLING_THRESHOLD ) {
+            if (length <= computeUpToLength) {
                 summedImpact += computeAll(impactorIndex, impactedIndex, length);
-                //System.out.printf("Computed all chains between %s and %s of length %d\n", matrix.getName(impactorIndex), matrix.getName(impactedIndex), length);
             } else {
                 summedImpact += estimateSummedImpact(impactorIndex, impactedIndex, length, sampleSize);
-                //System.out.printf("Estimated sum of chains between %s and %s of length %d\n", matrix.getName(impactorIndex), matrix.getName(impactedIndex), length);
             }
         }
         return summedImpact;        

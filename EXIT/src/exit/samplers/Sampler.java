@@ -67,7 +67,8 @@ public abstract class Sampler {
     /**
      * Computes a summed impact matrix from the direct impact matrix <b>matrix</b>
      * by computing the relative impact of all possible impact chains.
-     * This process is slow and {@link Sampler#computeAll()} method 
+     * This process is very slow for big (9+ variables) cross-impact models 
+     * and {@link Sampler#computeAll()} method 
      * should be used mainly for testing the different pruning or sampling based 
      * estimation strategies for the summed impacts.
      * @return CrossImpactMatrix : summed direct and indirect impacts in <b>matrix</b>
@@ -159,7 +160,7 @@ public abstract class Sampler {
      * @return List of integers representing impact chain variable indices
      */
     protected List<Integer> randomIndices(int impactorIndex, int impactedIndex, int totalLength) {
-        assert indexIsValid(impactorIndex) && indexIsValid(impactedIndex);
+        assert matrix.isIndexValid(impactorIndex) && matrix.isIndexValid(impactedIndex);
         assert totalLength > 1 && totalLength <= matrix.getVarCount();
         List<Integer> indices = new ArrayList<>();
         List<Integer> available = intermediaryIndices(impactorIndex, impactedIndex);
@@ -179,7 +180,7 @@ public abstract class Sampler {
      * @return List&lt;Integer&gt; : possible intermediary indices between impactor and impacted 
      */
     protected List<Integer> intermediaryIndices(int impactorIndex, int impactedIndex) {
-        assert indexIsValid(impactorIndex) && indexIsValid(impactedIndex);
+        assert matrix.isIndexValid(impactorIndex) && matrix.isIndexValid(impactedIndex);
         List<Integer> indices = new ArrayList<>();
         for(int i=1;i<=matrix.getVarCount();i++) {
             if(i != impactorIndex && i != impactedIndex) {
@@ -202,13 +203,5 @@ public abstract class Sampler {
         return available;
     }
     
-    /**
-     * Tests whether a variable index is a valid index in matrix <b>matrix</b>.
-     * @param index Index to be tested 
-     * @return true if the index is a valid index in <b>matrix</b>, false otherwise.
-     */
-    protected boolean indexIsValid(int index) {
-        return index > 0 && index <= matrix.getVarCount();
-    }
     
 }

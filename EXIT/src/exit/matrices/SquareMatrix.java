@@ -5,6 +5,7 @@
  */
 package exit.matrices;
 
+import exit.samplers.Sampler;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -289,7 +290,8 @@ public class SquareMatrix {
      * @throws IndexOutOfBoundsException
      */
     public String getName(int varIndex) throws IndexOutOfBoundsException {
-        if (varIndex < 1 || varIndex > varCount) {
+        if (! isIndexValid(varIndex)) {
+        //if (varIndex < 1 || varIndex > varCount) {
             String s = String.format("No name for index [%d], varCount for the matrix is %d.", varIndex, varCount);
             throw new IndexOutOfBoundsException(s);
         }
@@ -327,7 +329,8 @@ public class SquareMatrix {
      * @return A short name for variable <i>varIndex</i>
      */
     protected String getNameShort(int varIndex) {
-        if (varIndex < 1 || varIndex > varCount) {
+        //if (varIndex < 1 || varIndex > varCount) {
+        if (! isIndexValid(varIndex )) {
             String s = String.format("No name for index [%d], varCount for the matrix is %d.", varIndex, varCount);
             throw new IndexOutOfBoundsException(s);
         }
@@ -374,7 +377,8 @@ public class SquareMatrix {
         
         // throw new IllegalStateException("The impact matrix is locked and cannot be modified");
         
-        if (varIndex < 0 || varIndex > varCount) {
+        if (! isIndexValid(varIndex)) {
+        // if (varIndex < 0 || varIndex > varCount) {
             throw new IndexOutOfBoundsException("Invalid variable index");
         }
         if (varName == null) {
@@ -391,7 +395,8 @@ public class SquareMatrix {
      * @throws IllegalArgumentException
      */
     public double getValue(int row, int column) throws IndexOutOfBoundsException {
-        if (row < 1 || row > varCount || column < 1 || column > varCount) {
+        //if (row < 1 || row > varCount || column < 1 || column > varCount) {
+        if(! (isIndexValid(row) && isIndexValid(column)  )) {
             String exceptionMsg = String.format("No value for index [%d:%d], varCount for the matrix is %d.", row, column, varCount);
             throw new IndexOutOfBoundsException(exceptionMsg);
         }
@@ -412,7 +417,8 @@ public class SquareMatrix {
     public void setValue(int row, int column, double value) throws IllegalArgumentException, IndexOutOfBoundsException, IllegalStateException {
 
         // Test if indexes are legal
-        if (row < 1 || row > varCount || column < 1 || column > varCount) {
+        if(! (isIndexValid(row) && isIndexValid(column)  )) {
+        //if (row < 1 || row > varCount || column < 1 || column > varCount) {
             String s = String.format("Impact for index [%d:%d] cannot be set, varCount for the matrix is %d.", row, column, varCount);
             throw new IndexOutOfBoundsException(s);
         }
@@ -571,6 +577,15 @@ public class SquareMatrix {
             sb.append(String.format("%n"));
         }
         return sb.toString();
+    }
+
+    /**
+     * Tests whether a variable index is a valid index in matrix <b>matrix</b>.
+     * @param index Index to be tested
+     * @return true if the index is a valid index in <b>matrix</b>, false otherwise.
+     */
+    public boolean isIndexValid(int index) {
+        return index > 0 && index <= this.getVarCount();
     }
     
     

@@ -112,39 +112,11 @@ public class ImpactChainSampler extends Sampler {
     List<ImpactChain> drawSample(int impactorIndex, int impactedIndex, int length, int count) {
         List<ImpactChain> sample = new LinkedList<ImpactChain>();
         while(count-- > 0) {
-            sample.add(randomChain(impactorIndex, impactedIndex, length));
+            sample.add(randomChain(impactorIndex, impactedIndex, length, this));
         }
         return sample;
     }
     
-    /**
-     * Returns an impact chain where 
-     * variable with index <b>impactorIndex</b> is the impactor,
-     * variable with index <b>impactedIndex</b> is the impacted,
-     * and length is <b>length</b>.
-     * The number of randomly picked variables in the chain 
-     * will therefore be <u><b>length</b>-2</u>.
-     * @param impactorIndex Index of impactor variable of the returned chain
-     * @param impactedIndex Index of impacted variable of the returned chain 
-     * @param length Total length of the returned chain
-     * @return Impact chain with randomly picked <u>intermediary</u> variables and defined <u>impactor</u> and <u>impacted</u> variables.
-     */
-    ImpactChain randomChain(int impactorIndex, int impactedIndex, int length) {
-        assert indexIsValid(impactorIndex);
-        assert indexIsValid(impactedIndex);
-        assert length > 1 : "Chain length > 1 required; length is " + length;
-        assert length <= matrix.getVarCount(): "length is " + length;
-        
-        length -= 2;
-        List<Integer> chainMembers = new ArrayList<>();
-        List<Integer> l = intermediaryIndices(impactorIndex, impactedIndex);
-        int i=0;
-        Collections.shuffle(l);
-        chainMembers.add(impactorIndex);
-        while(length-- > 0) {chainMembers.add(l.get(i++));}
-        chainMembers.add(impactedIndex);
-        return new ImpactChain(matrix, chainMembers);
-    }
     
     
 }

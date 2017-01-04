@@ -29,12 +29,11 @@ public class EXITarguments {
     public final String inputFilename;
     public final Double maxImpact;
     public final String outputFilename;
-    public final String impactOf;
-    public final String impactOn;
     public final boolean onlyIntegers;
-    public final boolean extraReports;
-    public final double treshold;
     public final Character separator;
+    
+    public final int sampleSize;
+    public final int computeUpToLength;
     
     
     /**
@@ -46,14 +45,12 @@ public class EXITarguments {
     public static Map<String, String> knownOptions() {
         Map<String, String> options = new LinkedHashMap<>();
         
-        options.put("-o",     "Output file name");
-        options.put("-max",   "Maximum impact value in the impact matrix");
-        options.put("-t",     "Impact treshold used in impact chain mining");
-        options.put("-sep",   "Separator character used in input data");
-        options.put("-of",    "Print impacts of variable with index");
-        options.put("-on",    "Print impacts on variable with index");
-        options.put("-int",   "Flag if all impacts in input matrix are integers");
-        options.put("-extra", "Flag to print extra reports");
+        options.put("-o",       "Output file name");
+        options.put("-max",     "Maximum impact value in the impact matrix");
+        options.put("-sep",     "Separator character used in input data");
+        options.put("-int",     "Flag if all impacts in input matrix are integers");
+        options.put("-compute", "Compute (instead of estimate) chains up to this length");
+        options.put("-sample",  "Derive summed impact estimates based on sample of this size");
         
         return options;
     }
@@ -68,15 +65,17 @@ public class EXITarguments {
         
         if(args.length < 1) throw new EXITargumentException("No input file specified.");
         
-        inputFilename  = this.args.get(0);
-        outputFilename = extractArgumentValue("-o");
-        impactOf       = extractArgumentValue("-of");
-        impactOn       = extractArgumentValue("-on");
-        maxImpact      = hasFlag("-max") ? Double.valueOf(extractArgumentValue("-max")) : 5;
-        onlyIntegers   = hasFlag("-int");
-        extraReports   = hasFlag("-extra");
-        treshold       = hasFlag("-t") ? Double.valueOf(extractArgumentValue("-t")) : 0.01;
-        separator      = hasFlag("-sep") ? extractArgumentValue("-sep").charAt(0) : ';' ;
+        inputFilename     = this.args.get(0);
+        outputFilename    = extractArgumentValue("-o");
+        maxImpact         = hasFlag("-max") ? Double.valueOf(extractArgumentValue("-max")) : 5;
+        onlyIntegers      = hasFlag("-int");
+        separator         = hasFlag("-sep") ? extractArgumentValue("-sep").charAt(0) : ';';
+        sampleSize        = hasFlag("-sample") ? Integer.valueOf(extractArgumentValue("-sample")) : 1000000;
+        computeUpToLength = hasFlag("-compute") ? Integer.valueOf(extractArgumentValue("-compute")) : 7;
+        
+        if(maxImpact <= 0) throw new EXITargumentException("Maximum impact must be greater than 0");
+        if(sampleSize <= 0) throw new EXITargumentException("Sample size must be greater than 0");
+        if(computeUpToLength < 2) throw new EXITargumentException("Maximum chain length for exact impact computation must be equal to or greater than 2");
         
     }
     

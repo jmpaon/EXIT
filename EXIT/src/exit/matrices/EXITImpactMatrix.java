@@ -143,11 +143,19 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
         
     }
     
-    
+    /**
+     * Calculates the relative impact of all possible impact chains 
+     * and returns a new <code>EXITImpactMatrix</code> that contains
+     * the summed direct and indirect values between the variables.
+     * @return CrossImpactMatrix : summed direct and indirect impacts between variables
+     */
+    public CrossImpactMatrix computedSummedImpactMatrix() {
+        throw new UnsupportedOperationException();
+    }
     
     
     /**
-     * Calculates and returns 
+     * Estimates by pruning strategy and returns 
      * a new <code>EXITImpactMatrix</code> that contains
      * the summed direct and indirect values between the variables.
      * In the returned matrix, 
@@ -157,7 +165,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
      * See {@link ImpactChain#highImpactChains(double)}.
      * @return <code>EXITImpactMatrix</code> with the summed direct and indirect values between variables
      */
-    public CrossImpactMatrix summedImpactMatrix(double impactThreshold) {
+    public CrossImpactMatrix prunedSummedImpactMatrix(double impactThreshold) {
         CrossImpactMatrix resultMatrix = new CrossImpactMatrix(varCount, names, false);
         double totalCount=0;
         for (int impactor=1; impactor<=this.varCount; impactor++) {

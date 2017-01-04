@@ -11,7 +11,7 @@ import exit.matrices.CrossImpactMatrix;
  *
  * @author jmpaon
  */
-public class EXITresult {
+public abstract class EXITresult {
     public final EXITinput input;
     public final CrossImpactMatrix resultMatrix;
 
@@ -19,6 +19,10 @@ public class EXITresult {
         this.input = input;
         this.resultMatrix = resultMatrix;
     }
+    
+    public abstract void print();
+        
+    
     
     
     
