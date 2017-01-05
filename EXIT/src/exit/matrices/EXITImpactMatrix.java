@@ -177,7 +177,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
         }
         Reporter.msg("%s significant (threshold %1.4f) impact chains found in the matrix.%n", Math.round(totalCount), impactThreshold);
         Reporter.msg("The total number of possible chains in this matrix is %s.%n", chainCount_approximate());
-        // resultMatrix.setMaxImpact(resultMatrix.matrixMax());
+
         return resultMatrix;
     }
     
@@ -205,9 +205,6 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
             double newValue         = accumulatedValue + additionValue;
             
             if(impactor != impacted) {
-                //if(resultMatrix.maxImpact < Math.abs(newValue)) {
-                //    resultMatrix.setMaxImpact(Math.abs(Math.round((accumulatedValue + additionValue)*1.5)));
-                //}
                 resultMatrix.setValue(impactor, impacted, newValue);
             }
             
@@ -330,21 +327,6 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
     }
     
     
-    /**
-     * Sets a new value for the <b>maxImpact</b> of the matrix.
-     * @param newMaxImpact New  <b>maxImpact</b> value
-     */
-    void setMaxImpact(double newMaxImpact) {
-        if (newMaxImpact <= 0) {
-            throw new IllegalArgumentException("maxImpact cannot be 0 or smaller");
-        }
-        for (Double i : values) {
-            if (i > newMaxImpact) {
-                throw new IllegalArgumentException("impacts array contains values greater than new max impact");
-            }
-        }
-        this.maxImpact = newMaxImpact;
-    }    
     
     
     /**

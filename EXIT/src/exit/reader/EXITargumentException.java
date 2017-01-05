@@ -3,9 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package exit.matrices;
+package exit.reader;
 
-import exit.EXITarguments;
+import exit.reader.EXITarguments;
 import exit.EXITexception;
 import java.util.Map;
 

@@ -5,10 +5,15 @@
  */
 package exit.procedures;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+
 /**
  *
  * @author jmpaon
  */
 public abstract class EXITprocedure {
-    public abstract EXITresult compute(EXITinput input);
+    public abstract EXITresult compute (EXITinput input, PrintStream reportingStream) throws FileNotFoundException ;
+    public abstract EXITresult compute (EXITinput input) throws FileNotFoundException ;
+    
 }

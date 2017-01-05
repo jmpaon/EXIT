@@ -8,10 +8,7 @@ package exit.samplers;
 import exit.matrices.CrossImpactMatrix;
 import exit.matrices.EXITImpactMatrix;
 import exit.matrices.ImpactChain;
-import exit.samplers.Sampler;
 import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 
 /**
@@ -110,9 +107,9 @@ public class ImpactChainSampler extends Sampler {
      * @return List&lt;ImpactChain&gt;
      */
     List<ImpactChain> drawSample(int impactorIndex, int impactedIndex, int length, int count) {
-        List<ImpactChain> sample = new LinkedList<ImpactChain>();
+        List<ImpactChain> sample = new LinkedList<>();
         while(count-- > 0) {
-            sample.add(randomChain(impactorIndex, impactedIndex, length, this));
+            sample.add(ImpactChain.randomChain(this.matrix, impactorIndex, impactedIndex, length));
         }
         return sample;
     }

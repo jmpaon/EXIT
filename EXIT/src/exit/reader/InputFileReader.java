@@ -2,10 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package exit.matrices;
+package exit.reader;
 
-import exit.EXITarguments;
 import exit.EXITexception;
+import exit.matrices.EXITImpactMatrix;
 import exit.procedures.Reporter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -23,32 +23,39 @@ import java.util.List;
  */
 public class InputFileReader {
     
-    public EXITImpactMatrix readInputFile(EXITarguments args) throws IOException, EXITexception {
+    public EXITImpactMatrix readInputFile(EXITarguments arguments) throws IOException, EXITexception {
         
-        // At this point only CSV files are read
-        EXITImpactMatrix m = readCSVfile(args);
-        m.setMaxImpact(args.maxImpact);
-        return m;
+        /* At this point only CSV files are read */
+        EXITImpactMatrix eim = readCSVfile(arguments);
+        return eim;
 
     }
     
-    EXITImpactMatrix readCSVfile(EXITarguments args) throws IOException, EXITexception {
+    /**
+     * Creates a new <tt>EXITImpactMatrix</tt> from the contents of a valid 
+     * EXIT input file in CSV format.
+     * @param arguments
+     * @return
+     * @throws IOException
+     * @throws EXITexception 
+     */
+    EXITImpactMatrix readCSVfile(EXITarguments arguments) throws IOException, EXITexception {
         
-        Reporter.msg(String.format("Reading impact matrix data from file %s%n", args.inputFilename),5);
+        Reporter.msg(String.format("Reading impact matrix data from file %s%n", arguments.inputFilename),5);
         
-        if(! fileExists(args.inputFilename)) throw new FileNotFoundException(String.format("Input file %s not found", args.inputFilename));
+        if(! fileExists(arguments.inputFilename)) throw new FileNotFoundException(String.format("Input file %s not found", arguments.inputFilename));
         
-        List<String> lines = Files.readAllLines(Paths.get(args.inputFilename));
+        List<String> lines = Files.readAllLines(Paths.get(arguments.inputFilename));
         eliminateEmptyLines(lines);
 
         int variableCount = lines.size();
         int var=1;
         
-        EXITImpactMatrix cim = new EXITImpactMatrix(args.maxImpact, variableCount, args.onlyIntegers);
+        EXITImpactMatrix cim = new EXITImpactMatrix(arguments.maxImpact, variableCount, arguments.onlyIntegers);
         
         for(String l : lines) {
 
-            Scanner sc = new Scanner(l).useDelimiter(String.valueOf(args.separator));
+            Scanner sc = new Scanner(l).useDelimiter(String.valueOf(arguments.separator));
             
             cim.setName(var, sc.next() );
             int imp=0;
@@ -71,7 +78,7 @@ public class InputFileReader {
     }
     
     /**
-     * Reads 
+     * Reads EXIT input data from a TXT file (?)
      * @param filename
      * @param separator
      * @return 
@@ -81,8 +88,10 @@ public class InputFileReader {
     }
     
     /**
-     * 
-     * @param lines 
+     * Processes a list of <tt>String</tt>s representing lines of content  
+     * in an input file so that lines that only contain 
+     * whitespace or are empty are removed.
+     * @param lines List of <tt>String</tt>s representing lines of content in an input file
      */
     void eliminateEmptyLines(List<String> lines) {
         
