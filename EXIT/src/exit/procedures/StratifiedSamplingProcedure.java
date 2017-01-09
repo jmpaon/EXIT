@@ -18,7 +18,7 @@ import java.io.PrintStream;
 public class StratifiedSamplingProcedure extends EXITprocedure {
 
     @Override
-    public EXITresult compute(EXITinput input, PrintStream reportingStream ) throws FileNotFoundException {
+    public EXITresult compute(EXITinput input, PrintStream reportingStream) throws FileNotFoundException {
         
         Sampler sampler = new QuickSampler(input.directImpactMatrix, input.arguments.computeUpToLength);
         CrossImpactMatrix summedImpactMatrix = sampler.estimateSummedImpactMatrix(input.arguments.sampleSize);
@@ -27,8 +27,10 @@ public class StratifiedSamplingProcedure extends EXITprocedure {
         result.addPrintable("EXIT analysis with the arguments:", input.arguments.toString());
         result.addPrintable("Direct impact matrix:", input.directImpactMatrix.toString());
         result.addPrintable("Direct impact matrix normalized:", input.directImpactMatrix.normalize().toString());
+        result.addPrintable("Direct impact matrix variable classification:", input.directImpactMatrix.getInfluenceDependencyClassification());
         result.addPrintable("Summed impact matrix:", summedImpactMatrix.toString());
         result.addPrintable("Summed impact matrix normalized:", summedImpactMatrix.normalize().toString());
+        result.addPrintable("Summed impact matrix variable classification:", summedImpactMatrix.getInfluenceDependencyClassification());
         result.addPrintable("Difference matrix of normalized input and output matrices:", 
                 input.directImpactMatrix.normalize().differenceMatrix(summedImpactMatrix.normalize()).toString());
         

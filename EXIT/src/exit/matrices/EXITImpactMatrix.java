@@ -380,46 +380,41 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
     /**
      * @return A string representation of the impact matrix.
      */
-    @Override
-    public String toString() {
-        int labelWidth = 55;
-        int i=0, c, n=0;
-        String stringRepresentation="";
-        
-        // String representation "label" 
-        stringRepresentation += String.format("Cross-impact matrix with maximum impact %1.2f (greatest impact %1.2f)%n", this.maxImpact, this.matrixMax());
-        
-        stringRepresentation += String.format("%"+labelWidth+"s     \t", " ");
-        for(c=0; c<varCount;c++) {
-            stringRepresentation += String.format("%s\t", "V"+(c+1));
-        }
-        stringRepresentation += String.format("%n");
-        
-        while( i < values.length) {
-            stringRepresentation += String.format("%"+labelWidth+"s (%s)\t", truncateName(names[n], labelWidth), ("V"+(n+1)));
-            n++;
-            c=0;
-            while(c < varCount) {
-                if(this.onlyIntegers) {
-                    DecimalFormat fmt = new DecimalFormat("+#,##0;-#");
-                    if(values[i] == 0) 
-                        {stringRepresentation += " 0\t"; } 
-                    else 
-                        {stringRepresentation += fmt.format((int)values[i]) + "\t"; }
-                    //stringRepresentation += String.format("%2d\t", (int)values[i]);
-                } else {
-                    DecimalFormat fmt = new DecimalFormat("+#,##0.00;-#");
-                    stringRepresentation += fmt.format(values[i]) +"\t";
-                    //stringRepresentation += String.format("%2.2f\t", values[i]);
-                }
-                
-                c++;
-                i++;
-            }
-            stringRepresentation += String.format("%n");
-        }
-        return stringRepresentation;
-    }
+//    @Override
+//    public String toString() {
+//        int labelWidth = 55;
+//        int i=0, c, n=0;
+//        String stringRepresentation="";
+//        
+//        stringRepresentation += String.format("%"+labelWidth+"s     \t", " ");
+//        for(c=0; c<varCount;c++) {
+//            stringRepresentation += String.format("%s\t", "V"+(c+1));
+//        }
+//        stringRepresentation += String.format("%n");
+//        
+//        while( i < values.length) {
+//            stringRepresentation += String.format("%"+labelWidth+"s (%s)\t", truncateName(names[n], labelWidth), ("V"+(n+1)));
+//            n++;
+//            c=0;
+//            while(c < varCount) {
+//                if(this.onlyIntegers) {
+//                    DecimalFormat fmt = new DecimalFormat("+#,##0;-#");
+//                    if(values[i] == 0) 
+//                        {stringRepresentation += " 0\t"; } 
+//                    else 
+//                        {stringRepresentation += fmt.format((int)values[i]) + "\t"; }
+//                } else {
+//                    DecimalFormat fmt = new DecimalFormat("+#,##0.00;-#");
+//                    stringRepresentation += fmt.format(values[i]) +"\t";
+//                }
+//                
+//                c++;
+//                i++;
+//            }
+//            stringRepresentation += String.format("%n");
+//        }
+//        return stringRepresentation;
+//    }
     
     
     /**

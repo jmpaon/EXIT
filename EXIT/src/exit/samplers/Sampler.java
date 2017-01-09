@@ -8,6 +8,7 @@ package exit.samplers;
 import exit.matrices.CrossImpactMatrix;
 import exit.matrices.EXITImpactMatrix;
 import exit.matrices.ImpactChain;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,22 +21,40 @@ import java.util.List;
  */
 public abstract class Sampler {
     
+    
     /**
      * The <tt>EXITImpactMatrix</tt> this sampler is linked to and 
      * whose summed impact matrix is returned by the 
      * <tt>estimateSummedImpactMatrix</tt> method.
      */
     public final EXITImpactMatrix matrix;
+    public final PrintStream reportingStream;
+    
     
     /**
      * Constructor
      * @param matrix <tt>EXITImpactMatrix</tt>
      */
     public Sampler(EXITImpactMatrix matrix) {
+        this(matrix, null);
+    }
+    
+    
+    public Sampler(EXITImpactMatrix matrix, PrintStream reportingStream) {
         assert matrix != null;
         this.matrix = matrix;
+        this.reportingStream = reportingStream;        
     }
 
+    /**
+     * Prints <b>text</b> to a new line in <b>reportingStream</b>.
+     * @param text 
+     */
+    protected void report(String text) {
+        if(reportingStream == null) return;
+        reportingStream.println(text);
+    }
+    
     
     /**
      * Returns a summed impact matrix 
@@ -77,10 +96,12 @@ public abstract class Sampler {
         
         CrossImpactMatrix summedImpactMatrix = new CrossImpactMatrix(matrix.copy().flush());
         
+        report("Computing all summed impacts in input matrix");
         for(int impactor=1; impactor<=summedImpactMatrix.getVarCount(); impactor++) {
             for(int impacted=1;impacted<=summedImpactMatrix.getVarCount();impacted++) {
                 for(int length=2;length<=summedImpactMatrix.getVarCount();length++) {
                     if(impactor != impacted) {
+                        report(String.format("Computing impact of %s on %s", matrix.getNameShort(impactor), matrix.getNameShort(impacted)));
                         double currentValue = summedImpactMatrix.getValue(impactor, impacted);
                         double addedValue   = computeAll(impactor,impacted, length);
                         summedImpactMatrix.setValue(impactor, impacted, currentValue + addedValue );

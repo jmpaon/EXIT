@@ -328,7 +328,7 @@ public class SquareMatrix {
      * @param varIndex Variable index
      * @return A short name for variable <i>varIndex</i>
      */
-    protected String getNameShort(int varIndex) {
+    public String getNameShort(int varIndex) {
         //if (varIndex < 1 || varIndex > varCount) {
         if (! isIndexValid(varIndex )) {
             String s = String.format("No name for index [%d], varCount for the matrix is %d.", varIndex, varCount);
@@ -539,6 +539,17 @@ public class SquareMatrix {
     }
     
     
+    /**
+     * Returns the length (in chars) of the longest variable name in the matrix.
+     * @return int : Length of the longest variable name
+     */
+    protected int longestNameLength() {
+        int longest = names[0].length();
+        for(String s : names) if (s.length() > longest) longest = s.length();
+        return longest;
+    }
+    
+    
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -558,18 +569,8 @@ public class SquareMatrix {
             n++;
             c=0;
             while(c < varCount) {
-                if(false ) { // if onlyIntegers
-                    DecimalFormat fmt = new DecimalFormat("+###0;-#");
-                    if(values[i] == 0) 
-                        {sb.append(" 0\t");} 
-                    else 
-                        {sb.append(fmt.format((int)values[i])).append("\t");}
-                    
-                } else {
-                    DecimalFormat fmt = new DecimalFormat("+###0.00;-#");
-                    sb.append(fmt.format(values[i])).append("\t");
-                    
-                }
+                DecimalFormat fmt = new DecimalFormat("+###0.00;-#");
+                sb.append(fmt.format(values[i])).append("\t");
                 
                 c++;
                 i++;

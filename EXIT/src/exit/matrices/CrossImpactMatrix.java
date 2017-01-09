@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class CrossImpactMatrix extends SquareMatrix{
     /**
      * 
      */
-    public enum InfluenceDependenceClassification {
+    public enum InfluenceDependenceClass {
         STABLE,   /* Low  influence, low dependence */
         REACTIVE, /* Low influence, high dependence */
         DRIVER,   /* High influence, low dependence */
@@ -283,7 +284,7 @@ public class CrossImpactMatrix extends SquareMatrix{
      * <tt>CrossImpactMatrix</tt>.
      * @return 
      */
-    public Map<Integer, InfluenceDependenceClassification> classifyVariables() {
+    public Map<Integer, InfluenceDependenceClass> classifyVariables() {
         
         double rowSumAverage=0, colSumAverage=0;
         
@@ -295,23 +296,31 @@ public class CrossImpactMatrix extends SquareMatrix{
         rowSumAverage /= this.varCount;
         colSumAverage /= this.varCount;
         
-        Map<Integer, InfluenceDependenceClassification> classification = new TreeMap<>();
+        Map<Integer, InfluenceDependenceClass> classification = new TreeMap<>();
         for(int i=1;i<=this.varCount;i++) {
             if(this.rowSum(i, true) > rowSumAverage) {
                 if(this.columnSum(i, true) > colSumAverage) {
-                    classification.put(i, InfluenceDependenceClassification.CRITICAL);
+                    classification.put(i, InfluenceDependenceClass.CRITICAL);
                 } else {
-                    classification.put(i, InfluenceDependenceClassification.DRIVER);
+                    classification.put(i, InfluenceDependenceClass.DRIVER);
                 }
             } else {
                 if(this.columnSum(i, true) > colSumAverage) {
-                    classification.put(i, InfluenceDependenceClassification.REACTIVE);
+                    classification.put(i, InfluenceDependenceClass.REACTIVE);
                 } else {
-                    classification.put(i, InfluenceDependenceClassification.STABLE);
+                    classification.put(i, InfluenceDependenceClass.STABLE);
                 }                
             }
         }
         return classification;
+    }
+    
+    public Classification getInfluenceDependencyClassification() {
+        Map<String, String> map = new LinkedHashMap<>();
+        for(Map.Entry<Integer, InfluenceDependenceClass> e : classifyVariables().entrySet()) {
+            map.put(this.getNamePrint(e.getKey()), e.getValue().toString());
+        }
+        return new Classification(map);
     }
     
     
@@ -364,6 +373,25 @@ public class CrossImpactMatrix extends SquareMatrix{
     }
     
     
+    public class Classification<K,V> {
+        
+        Map<K, V> map;
+        
+        public Classification(Map<K,V> map) {
+            assert map != null;
+            this.map = map;
+        }
+        
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            for(Map.Entry<K,V> entry : map.entrySet() ) {
+                sb.append(entry.getKey().toString()).append(" : ").append(entry.getValue().toString()).append("\n");
+            }
+            return sb.toString();            
+        }
+        
+    }
     
     
     /**

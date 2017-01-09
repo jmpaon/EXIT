@@ -6,15 +6,15 @@
 package exit;
 
 
-import exit.reader.EXITarguments;
+import exit.io.EXITarguments;
 import exit.procedures.Reporter;
 import exit.procedures.Timer;
 import exit.matrices.RandomInputMatrixGenerator;
 import exit.matrices.CrossImpactMatrix;
-import exit.reader.InputFileReader;
+import exit.io.InputFileReader;
 
 import exit.matrices.EXITImpactMatrix;
-import exit.reader.EXITargumentException;
+import exit.io.EXITargumentException;
 import exit.matrices.ImpactChain;
 import exit.procedures.EXITinput;
 import exit.procedures.EXITprocedure;

@@ -2,7 +2,7 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package exit.reader;
+package exit.io;
 
 import exit.EXITexception;
 import exit.matrices.EXITImpactMatrix;

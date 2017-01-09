@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
+
 
 /**
  * This class provides cross-impact matrices with random values as contents
@@ -80,6 +82,49 @@ public class RandomInputMatrixGenerator {
         assert greatestImpact <= maxImpact;
         return new EXITImpactMatrix(generateCrossImpactMatrix(varCount, impactProbability, greatestImpact), maxImpact);
     }
+    
+    /**
+     * Returns a new <tt>EXITImpactMatrix</tt> with random content and 
+     * <b>strongChainCount</b> cases of impact chains where each link in the chain
+     * has impact equal to <b>greatestImpact</b>.
+     * for testing purposes.
+     * @param varCount Number of variables in the matrix
+     * @param impactProbability The probability of a matrix entry to have an impact; range [0..1]
+     * @param greatestImpact Greatest possible absolute impact that the random values can have
+     * @param maxImpact The maximum allowed impact value of EXIT impact matrix
+     * @param strongChainCount Number of 'strong' impact chains
+     * @return EXITImpactMatrix
+     */
+    public static EXITImpactMatrix generateEXITImpactMatrix(int varCount, double impactProbability, double greatestImpact, double maxImpact, int strongChainCount) {
+        assert strongChainCount < (varCount*(varCount-1)) : "There should be less 'strong chains' than directed variable pairs"; 
+        EXITImpactMatrix matrix = generateEXITImpactMatrix(varCount, impactProbability, greatestImpact, maxImpact);
+        
+        while(strongChainCount-- > 0) {
+            int impactor = randBetween(1, matrix.getVarCount());
+            int impacted = impactor; while(impacted == impactor) impacted = randBetween(1, matrix.getVarCount());
+            int length = randBetween(2, matrix.getVarCount());
+            
+            /* Place a strong impact chain into matrix */
+            ImpactChain ic = ImpactChain.randomChain(matrix, impactor, impacted, length);
+            for(int pos=1; pos < ic.memberCount; pos++) {
+                matrix.setValue(ic.chainMembers.get(pos), ic.chainMembers.get(pos+1), greatestImpact);
+            }
+        }
+        
+        return matrix;
+    }
+    
+    
+    /**
+     * 
+     * @param min
+     * @param max
+     * @return 
+     */
+    static int randBetween(int min, int max) {
+        return ThreadLocalRandom.current().nextInt(min, max + 1);
+    }
+    
     
     
 }

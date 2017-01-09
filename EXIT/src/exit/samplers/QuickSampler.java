@@ -20,8 +20,7 @@ import java.util.List;
  * @author juha
  */
 public class QuickSampler extends Sampler {
-    
-    private static final double SAMPLING_THRESHOLD = 150; /* Chains of length 7 are computed and longer chains sampled */
+
     private final int computeUpToLength;
 
     
@@ -62,9 +61,12 @@ public class QuickSampler extends Sampler {
     public CrossImpactMatrix estimateSummedImpactMatrix(int sampleSize) {
         assert sampleSize > 0 : "SampleSize must be greater than 0";
         CrossImpactMatrix summedImpactMatrix = new CrossImpactMatrix(matrix.copy().flush());
+        
+        report("Estimating summed impacts...");
         for(int impactor = 1; impactor <= matrix.getVarCount(); impactor++) {
             for(int impacted = 1; impacted <= matrix.getVarCount(); impacted++) {
                 if(impactor != impacted) {
+                    report(String.format("Estimating impact of %s on %s", matrix.getNameShort(impactor), matrix.getNameShort(impacted)));
                     summedImpactMatrix.setValue(impactor, impacted, computeOrSampleSummedImpact(impactor, impacted, sampleSize));
                 }
             }
@@ -86,7 +88,6 @@ public class QuickSampler extends Sampler {
     double computeOrSampleSummedImpact(int impactorIndex, int impactedIndex, int sampleSize) {
         double summedImpact = 0;
         for(int length=2;length<=matrix.getVarCount();length++) {
-            //if(EXITImpactMatrix.factorial(length-2) < SAMPLING_THRESHOLD ) {
             if (length <= computeUpToLength) {
                 summedImpact += computeAll(impactorIndex, impactedIndex, length);
             } else {

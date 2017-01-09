@@ -5,7 +5,7 @@
  */
 package exit.procedures;
 
-import exit.reader.EXITarguments;
+import exit.io.EXITarguments;
 import exit.matrices.EXITImpactMatrix;
 
 

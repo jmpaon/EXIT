@@ -10,6 +10,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -18,7 +19,7 @@ import java.util.List;
 public class EXITresult {
     public final EXITinput input;
     public final CrossImpactMatrix resultMatrix;
-    public final List<String> printables;
+    public final List<Object> printables;
     public final PrintStream output;
 
     public EXITresult(EXITinput input, CrossImpactMatrix resultMatrix) throws FileNotFoundException {
@@ -34,25 +35,35 @@ public class EXITresult {
         
     }
     
-    public void addPrintable(String printable) {
+//    public void addPrintable(String printable) {
+//        assert printable != null;
+//        printables.add(printable);
+//    }
+    
+    public void addPrintable(Object printable) {
         assert printable != null;
         printables.add(printable);
     }
     
-    public void addPrintable(String heading, String printable) {
-        assert printable != null && heading != null;
-        printables.add(heading);
+    public void addPrintable(String heading, Object printable) {
+        printables.add(underlined(heading));
         printables.add(printable);
     }
     
     public void print() {
-        for(String s : printables) {
-            output.println(s);
-            output.println();
+        for(Object o : printables) {
+            output.println(o.toString());
         }
     }
-        
     
+    protected String underlined(String text) {
+        StringBuilder sb = new StringBuilder(text);
+        sb.append("\n");
+        for(int i=0;i<text.length();i++) {
+            sb.append("=");
+        }
+        return sb.toString();
+    }
     
     
     

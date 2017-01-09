@@ -67,6 +67,7 @@ public class ImpactChain implements Comparable<ImpactChain>  {
         this.memberCount = this.chainMembers.size();
     }
     
+    
     /**
      * @param matrix The cross-impact matrix from whose variables 
      * this <code>ImpactChain</code> is constructed of
@@ -96,11 +97,12 @@ public class ImpactChain implements Comparable<ImpactChain>  {
         this.memberCount = this.chainMembers.size();
     }
     
+    
     /**
      * Returns an impact chain where
      * variable with index <b>impactorIndex</b> is the impactor,
      * variable with index <b>impactedIndex</b> is the impacted,
- and totalLength is <b>totalLength</b>.
+     * and totalLength is <b>totalLength</b>.
      * The number of randomly picked variables in the chain
      * will therefore be <u><b>totalLength</b>-2</u>.
      * @param matrix The <tt>EXITImpactMatrix</tt> the random chain derives from
