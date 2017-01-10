@@ -8,6 +8,7 @@ package exit.samplers;
 import exit.matrices.CrossImpactMatrix;
 import exit.matrices.EXITImpactMatrix;
 import exit.matrices.ImpactChain;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.LinkedList;
 
@@ -30,6 +31,10 @@ public class ImpactChainSampler extends Sampler {
         super(matrix);
     }
     
+    public ImpactChainSampler(EXITImpactMatrix matrix, PrintStream reportingStream) {
+        super(matrix, reportingStream);
+    }
+    
     
     /**
      * Returns a <tt>CrossImpactMatrix</tt> that contains the <u>estimated</u> summed 
@@ -46,6 +51,7 @@ public class ImpactChainSampler extends Sampler {
         for(int impactor=1;impactor<=matrix.getVarCount();impactor++) {
             for(int impacted=1;impacted<=matrix.getVarCount();impacted++) {
                 if (impactor != impacted) {
+                    reportf("Estimating total impact of %s on %s...%n", matrix.getNameShort(impactor), matrix.getNameShort(impacted));
                     im.setValue(impactor, impacted, estimateSummedImpact(impactor, impacted, sampleSize));
                 }
             }

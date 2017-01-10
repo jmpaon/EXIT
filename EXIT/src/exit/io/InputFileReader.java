@@ -6,10 +6,10 @@ package exit.io;
 
 import exit.EXITexception;
 import exit.matrices.EXITImpactMatrix;
-import exit.procedures.Reporter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.LinkedList;
@@ -22,6 +22,18 @@ import java.util.List;
  * @author jmpaon
  */
 public class InputFileReader {
+    
+    final PrintStream reportingStream;
+    
+    public InputFileReader() {this(null);}
+    
+    public InputFileReader(PrintStream reportingStream) {
+        this.reportingStream = reportingStream;
+    }
+    
+    protected void report(String text) {
+        if(this.reportingStream != null) reportingStream.println(text);
+    }
     
     public EXITImpactMatrix readInputFile(EXITarguments arguments) throws IOException, EXITexception {
         
@@ -41,7 +53,7 @@ public class InputFileReader {
      */
     EXITImpactMatrix readCSVfile(EXITarguments arguments) throws IOException, EXITexception {
         
-        Reporter.msg(String.format("Reading impact matrix data from file %s%n", arguments.inputFilename),5);
+        report(String.format("Reading impact matrix data from file %s%n", arguments.inputFilename,5));
         
         if(! fileExists(arguments.inputFilename)) throw new FileNotFoundException(String.format("Input file %s not found", arguments.inputFilename));
         
@@ -72,7 +84,7 @@ public class InputFileReader {
         }
 
         cim.lock();
-        Reporter.msg(String.format("Read %d variables from input file.%n", cim.getVarCount()),4);
+        report(String.format("Read %d variables from input file.%n", cim.getVarCount(),4));
         return cim;
 
     }

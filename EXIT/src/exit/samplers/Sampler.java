@@ -55,6 +55,10 @@ public abstract class Sampler {
         reportingStream.println(text);
     }
     
+    protected void reportf(String text, Object... objs) {
+        reportingStream.printf(text, objs);
+    }
+    
     
     /**
      * Returns a summed impact matrix 

@@ -20,7 +20,9 @@ public class StratifiedSamplingProcedure extends EXITprocedure {
     @Override
     public EXITresult compute(EXITinput input, PrintStream reportingStream) throws FileNotFoundException {
         
-        Sampler sampler = new QuickSampler(input.directImpactMatrix, input.arguments.computeUpToLength);
+        assert input != null;
+        
+        Sampler sampler = new QuickSampler(input.directImpactMatrix, input.arguments.computeUpToLength, reportingStream);
         CrossImpactMatrix summedImpactMatrix = sampler.estimateSummedImpactMatrix(input.arguments.sampleSize);
         EXITresult result = new EXITresult(input, summedImpactMatrix);
         

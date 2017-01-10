@@ -7,7 +7,7 @@ package exit;
 
 
 import exit.io.EXITarguments;
-import exit.procedures.Reporter;
+
 import exit.procedures.Timer;
 import exit.matrices.RandomInputMatrixGenerator;
 import exit.matrices.CrossImpactMatrix;
@@ -108,7 +108,7 @@ public class EXIT {
             
             EXITinput input = new EXITinput(inputMatrix, arguments);
             EXITprocedure procedure = new StratifiedSamplingProcedure();
-            EXITresult result = procedure.compute(input);
+            EXITresult result = procedure.compute(input, System.out);
             result.print();
             
      

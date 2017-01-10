@@ -7,7 +7,7 @@ package exit.samplers;
 
 import exit.matrices.CrossImpactMatrix;
 import exit.matrices.EXITImpactMatrix;
-import exit.samplers.Sampler;
+import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.List;
 
@@ -46,6 +46,15 @@ public class QuickSampler extends Sampler {
         this.computeUpToLength = computeUpToLength;
     }
     
+    public QuickSampler(EXITImpactMatrix matrix, int computeUpToLength, PrintStream reportingStream) {
+        super(matrix, reportingStream);
+        this.computeUpToLength = computeUpToLength;
+    }
+    
+    public QuickSampler(EXITImpactMatrix matrix, PrintStream reportingStream) {
+        this(matrix, 7, reportingStream);
+    }
+    
     
     /**
      * Returns a <tt>CrossImpactMatrix</tt> that contains the <u>estimated</u> summed 
@@ -66,7 +75,8 @@ public class QuickSampler extends Sampler {
         for(int impactor = 1; impactor <= matrix.getVarCount(); impactor++) {
             for(int impacted = 1; impacted <= matrix.getVarCount(); impacted++) {
                 if(impactor != impacted) {
-                    report(String.format("Estimating impact of %s on %s", matrix.getNameShort(impactor), matrix.getNameShort(impacted)));
+                    //report(String.format("Estimating impact of %s on %s", matrix.getNameShort(impactor), matrix.getNameShort(impacted)));
+                    reportf("Estimating impact of %s on %s...%n", matrix.getNameShort(impactor), matrix.getNameShort(impacted));
                     summedImpactMatrix.setValue(impactor, impacted, computeOrSampleSummedImpact(impactor, impacted, sampleSize));
                 }
             }
@@ -88,12 +98,16 @@ public class QuickSampler extends Sampler {
     double computeOrSampleSummedImpact(int impactorIndex, int impactedIndex, int sampleSize) {
         double summedImpact = 0;
         for(int length=2;length<=matrix.getVarCount();length++) {
+            
             if (length <= computeUpToLength) {
+                reportf("\tComputing chains of length %d%n", length);
                 summedImpact += computeAll(impactorIndex, impactedIndex, length);
             } else {
+                reportf("\tEstimating chains of length %d%n", length);
                 summedImpact += estimateSummedImpact(impactorIndex, impactedIndex, length, sampleSize);
             }
         }
+        reportf("%n");
         return summedImpact;        
     }
     

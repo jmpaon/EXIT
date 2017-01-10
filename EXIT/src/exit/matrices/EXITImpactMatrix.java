@@ -5,7 +5,7 @@
 package exit.matrices;
 
 
-import exit.procedures.Reporter;
+
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -169,14 +169,14 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
         CrossImpactMatrix resultMatrix = new CrossImpactMatrix(varCount, names, false);
         double totalCount=0;
         for (int impactor=1; impactor<=this.varCount; impactor++) {
-            Reporter.msg("Calculating significant indirect impacts of %s(%s)... ", getNameShort(impactor), truncateName(getName(impactor), 15));
+            
             ImpactChain chain = new ImpactChain(this, Arrays.asList(impactor));
             double count = sumImpacts(chain, impactThreshold, resultMatrix);
             totalCount += count;
-            Reporter.msg("%10.0f significant (threshold %1.4f) impact chains found%n", count, impactThreshold);
+            
         }
-        Reporter.msg("%s significant (threshold %1.4f) impact chains found in the matrix.%n", Math.round(totalCount), impactThreshold);
-        Reporter.msg("The total number of possible chains in this matrix is %s.%n", chainCount_approximate());
+        
+        
 
         return resultMatrix;
     }

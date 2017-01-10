@@ -32,13 +32,7 @@ public class EXITresult {
         } else {
             this.output = new PrintStream(input.arguments.outputFilename);
         }
-        
     }
-    
-//    public void addPrintable(String printable) {
-//        assert printable != null;
-//        printables.add(printable);
-//    }
     
     public void addPrintable(Object printable) {
         assert printable != null;
