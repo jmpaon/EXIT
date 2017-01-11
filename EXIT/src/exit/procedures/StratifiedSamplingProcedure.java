@@ -6,8 +6,8 @@
 package exit.procedures;
 
 import exit.matrices.CrossImpactMatrix;
-import exit.samplers.QuickSampler;
-import exit.samplers.Sampler;
+import exit.estimators.QuickSampler;
+import exit.estimators.Sampler;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 

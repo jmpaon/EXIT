@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package exit.samplers;
+package exit.estimators;
 
 import exit.matrices.CrossImpactMatrix;
 import exit.matrices.EXITImpactMatrix;
@@ -51,11 +51,14 @@ public abstract class Sampler {
      * @param text 
      */
     protected void report(String text) {
+        assert text != null;
         if(reportingStream == null) return;
         reportingStream.println(text);
     }
     
     protected void reportf(String text, Object... objs) {
+        assert text != null;
+        if(reportingStream == null) return;
         reportingStream.printf(text, objs);
     }
     
@@ -139,7 +142,6 @@ public abstract class Sampler {
         List<Integer> usedIndices = new ArrayList<>();
         usedIndices.add(impactorIndex);
         usedIndices.add(impactedIndex);
-        //return Sampler.this.computeAll(impactorIndex, impactedIndex, length, usedIndices);
         return computeAll(impactorIndex, impactedIndex, length, usedIndices);
     }
     

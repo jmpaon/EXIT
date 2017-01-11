@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package exit.samplers;
+package exit.estimators;
 
 import exit.matrices.CrossImpactMatrix;
 import exit.matrices.EXITImpactMatrix;
@@ -22,6 +22,7 @@ import java.util.List;
 public class QuickSampler extends Sampler {
 
     private final int computeUpToLength;
+    private static final int COMPUTATION_CHAIN_LIMIT = 40000;
 
     
     /**
@@ -30,7 +31,7 @@ public class QuickSampler extends Sampler {
      */
     public QuickSampler(EXITImpactMatrix matrix) {
         super(matrix);
-        this.computeUpToLength = 7; /* Chains of length 7 are computed and longer chains sampled */
+        this.computeUpToLength = sensibleComputeUpToLength();
     }
     
     
@@ -52,7 +53,23 @@ public class QuickSampler extends Sampler {
     }
     
     public QuickSampler(EXITImpactMatrix matrix, PrintStream reportingStream) {
-        this(matrix, 7, reportingStream);
+        super(matrix, reportingStream);
+        //this.matrix = matrix;
+        //this.reportingStream = reportingStream;
+        this.computeUpToLength = sensibleComputeUpToLength();
+    }
+    
+    
+    /**
+     * Suggests a sensible <i>computeUpToLength</i> value, 
+     * based on the idea that the number of chains of a specific length
+     * should not exceed the constant <i>COMPUTATION_CHAIN_LIMIT</i>.
+     * @return int : suggestion for a sensible <i>computeUpToLength</i> value
+     */
+    private int sensibleComputeUpToLength() {
+        int suggestion = 2;
+        while(suggestion < matrix.getVarCount() && EXITImpactMatrix.chainCount_intermediary(matrix.getVarCount(), suggestion-2) < COMPUTATION_CHAIN_LIMIT) suggestion++;
+        return suggestion;
     }
     
     
@@ -84,6 +101,7 @@ public class QuickSampler extends Sampler {
         return summedImpactMatrix;
     }
     
+    
     /**
      * Returns an estimate of the 
      * summed impact of variable with index <b>impactorIndex</b> on
@@ -100,10 +118,10 @@ public class QuickSampler extends Sampler {
         for(int length=2;length<=matrix.getVarCount();length++) {
             
             if (length <= computeUpToLength) {
-                reportf("\tComputing chains of length %d%n", length);
+                reportf("\tComputing impact of chains of length %d%n", length);
                 summedImpact += computeAll(impactorIndex, impactedIndex, length);
             } else {
-                reportf("\tEstimating chains of length %d%n", length);
+                reportf("\tEstimating impact chains of length %d from a sample%n", length);
                 summedImpact += estimateSummedImpact(impactorIndex, impactedIndex, length, sampleSize);
             }
         }

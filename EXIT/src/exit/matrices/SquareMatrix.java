@@ -5,10 +5,9 @@
  */
 package exit.matrices;
 
-import exit.samplers.Sampler;
+
 import java.text.DecimalFormat;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
@@ -501,10 +500,11 @@ public class SquareMatrix {
     /**
      * Tests if values of this matrix deviate
      * from the values of <b>matrix</b>
-     * at most by value of <b>maxDifference</b>
+     * at most by value of <b>maxDifference</b>.
+     * Note that equality measured like this is not symmetric.
      * @param matrix matrix to compare against this one in terms of impact sizes
      * @param maxDifference The maximum relative difference allowed to still consider the matrices approximately same in terms of values
-     * @return <b>true</b> if
+     * @return boolean
      */
     boolean equalsApproximately(SquareMatrix matrix, double maxDifference) {
         if(maxDifference <= 0) throw new IllegalArgumentException("maxDifference must be greater than 0");

@@ -113,6 +113,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
         this(maxImpact, varCount, true);
     }
     
+    
     /**
      * Creates a <tt>CrossImpactMatrix</tt> from a <tt>SquareMatrix</tt>.
      * @param matrix <tt>SquareMatrix</tt> that is a valid <tt>EXITImpactMatrix</tt>
@@ -120,6 +121,8 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
     public EXITImpactMatrix(SquareMatrix matrix) {
         this(matrix, matrix.matrixMax());
     }
+    
+    
     /**
      * Creates a <tt>CrossImpactMatrix</tt> from a <tt>SquareMatrix</tt>.
      * @param matrix <tt>SquareMatrix</tt> that is a valid <tt>EXITImpactMatrix</tt>
@@ -135,13 +138,14 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
         
         for(int i=1;i<=this.varCount;i++) {
             assert this.getValue(i, i) == 0: 
-                    "SquareMatrix "+matrix+" is not valid EXITImpactMatrix. Impact of hypothesis on itself not allowed";
+                    "SquareMatrix "+matrix+" is not valid EXITImpactMatrix. Impact of variable on itself not allowed";
         }
+        
         for(double d : this.values) {
             assert d <= this.maxImpact;
         }
-        
     }
+    
     
     /**
      * Calculates the relative impact of all possible impact chains 
@@ -149,80 +153,25 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
      * the summed direct and indirect values between the variables.
      * @return CrossImpactMatrix : summed direct and indirect impacts between variables
      */
-    public CrossImpactMatrix computedSummedImpactMatrix() {
-        throw new UnsupportedOperationException();
-    }
-    
-    
-    /**
-     * Estimates by pruning strategy and returns 
-     * a new <code>EXITImpactMatrix</code> that contains
-     * the summed direct and indirect values between the variables.
-     * In the returned matrix, 
-     * impactor variables are in rows 
-     * and impacted variables are in columns.
-     * @param impactThreshold The low bound for inclusion for the impact of chains that are summed in the matrix. 
-     * See {@link ImpactChain#highImpactChains(double)}.
-     * @return <code>EXITImpactMatrix</code> with the summed direct and indirect values between variables
-     */
-    public CrossImpactMatrix prunedSummedImpactMatrix(double impactThreshold) {
-        CrossImpactMatrix resultMatrix = new CrossImpactMatrix(varCount, names, false);
-        double totalCount=0;
-        for (int impactor=1; impactor<=this.varCount; impactor++) {
-            
-            ImpactChain chain = new ImpactChain(this, Arrays.asList(impactor));
-            double count = sumImpacts(chain, impactThreshold, resultMatrix);
-            totalCount += count;
-            
-        }
-        
-        
-
-        return resultMatrix;
-    }
-    
-    
-    /**
-     * If impact of <b>chain</b> is higher than <b>impactThreshold</b>,
-     * it is added to <b>resultMatrix</b> and the possible immediate expansions of
-     * <b>chain</b> are generated 
-     * and {@link CrossImpactMatrix#sumImpacts(exit.ImpactChain, double, exit.CrossImpactMatrix)}
-     * is called recursively on the expansion chains.
-     * @param chain <code>ImpactChain</code> to consider for addition to <b>resultMatrix</b>
-     * @param impactThreshold <b>chain</b> must have an impact of at least this value to be added to <b>resultMatrix</b>
-     * @param resultMatrix <code>EXITImpactMatrix</code> where the significant values are summed
-     * @return count of significant impact chains found in <b>chain</b> and its expansions.
-     */
-    private double sumImpacts(ImpactChain chain, double impactThreshold, CrossImpactMatrix resultMatrix) {
-        
-        double count = 0;
-        if(Math.abs(chain.impact()) >= impactThreshold) {
-            count++;
-            int impactor = chain.impactorIndex();
-            int impacted = chain.impactedIndex();
-            double accumulatedValue = resultMatrix.getValue(impactor, impacted);
-            double additionValue    = chain.impact();
-            double newValue         = accumulatedValue + additionValue;
-            
-            if(impactor != impacted) {
-                resultMatrix.setValue(impactor, impacted, newValue);
-            }
-            
-            if(chain.hasExpansion()) {
-                Set<ImpactChain> expansions = chain.continuedByOne();
-                for(ImpactChain ic : expansions) {
-                    count += sumImpacts(ic, impactThreshold, resultMatrix);
-                }
+    public CrossImpactMatrix computeSummedImpactMatrix() {
+        CrossImpactMatrix result = new CrossImpactMatrix(new SquareMatrix(this).flush());
+        for(int impactor=1;impactor<=varCount;impactor++) {
+            for(int impacted=1;impacted<=varCount;impacted++) {
+                if (impactor == impacted) continue;
+                ImpactChain chain = new ImpactChain(this, impactor, impacted);
+                result.setValue(impactor, impacted, computeExpansions(chain));
             }
         }
-        return count;
+        return result;
     }
     
-    
-    
-    
-
-    
+    private double computeExpansions(ImpactChain chain) {
+        double sum = chain.impact();
+        for(ImpactChain expansion : chain.continuedByOneIntermediary()) {
+            sum += computeExpansions(expansion);
+        }
+        return sum;
+    }
     
     
     /**
@@ -234,7 +183,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
      * @return String for printing out information about count of possible chains
      * in the matrix
      */
-    String chainCount_approximate() {
+    public String chainCount_approximate() {
         int n = varCount;
         double chainCount = chainCount() ;
         
@@ -256,7 +205,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
      * between two variables in a cross-impact system of <b>varCount</b> variables.
      * @param varCount The total number of variables in the cross-impact system
      * @param length The length of the chains whose count is returned (maximum value is <b>varCount</b>-2)
-     * @return double
+     * @return double : number of possible chains between 
      */
     public static double chainCount_intermediary(int varCount, int length) {
         assert !(length > varCount-2) : String.format("Intermediary chains of length %d not possible in a cross-impact system of %d variables", length, varCount);
@@ -266,6 +215,12 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
     }
 
 
+    /**
+     * Returns the approximate number of chains (of any length) 
+     * in a cross-impact system of <b>varCount</b> variables.
+     * @param varCount The total number of variables in the cross-impact system
+     * @return double : number of possible chains
+     */
     public static double chainCount(int varCount) {
         int n = 0;
         double count = 0;
@@ -284,7 +239,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
      * so they aren't included in the count.
      * @return The number of possible impact chains in this matrix.
      */
-    double chainCount() {
+    public double chainCount() {
         return EXITImpactMatrix.this.chainCount(this.varCount);
     }
     
@@ -329,92 +284,6 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
     
     
     
-    /**
-     * Generates and returns 
-     * a list of impact chains possible in this matrix 
-     * that have impact value greater than <b>threshold</b>.
-     * @param impactor Index of impactor variable. 
-     * Only chains starting with this variable are included in returned list.
-     * Can also be null; if null, chains starting with any variable 
-     * are returned.
-     * @param impacted Index of impacted variable. 
-     * Only chains ending in this variable are included in returned list.
-     * Can also be null; if null, chains ending in any variable 
-     * are returned.
-     * @param threshold The required minimum impact a chain must have to be included in returned list.
-     * @return A <code>List</code> of impact chains with impact higher than <i>threshold</i> and that have
-     * the impactor and impacted variables specified in the <b>impactor</b> and <b>impacted</b> arguments.
-     */
-    List<ImpactChain> indirectImpacts(Integer impactor, Integer impacted, double threshold) {
-        
-        if(impactor != null && (impactor <1 || impactor > varCount)) throw new IndexOutOfBoundsException("impactOf index is not present in the matrix");
-        if(impacted != null && (impacted <1 || impacted > varCount)) throw new IndexOutOfBoundsException("impactOn index is not present in the matrix");
-        if(threshold <=0 || threshold > 1) throw new IllegalArgumentException("threshold value is not in range ]0..1]");
-        
-        List<Integer> initialChain = null;
-        if(impactor != null) {
-            initialChain = new LinkedList<>(Arrays.asList(impactor));
-        }
-        
-        ImpactChain ic = new ImpactChain(this, initialChain);
-        
-        Set<ImpactChain> chains = ic.highImpactChains(threshold);
-        
-        if(impacted != null) {
-            chains = chains.stream()
-                    .filter(c -> c.impactedIndex() == impacted)
-                    .collect(Collectors.toSet());
-        }
-        
-        return chains.stream()
-                .sorted(new ImpactComparator())
-                .filter(c -> c.memberCount > 1)
-                .collect(Collectors.toList());
-    }
-
-    
-    
-
-    
-    
-    /**
-     * @return A string representation of the impact matrix.
-     */
-//    @Override
-//    public String toString() {
-//        int labelWidth = 55;
-//        int i=0, c, n=0;
-//        String stringRepresentation="";
-//        
-//        stringRepresentation += String.format("%"+labelWidth+"s     \t", " ");
-//        for(c=0; c<varCount;c++) {
-//            stringRepresentation += String.format("%s\t", "V"+(c+1));
-//        }
-//        stringRepresentation += String.format("%n");
-//        
-//        while( i < values.length) {
-//            stringRepresentation += String.format("%"+labelWidth+"s (%s)\t", truncateName(names[n], labelWidth), ("V"+(n+1)));
-//            n++;
-//            c=0;
-//            while(c < varCount) {
-//                if(this.onlyIntegers) {
-//                    DecimalFormat fmt = new DecimalFormat("+#,##0;-#");
-//                    if(values[i] == 0) 
-//                        {stringRepresentation += " 0\t"; } 
-//                    else 
-//                        {stringRepresentation += fmt.format((int)values[i]) + "\t"; }
-//                } else {
-//                    DecimalFormat fmt = new DecimalFormat("+#,##0.00;-#");
-//                    stringRepresentation += fmt.format(values[i]) +"\t";
-//                }
-//                
-//                c++;
-//                i++;
-//            }
-//            stringRepresentation += String.format("%n");
-//        }
-//        return stringRepresentation;
-//    }
     
     
     /**

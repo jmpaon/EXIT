@@ -5,7 +5,7 @@
  */
 package exit.matrices;
 
-import exit.samplers.ImpactChainSampler;
+import exit.estimators.ImpactChainSampler;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -134,8 +134,8 @@ public class ImpactChain implements Comparable<ImpactChain>  {
      * are the same as in this chain, total totalLength is equal to <b>totalLength</b>
      * and the intermediary variables are randomly picked variables from 
      * yet available variables in the matrix
-     * @param totalLength
-     * @return 
+     * @param totalLength Total length (including impactor and impacted variables) of the chain
+     * @return ImpactChain
      */
     public ImpactChain randomChain(int totalLength) {
         assert totalLength > 1 && totalLength <= this.memberCount : String.format("Requested length is %d, creating chain is of length %d", totalLength, this.memberCount);
@@ -152,14 +152,6 @@ public class ImpactChain implements Comparable<ImpactChain>  {
     static List<Integer> intermediaryIndices(EXITImpactMatrix matrix, int impactorIndex, int impactedIndex) {
         assert matrix.isIndexValid(impactorIndex) && matrix.isIndexValid(impactedIndex);
         return new ArrayList<>(new ImpactChain(matrix, impactorIndex, impactedIndex).expandableBy());
-        
-//        List<Integer> indices = new ArrayList<>();
-//        for(int i=1;i<=matrix.getVarCount();i++) {
-//            if(i != impactorIndex && i != impactedIndex) {
-//                indices.add(i);
-//            }
-//        }
-//        return indices;        
     }
     
     
@@ -272,7 +264,7 @@ public class ImpactChain implements Comparable<ImpactChain>  {
      * are variables in the matrix that are not yet present in the chain.
      * @return Set of <code>ImpactChain</code>s.
      */
-    Set<ImpactChain> continuedByOne()  {
+    public Set<ImpactChain> continuedByOne()  {
         Set<ImpactChain> continued = new TreeSet<>();
         Set<Integer> notIncluded = expandableBy();
         
@@ -300,7 +292,7 @@ public class ImpactChain implements Comparable<ImpactChain>  {
      * @return <code>Set</code> of <code>ImpactChain</code>s
      * that have been expanded to be longer than this chain by one variable.
      */
-    Set<ImpactChain> continuedByOneIntermediary() {
+    public Set<ImpactChain> continuedByOneIntermediary() {
         
         if(chainMembers.size() < 2) {
             return continuedByOne();
@@ -328,7 +320,7 @@ public class ImpactChain implements Comparable<ImpactChain>  {
      * as impacted variable.
      * @param impactTreshold The minimum impact a chain should have to be included in the returned chain;
      * must be greater than 0 and smaller than 1
-     * @return All impact chains expanded from this chain that have higher <code>impact</code> than treshold.
+     * @return All impact chains expanded from this chain that have higher <code>impact</code> than threshold.
      */
     public Set<ImpactChain> highImpactChains(double impactTreshold)  {
         if(impactTreshold <=0 || impactTreshold >=1) throw new IllegalArgumentException("impactTreshold should be in range ]0..1[");

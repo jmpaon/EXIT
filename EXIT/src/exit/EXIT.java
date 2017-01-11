@@ -20,9 +20,12 @@ import exit.procedures.EXITinput;
 import exit.procedures.EXITprocedure;
 import exit.procedures.EXITresult;
 import exit.procedures.StratifiedSamplingProcedure;
-import exit.samplers.QuickSampler;
-import exit.samplers.ImpactChainSampler;
-import exit.samplers.Sampler;
+import exit.estimators.QuickSampler;
+import exit.estimators.ImpactChainSampler;
+import exit.estimators.ImpactThresholdPruner;
+import exit.estimators.Pruner;
+import exit.estimators.Sampler;
+import exit.matrices.MatrixSimilarityTable;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -48,12 +51,12 @@ public class EXIT {
      */
     public static void main(String[] args)  {
 
-        System.out.println(Arrays.asList(args));
-        System.out.println(System.getProperty("user.dir"));
-        // test_features(args);
+        // System.out.println(Arrays.asList(args));
+        // System.out.println(System.getProperty("user.dir"));
+        test_new_features();
         
         /* New standard calculation */
-        new_exit_analysis(args);
+        // new_exit_analysis(args);
     
     }
     
@@ -63,29 +66,19 @@ public class EXIT {
     
     public static void test_new_features() {
         
-        EXITImpactMatrix sme = new EXITImpactMatrix(RandomInputMatrixGenerator.generateCrossImpactMatrix(12, 1.,2.,0.,4.,5.,3.), 5);
-        Sampler s = new QuickSampler(sme);
-        Sampler s2 = new ImpactChainSampler(sme);
+        EXITImpactMatrix sme = new EXITImpactMatrix(RandomInputMatrixGenerator.generateCrossImpactMatrix(15, 1.,2.,0.,4.,5.,3.), 5);
+        QuickSampler s = new QuickSampler(sme,System.out);
         
-        
-        System.out.println("Input matrix");
-        System.out.println(sme);
-   
-        //System.out.println("All");
-        //System.out.println(s.computeAll());        
+        Timer t = new Timer();
+        //CrossImpactMatrix m1 = s.estimateSummedImpactMatrix(500000);
+        CrossImpactMatrix m2 = s.estimateSummedImpactMatrix(100000);
+        t.stopTime("Sampling time: ");
 
-        System.out.println("Pruning");
-        Timer t1 = new Timer();
-        //System.out.println(sme.prunedSummedImpactMatrix(0.00001));
-        t1.stopTime();
-        
-        System.out.println("qs estimate");
-        Timer t2 = new Timer();
-        System.out.println(s.estimateSummedImpactMatrix(100000));
-        t2.stopTime();
-        
-        //System.out.println("ics estimate");
-        //System.out.println(s2.estimateSummedImpactMatrix(100000));        
+        System.out.println("Sampler::estimate");        
+
+        System.out.println(m2.scale(1));
+
+
 
         
         
@@ -94,9 +87,7 @@ public class EXIT {
     }
     
     public static void printList(List<? extends Object> l) {
-        for(Object o : l) {
-            System.out.println(o.toString());
-        }
+        l.stream().forEach((o) -> { System.out.println(o.toString()); });
     }
     
     public static void new_exit_analysis(String[] args) {
@@ -127,7 +118,7 @@ public class EXIT {
     }
 
 
-    public static boolean isInteger(String str) {  
+    public static boolean isInteger(String str) {
         try {int d = Integer.parseInt(str);}  
         catch(NumberFormatException nfe){ return false;}  
         return true;  
