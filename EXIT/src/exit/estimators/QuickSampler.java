@@ -7,6 +7,7 @@ package exit.estimators;
 
 import exit.matrices.CrossImpactMatrix;
 import exit.matrices.EXITImpactMatrix;
+import exit.matrices.SquareMatrix;
 import java.io.PrintStream;
 import java.util.Iterator;
 import java.util.List;
@@ -86,7 +87,7 @@ public class QuickSampler extends Sampler {
     @Override
     public CrossImpactMatrix estimateSummedImpactMatrix(int sampleSize) {
         assert sampleSize > 0 : "SampleSize must be greater than 0";
-        CrossImpactMatrix summedImpactMatrix = new CrossImpactMatrix(matrix.copy().flush());
+        CrossImpactMatrix summedImpactMatrix = new CrossImpactMatrix(new SquareMatrix(matrix).copy().flush());
         
         report("Estimating summed impacts...");
         for(int impactor = 1; impactor <= matrix.getVarCount(); impactor++) {

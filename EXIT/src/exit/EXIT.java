@@ -15,24 +15,16 @@ import exit.io.InputFileReader;
 
 import exit.matrices.EXITImpactMatrix;
 import exit.io.EXITargumentException;
-import exit.matrices.ImpactChain;
 import exit.procedures.EXITinput;
 import exit.procedures.EXITprocedure;
 import exit.procedures.EXITresult;
 import exit.procedures.StratifiedSamplingProcedure;
 import exit.estimators.QuickSampler;
-import exit.estimators.ImpactChainSampler;
-import exit.estimators.ImpactThresholdPruner;
-import exit.estimators.Pruner;
-import exit.estimators.Sampler;
-import exit.matrices.MatrixSimilarityTable;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import java.io.PrintStream;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
+
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -53,10 +45,9 @@ public class EXIT {
 
         // System.out.println(Arrays.asList(args));
         // System.out.println(System.getProperty("user.dir"));
-        test_new_features();
         
         /* New standard calculation */
-        // new_exit_analysis(args);
+        new_exit_analysis(args);
     
     }
     

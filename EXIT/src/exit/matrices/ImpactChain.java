@@ -327,7 +327,7 @@ public class ImpactChain implements Comparable<ImpactChain>  {
         
         Set<ImpactChain> chains = new TreeSet<>();
         
-        if(Math.abs(this.impact()) >= impactTreshold) { 
+        if(Math.abs(this.impact()) >= impactTreshold) {
             
             if(this.memberCount > 0) chains.add(this);
             
