@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.function.DoubleFunction;
+import java.util.function.DoubleSupplier;
 
 /**
  *
@@ -117,10 +119,12 @@ public class CrossImpactMatrix extends SquareMatrix{
     @Override
     public void setValue(int impactor, int impacted, double value) {
         
-        // Cannot change locked matrix
+        /* Cannot change locked matrix */
         assert !isLocked() : "Attempt to change a locked CrossImpactMatrix";
-        // Variables cannot have an impact on themselves
-        assert !(impactor == impacted && value != 0): "Variable cannot have impact on itself in a cross-impact matrix";
+        
+        /* Variables cannot have an impact on themselves */
+        if(impactor == impacted && value != 0) throw new IllegalArgumentException
+        (String.format("Variable ('%s') cannot have impact on itself in a cross-impact matrix.", this.getName(impactor)));
         
         super.setValue(impactor, impacted, value);
     }
@@ -227,9 +231,43 @@ public class CrossImpactMatrix extends SquareMatrix{
         for (int i=0; i < normalizedValues.length; i++) {
             normalizedValues[i] /= averageDistanceFromZero;
         }
-        CrossImpactMatrix normalized = new CrossImpactMatrix(this.varCount, this.names, normalizedValues, false);
+        CrossImpactMatrix normalized = new CrossImpactMatrix(this.varCount, this.names.clone(), normalizedValues, false);
         return normalized;
     }
+    
+    
+    /**
+     * Creates a normalized copy of this matrix.
+     * Normalization is performed by dividing each matrix entry value
+     * by <b>normalizationValue</b>, which can be e.g. 
+     * the standard deviation of the matrix or the average absolute difference 
+     * of each entry value to zero.
+     * @param normalizationValue Value which the normalization is based on
+     * @return CrossImpactMatrix : new normalized <tt>CrossImpactMatrix</tt>
+     */
+    public CrossImpactMatrix normalize(double normalizationValue) {
+        double[] normalizedValues = this.values.clone();
+        for (int i=0; i < normalizedValues.length; i++) {
+            normalizedValues[i] /= normalizationValue;
+        }
+        return new CrossImpactMatrix(this.varCount, this.names.clone(), normalizedValues, false);
+    }
+    
+    /**
+     * Returns a new <tt>CrossImpactMatrix</tt> based on this matrix
+     * where each matrix entry value has been transformed according to
+     * the operation provided by <b>valueTransformer</b>.
+     * @param valueTransformer Function to perform the transformation on the values
+     * @return CrossImpactMatrix : new matrix with transformed values
+     */
+    public CrossImpactMatrix transform(DoubleFunction<Double> valueTransformer) {
+        double[] transformedValues = this.values.clone();
+        for (int i=0; i < transformedValues.length; i++) {
+            transformedValues[i] = valueTransformer.apply(i);
+        }
+        return new CrossImpactMatrix(this.varCount, this.names.clone(), transformedValues, false);
+    }
+    
     
     /**
      * Returns a new <tt>CrossImpactMatrix</tt> derived from this impact matrix
@@ -382,7 +420,7 @@ public class CrossImpactMatrix extends SquareMatrix{
         public String toString() {
             StringBuilder sb = new StringBuilder();
             for(Map.Entry<K,V> entry : map.entrySet() ) {
-                sb.append(entry.getKey().toString()).append(" : ").append(entry.getValue().toString()).append("\n");
+                sb.append(entry.getKey().toString()).append(":\t").append(entry.getValue().toString()).append("\n");
             }
             return sb.toString();            
         }

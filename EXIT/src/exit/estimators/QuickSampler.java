@@ -43,20 +43,22 @@ public class QuickSampler extends Sampler {
      * (instead of estimated by sampling) 
      * when summed impacts are determined
      */
-    public QuickSampler(EXITImpactMatrix matrix, int computeUpToLength) {
+    public QuickSampler(EXITImpactMatrix matrix, Integer computeUpToLength) {
         super(matrix);
+        if(computeUpToLength == null) computeUpToLength = sensibleComputeUpToLength();
+        assert computeUpToLength > 0;
         this.computeUpToLength = computeUpToLength;
     }
     
-    public QuickSampler(EXITImpactMatrix matrix, int computeUpToLength, PrintStream reportingStream) {
+    public QuickSampler(EXITImpactMatrix matrix, Integer computeUpToLength, PrintStream reportingStream) {
         super(matrix, reportingStream);
+        if(computeUpToLength == null) computeUpToLength = sensibleComputeUpToLength();
+        assert computeUpToLength > 0;
         this.computeUpToLength = computeUpToLength;
     }
     
     public QuickSampler(EXITImpactMatrix matrix, PrintStream reportingStream) {
         super(matrix, reportingStream);
-        //this.matrix = matrix;
-        //this.reportingStream = reportingStream;
         this.computeUpToLength = sensibleComputeUpToLength();
     }
     

@@ -63,7 +63,7 @@ public class InputFileReader {
         int variableCount = lines.size();
         int var=1;
         
-        EXITImpactMatrix cim = new EXITImpactMatrix(arguments.maxImpact, variableCount, arguments.onlyIntegers);
+        EXITImpactMatrix cim = new EXITImpactMatrix(arguments.maxImpact, variableCount, false);
         
         for(String l : lines) {
 

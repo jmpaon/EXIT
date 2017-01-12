@@ -28,11 +28,10 @@ public class EXITarguments {
     public final String inputFilename;
     public final Double maxImpact;
     public final String outputFilename;
-    public final boolean onlyIntegers;
     public final Character separator;
     
-    public final int sampleSize;
-    public final int computeUpToLength;
+    public final Integer sampleSize;
+    public final Integer computeUpToLength;
     
     
     /**
@@ -47,7 +46,6 @@ public class EXITarguments {
         options.put("-o",       "Output file name");
         options.put("-max",     "Maximum impact value in the impact matrix");
         options.put("-sep",     "Separator character used in input data");
-        options.put("-int",     "Flag if all impacts in input matrix are integers");
         options.put("-compute", "Compute (instead of estimate) chains up to this length");
         options.put("-sample",  "Derive summed impact estimates based on sample of this size");
         
@@ -66,15 +64,15 @@ public class EXITarguments {
         
         inputFilename     = this.args.get(0);
         outputFilename    = extractArgumentValue("-o");
-        maxImpact         = hasFlag("-max") ? Double.valueOf(extractArgumentValue("-max")) : 5;
-        onlyIntegers      = hasFlag("-int");
+        maxImpact         = hasFlag("-max") ? Double.valueOf(extractArgumentValue("-max")) : null ;
         separator         = hasFlag("-sep") ? extractArgumentValue("-sep").charAt(0) : ';';
         sampleSize        = hasFlag("-sample") ? Integer.valueOf(extractArgumentValue("-sample")) : 1000000;
-        computeUpToLength = hasFlag("-compute") ? Integer.valueOf(extractArgumentValue("-compute")) : 7;
+        computeUpToLength = hasFlag("-compute") ? Integer.valueOf(extractArgumentValue("-compute")) : null;
         
+        if(maxImpact == null) throw new EXITargumentException("Maximum impact value not defined");
         if(maxImpact <= 0) throw new EXITargumentException("Maximum impact must be greater than 0");
-        if(sampleSize <= 0) throw new EXITargumentException("Sample size must be greater than 0");
-        if(computeUpToLength < 2) throw new EXITargumentException("Maximum chain length for exact impact computation must be equal to or greater than 2");
+        if(sampleSize <= 0) throw new EXITargumentException("Sample size must be greater than 0. Default sample size is 100000.");
+        if(computeUpToLength != null && computeUpToLength < 2) throw new EXITargumentException("Maximum chain length for exact impact computation must be equal to or greater than 2");
         
     }
     

@@ -5,7 +5,6 @@
  */
 package exit;
 
-
 import exit.io.EXITarguments;
 
 import exit.procedures.Timer;
@@ -104,7 +103,7 @@ public class EXIT {
             System.out.println("EXIT error occurred: " + ex.getMessage());
         } catch(Exception ex) {
             System.out.println("Error occurred: " + ex.getMessage());
-            // Logger.getLogger(EXIT.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(EXIT.class.getName()).log(Level.SEVERE, null, ex);
         }        
     }
 
