@@ -8,8 +8,11 @@ package exit.procedures;
 import exit.matrices.CrossImpactMatrix;
 import exit.estimators.QuickSampler;
 import exit.estimators.Sampler;
+import exit.io.EXITargumentException;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  *
@@ -45,7 +48,32 @@ public class StratifiedSamplingProcedure extends EXITprocedure {
         return compute(input, null);
     }
     
-    
+    public class ArgumentValidator extends exit.io.Arguments {
+        
+        
+        
+        
+        public ArgumentValidator(String[] args) throws EXITargumentException {
+            super(args);
+        }
+        
+
+        @Override
+        public Map<String, String> knownOptions() {
+            Map<String, String> options = new LinkedHashMap<>();
+            options.put("-max",       "Maximum impact value");
+            options.put("-o",         "Output file name");
+            options.put("-sep",       "Input file separator character");
+            
+            return options;
+        }
+
+        @Override
+        protected void testForInvalidOptions() {
+            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        }
+        
+    }
     
     
     

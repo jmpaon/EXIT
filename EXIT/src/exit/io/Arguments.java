@@ -7,10 +7,12 @@ package exit.io;
 
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 /**
  *
@@ -19,10 +21,12 @@ import java.util.Map;
 public abstract class Arguments {
     
     final List<String> arguments;
+    final List<Option> ops;
     
     
     public Arguments(String[] args) throws EXITargumentException {
         this.arguments = Arrays.asList(args);
+        this.ops = new ArrayList<>();
         testForUnknownOptions();
         testForInvalidOptions();
     }
@@ -129,12 +133,7 @@ public abstract class Arguments {
         }
         
         return s;
-    }    
-    
-    
-    
-    
-    
+    }
     
     
 }

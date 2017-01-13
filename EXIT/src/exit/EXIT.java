@@ -19,6 +19,8 @@ import exit.procedures.EXITprocedure;
 import exit.procedures.EXITresult;
 import exit.procedures.StratifiedSamplingProcedure;
 import exit.estimators.QuickSampler;
+import exit.io.ArgOption;
+import exit.io.ArgOptions;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -44,12 +46,45 @@ public class EXIT {
 
         // System.out.println(Arrays.asList(args));
         // System.out.println(System.getProperty("user.dir"));
+        argsTester();
+        
         
         /* New standard calculation */
-        new_exit_analysis(args);
+        // new_exit_analysis(args);
     
     }
     
+    public static void argsTester() {
+        ArgOption<String> optInputfile = new ArgOption<String>("-i", "input file name", true, true, v -> v);
+        ArgOption<Double> optMaxImpact = new ArgOption<Double>("-m", "maximum impact", true, true, Double::valueOf);
+        ArgOption<Integer> optSampleSize = new ArgOption<Integer>("-s", "sample size", true, false, Integer::valueOf);
+        ArgOption<Integer> optComputeTo = new ArgOption<Integer>("-c", "full computation up to chain length", true, false, Integer::valueOf);
+        ArgOption<String> optOutputfile = new ArgOption<String>("-o", "output file name", true, false, v -> v);
+        ArgOption<Character> optSeparator = new ArgOption<Character>("-sep", "separator character", true, false, v -> v.charAt(0));
+        
+        optMaxImpact.addCondition(v -> v > 0, "Maximum impact value must be greater than 0");
+        optSampleSize.addCondition(v -> v > 0, "Sample size must be greater than 0");
+        optComputeTo.addCondition(v -> v >= 2, "Computation length must be 2 or greater");
+        
+        try {
+            
+            String[] args = {"-i", "input", "-m", "3"};
+            ArgOptions ops = new ArgOptions();
+            ops.addOptions(optInputfile, optMaxImpact, optSampleSize, optComputeTo, optOutputfile, optSeparator);
+            ops.parse(args);
+            
+            System.out.println(ops);
+            System.out.println(ops.commandLineArguments.size());
+            
+            
+            //System.out.println(o1.get());
+            //System.out.println(o2.get());
+            //System.out.println(o3.get());
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        
+    }
 
     
     
