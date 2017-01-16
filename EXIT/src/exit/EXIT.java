@@ -64,22 +64,23 @@ public class EXIT {
         
         optMaxImpact.addCondition(v -> v > 0, "Maximum impact value must be greater than 0");
         optSampleSize.addCondition(v -> v > 0, "Sample size must be greater than 0");
-        optComputeTo.addCondition(v -> v >= 2, "Computation length must be 2 or greater");
+        optComputeTo.addCondition(v -> v >= 2,  "Computation length must be 2 or greater");
+        optComputeTo.addCondition(v -> v <= 20, "Computation length greater than 20 is not supported");
         
         try {
             
-            String[] args = {"-i", "input", "-m", "3"};
+            String[] args = {"-i", "input", "-m", "3",  "-s", "100000", "-sep"};
             ArgOptions ops = new ArgOptions();
             ops.addOptions(optInputfile, optMaxImpact, optSampleSize, optComputeTo, optOutputfile, optSeparator);
             ops.parse(args);
             
             System.out.println(ops);
-            System.out.println(ops.commandLineArguments.size());
+            System.out.println("commandLineArgs size: " + ops.commandLineArguments.size());
             
+            Double oo = (Double)ops.query("-m").get();
+            ArgOption<Double> ooo = ops.query("-c");
             
-            //System.out.println(o1.get());
-            //System.out.println(o2.get());
-            //System.out.println(o3.get());
+                        
         } catch(Exception e) {
             e.printStackTrace();
         }

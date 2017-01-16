@@ -32,6 +32,13 @@ public class ArgOptions {
         for(ArgOption option : options) addOption(option);
     }
     
+    public ArgOption query(String id) {
+        for(ArgOption o : options) if(o.id.equals(id)) return o;
+        return null;
+    }
+    
+    
+    
     private String fetchArgument(String id) throws EXITargumentException {
         try {
             int indexOfArgLabel = commandLineArguments.indexOf(id);
@@ -54,13 +61,14 @@ public class ArgOptions {
         if(commandLineArguments.contains(option.id)) {
             if(option.hasValue) {
                 String arg = fetchArgument(option);
-                option.parseSet(arg);
+                option.readIn(arg);
                 int removeIndex = commandLineArguments.indexOf(option.id);
                 commandLineArguments.remove(removeIndex); // remove argument label
                 commandLineArguments.remove(removeIndex); // remove argument value
             }
+            
             else {
-                option.parseSet(option.id);
+                option.readIn(option.id);
                 commandLineArguments.remove(commandLineArguments.indexOf(option.id));
             }
             
@@ -71,7 +79,7 @@ public class ArgOptions {
                 throw new EXITargumentException(String.format("Required argument %s is missing", option.toString()));
             }
             else {
-                option.parseSet(null);
+                option.readIn(null);
             }
             
         }
@@ -79,27 +87,22 @@ public class ArgOptions {
     }
     
     public void parse(String[] args) throws EXITargumentException {
+        
         this.commandLineArguments = new ArrayList(Arrays.asList(args));
+        
         System.out.println("Size of commandlineargs: " + commandLineArguments.size());
-        List<Exception> errors = new LinkedList<>();
-        
+
         for(ArgOption option : options) {
-            try {
-                consumeArgument(option);
-            } catch(Exception e) {
-                errors.add(e);
-            }
+            System.out.printf("parsing option %s", option);
+            consumeArgument(option);
+            System.out.printf(" -> %s%n", Objects.nonNull(option.value) ? option.value.toString() : "null" );
+        }        
+        
+        if(!commandLineArguments.isEmpty()) {
+            throw new EXITargumentException(String.format("Unrecognized options: " + commandLineArguments.toString()));
         }
         
-        if(commandLineArguments.size() != 0) {
-            errors.add(new EXITargumentException(String.format("Unrecognized options: " + commandLineArguments.toString())));
-        }
-        
-        if(!errors.isEmpty()) {
-            StringBuilder errorMessages = new StringBuilder();
-            for(Exception e : errors) errorMessages.append(e.getMessage()).append("\n");
-            throw new EXITargumentException(errorMessages.toString());
-        }
+
         
     }
     

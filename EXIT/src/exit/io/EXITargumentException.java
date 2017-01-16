@@ -18,11 +18,20 @@ public class EXITargumentException extends EXITexception {
     public EXITargumentException(String msg) {
         //super(msg);
         System.out.println(msg);
-        printUsage();
+        // printUsage();
         
     }
     
+    public EXITargumentException(String msg, Object... objs) {
+        super(String.format(msg, objs));
+        // printUsage();
+    }
+    
     public final void printUsage() {
+        
+        /*
+        FIXME: The usage information should be dependent on the procedure
+        */
         
         String s =
                 "Usage:%n" +

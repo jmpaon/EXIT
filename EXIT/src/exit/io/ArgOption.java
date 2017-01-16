@@ -14,6 +14,7 @@ import java.util.function.Predicate;
 /**
  *
  * @author jmpaon
+ * @param <V> Type of the value of this <tt>ArgOption</tt>
  */
 public class ArgOption<V> {
         
@@ -44,49 +45,82 @@ public class ArgOption<V> {
         return this;
     }
     
-    public void parseSet(String stringValue) throws EXITargumentException {
+    public void readIn(String stringValue) throws EXITargumentException {
         set(parse(stringValue));
     }
     
 
-    public V parse(String stringValue) {
-        return this.parser.apply(stringValue);
+    V parse(String stringValue) {
+        if(Objects.nonNull(stringValue)) return this.parser.apply(stringValue);
+        return null;
     }
 
     public void set(V value) throws EXITargumentException {
-        // assert this.hasValue : String.format("Option %s cannot have a value", this.toString());
-        for(Map.Entry<Predicate<V>, String> e : this.conditions.entrySet() ) {
-            if(!e.getKey().test(value)) {
-                String context = String.format("Invalid value (%s) for %s", value.toString(), this.toString() );
-                throw new EXITargumentException(context + ": " + e.getValue());
-            }
+        
+        if(this.isRequired && value == null) {
+            throw new EXITargumentException("Required option %s has no value", this.toString());
         }
-        this.value = value;
+        
+        /* Perform argument validity tests */
+        if(Objects.nonNull(value)) {
+            for(Map.Entry<Predicate<V>, String> e : this.conditions.entrySet() ) {
+                if(!e.getKey().test(value)) {
+                    String context = String.format("Invalid value (%s) for %s", value.toString(), this.toString() );
+                    throw new EXITargumentException(context + ": " + e.getValue());
+                }
+            }
+            this.value = value;
+        } else {
+            this.value = null;
+        }
+
     }
 
+    /**
+     * Returns the value of this <tt>ArgOption</tt>
+     * @return 
+     */
     public V get() {
         return value;
     }
 
+    
     @Override
     public String toString() {
         if(this.name == null) return this.id;
         return String.format("%s (%s)", this.id, this.name);
     }
     
+    /**
+     * String representation of the details of this <tt>ArgOption</tt>
+     * @return String
+     */
     public String state() {
         StringBuilder sb = new StringBuilder();
+        String conditionsAsString = "Conditions:\n"; int conditionNumber = 1;
+        for(Map.Entry<Predicate<V>, String > e : conditions.entrySet()) {
+            String conditionSignature = e.getKey() != null ? "Test" : "null";
+            conditionsAsString += String.format("\t[%d] %s :: %s\n", conditionNumber++, conditionSignature, e.getValue());
+        }
+        
+        
+        String valueAsString = Objects.nonNull(value) ? value.toString() : "null";
                 sb
                 .append("name\t").append(this.name).append("\n")
                 .append("id\t").append(this.id).append("\n")
                 .append("hasvalue\t").append(this.hasValue).append("\n")
                 .append("isRequired\t").append(this.isRequired).append("\n")
                 .append("parser\t").append(this.parser).append("\n")
-                .append("value\t").append(this.value.toString());
+                .append(conditionsAsString)
+                .append("value\t").append(valueAsString);
         return sb.toString();
                 
     }
 
+    /**
+     * Returns a hashcode based on the <tt>id</tt> property
+     * @return int : hashcode
+     */
     @Override
     public int hashCode() {
         int hash = this.id.hashCode();
