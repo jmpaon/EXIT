@@ -21,12 +21,12 @@ import java.util.function.Predicate;
 public abstract class Arguments {
     
     final List<String> arguments;
-    final List<Option> ops;
+
     
     
     public Arguments(String[] args) throws EXITargumentException {
         this.arguments = Arrays.asList(args);
-        this.ops = new ArrayList<>();
+
         testForUnknownOptions();
         testForInvalidOptions();
     }

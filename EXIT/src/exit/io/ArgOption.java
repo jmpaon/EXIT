@@ -17,44 +17,89 @@ import java.util.function.Predicate;
  * @param <V> Type of the value of this <tt>ArgOption</tt>
  */
 public class ArgOption<V> {
-        
-    public final String id;
-    public final String name;
-    public final boolean hasValue;
+    /** id flag of the option */
+    public final String  id;
+    /** longer name of the option */
+    public final String  name;
+    /** does the option have a value? */
+    public final boolean isValued;
+    /** is the option required? */
     public final boolean isRequired;
-
+    
+    /** Value of the option */
     V value;
+    /** Set of validity tests for <b>value</b> and the associated fail messages */
     final Map<Predicate<V>, String> conditions;
+    /** Function to convert a <tt>String</tt> value to value of type <tt>V</tt> */
     final Function<String, V> parser;
-
-    public ArgOption(String id, String name, boolean hasValue, boolean isRequired, Function<String, V> parser) {
-        if(isRequired && !hasValue) throw new IllegalArgumentException("Attempt to create ArgOption with required argument and no value");
+    
+    
+    /**
+     * Constructor
+     * @param id The <tt>ArgOption</tt> id, should start with a hyphen ('-')
+     * @param name The longer name of the option
+     * @param isValued Does this option have an associated value?
+     * @param isRequired Is this option required?
+     * @param parser Function to convert a <tt>String</tt> value to value of type <tt>V</tt>
+     */
+    public ArgOption(String id, String name, boolean isValued, boolean isRequired, Function<String, V> parser) {
+        if(isRequired && !isValued) throw new IllegalArgumentException("Attempt to create ArgOption with required argument and no value");
+        assert parser != null :"Parser is null";
+        assert id.charAt(0) == '-' : "option id should start with a hyphen";
+        
         this.id = id;
         this.name = name;
-        this.hasValue = hasValue;
+        this.isValued = isValued;
         this.isRequired = isRequired;
         this.parser = parser;
         this.conditions = new LinkedHashMap<>();
     }
 
+    
+    /**
+     * Add a validity test and a fail message to this <tt>ArgOption</tt>.
+     * When a value for this <tt>ArgOption</tt> is parsed,
+     * all validity tests are performed before value is assigned.
+     * @param condition Predicate that must return <b>true</b> for the value to be valid
+     * @param failMessage Message for the exception reporting failed validity test
+     * @return ArgOption : this <tt>ArgOption</tt> to enable method call chaining
+     */
     public ArgOption addCondition(Predicate<V> condition, String failMessage) {
         assert condition != null;
         assert failMessage != null;
-        assert this.hasValue : "This option is set not to have a value";
+        assert this.isValued : "This option is set not to have a value";
         this.conditions.put(condition, failMessage);
         return this;
     }
     
+    
+    /**
+     * Parses a <tt>String</tt> value to <tt>V</tt> and sets it as the value 
+     * of this <tt>ArgOption</tt>.
+     * @param stringValue
+     * @throws EXITargumentException 
+     */
     public void readIn(String stringValue) throws EXITargumentException {
         set(parse(stringValue));
     }
-    
 
+    /**
+     * Parses the value in a <tt>String</tt> to <tt>V</tt> 
+     * by applying <b>parser</b> on <b>stringValue</b>.
+     * @param stringValue a <tt>String</tt> containing the value of the option
+     * @return V : parsed value
+     */
     V parse(String stringValue) {
         if(Objects.nonNull(stringValue)) return this.parser.apply(stringValue);
         return null;
     }
 
+    
+    /**
+     * Sets the value of this <tt>ArgOption</tt>.
+     * @param value 
+     * @throws EXITargumentException 
+     */
     public void set(V value) throws EXITargumentException {
         
         if(this.isRequired && value == null) {
@@ -73,18 +118,21 @@ public class ArgOption<V> {
         } else {
             this.value = null;
         }
-
     }
 
     /**
      * Returns the value of this <tt>ArgOption</tt>
-     * @return 
+     * @return V : value
      */
     public V get() {
         return value;
     }
 
-    
+    /**
+     * String representation consisting of <b>id</b> 
+     * OR <b>id</b> and <b>name</b> if <b>name</b> is available
+     * @return String 
+     */
     @Override
     public String toString() {
         if(this.name == null) return this.id;
@@ -108,7 +156,7 @@ public class ArgOption<V> {
                 sb
                 .append("name\t").append(this.name).append("\n")
                 .append("id\t").append(this.id).append("\n")
-                .append("hasvalue\t").append(this.hasValue).append("\n")
+                .append("hasvalue\t").append(this.isValued).append("\n")
                 .append("isRequired\t").append(this.isRequired).append("\n")
                 .append("parser\t").append(this.parser).append("\n")
                 .append(conditionsAsString)

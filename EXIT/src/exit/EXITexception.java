@@ -8,13 +8,14 @@ package exit;
  *
  * @author jmpaon
  */
-public class EXITexception extends Exception {
+public class EXITexception extends RuntimeException {
 
     /**
      * Creates a new instance of
      * <code>EXITException</code> without detail message.
      */
     public EXITexception() {
+        super();
     }
 
     /**
@@ -25,5 +26,9 @@ public class EXITexception extends Exception {
      */
     public EXITexception(String msg) {
         super(msg);
+    }
+    
+    public EXITexception(String msg, Object... objs) {
+        super(String.format(msg, objs));
     }
 }

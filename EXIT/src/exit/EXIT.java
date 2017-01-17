@@ -46,7 +46,11 @@ public class EXIT {
 
         // System.out.println(Arrays.asList(args));
         // System.out.println(System.getProperty("user.dir"));
+        String s = String.valueOf("mem");
+        System.out.println(s);
+        
         argsTester();
+        
         
         
         /* New standard calculation */
@@ -54,12 +58,14 @@ public class EXIT {
     
     }
     
+
+    
     public static void argsTester() {
-        ArgOption<String> optInputfile = new ArgOption<String>("-i", "input file name", true, true, v -> v);
+        ArgOption<String> optInputfile = new ArgOption<String>("-i", "input file name", true, true, String::valueOf);
         ArgOption<Double> optMaxImpact = new ArgOption<Double>("-m", "maximum impact", true, true, Double::valueOf);
         ArgOption<Integer> optSampleSize = new ArgOption<Integer>("-s", "sample size", true, false, Integer::valueOf);
         ArgOption<Integer> optComputeTo = new ArgOption<Integer>("-c", "full computation up to chain length", true, false, Integer::valueOf);
-        ArgOption<String> optOutputfile = new ArgOption<String>("-o", "output file name", true, false, v -> v);
+        ArgOption<String> optOutputfile = new ArgOption<String>("-o", "output file name", true, false, String::valueOf);
         ArgOption<Character> optSeparator = new ArgOption<Character>("-sep", "separator character", true, false, v -> v.charAt(0));
         
         optMaxImpact.addCondition(v -> v > 0, "Maximum impact value must be greater than 0");
@@ -71,7 +77,7 @@ public class EXIT {
             
             String[] args = {"-i", "input", "-m", "3",  "-s", "100000", "-sep"};
             ArgOptions ops = new ArgOptions();
-            ops.addOptions(optInputfile, optMaxImpact, optSampleSize, optComputeTo, optOutputfile, optSeparator);
+            ops.addOption(optInputfile, optMaxImpact, optSampleSize, optComputeTo, optOutputfile, optSeparator);
             ops.parse(args);
             
             System.out.println(ops);
