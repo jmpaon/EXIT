@@ -17,21 +17,12 @@ import java.util.Map;
  * @author jmpaon
  */
 public class EXITresult {
-    public final EXITinput input;
     public final CrossImpactMatrix resultMatrix;
     public final List<Object> printables;
-    public final PrintStream output;
 
-    public EXITresult(EXITinput input, CrossImpactMatrix resultMatrix) throws FileNotFoundException {
-        this.input = input;
+    public EXITresult(CrossImpactMatrix resultMatrix) throws FileNotFoundException {
         this.resultMatrix = resultMatrix;
         this.printables = new LinkedList<>();
-
-        if(input.arguments.outputFilename == null) {
-            this.output = System.out;
-        } else {
-            this.output = new PrintStream(input.arguments.outputFilename);
-        }
     }
     
     public void addPrintable(Object printable) {
@@ -44,7 +35,7 @@ public class EXITresult {
         printables.add(printable);
     }
     
-    public void print() {
+    public void print(PrintStream output) {
         for(Object o : printables) {
             output.println(o.toString());
         }

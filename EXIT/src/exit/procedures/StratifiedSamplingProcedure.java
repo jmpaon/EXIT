@@ -8,6 +8,8 @@ package exit.procedures;
 import exit.matrices.CrossImpactMatrix;
 import exit.estimators.QuickSampler;
 import exit.estimators.Sampler;
+import exit.io.Option;
+import exit.io.Options;
 import exit.io.EXITargumentException;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
@@ -25,11 +27,14 @@ public class StratifiedSamplingProcedure extends EXITprocedure {
         
         assert input != null;
         
-        Sampler sampler = new QuickSampler(input.directImpactMatrix, input.arguments.computeUpToLength, reportingStream);
-        CrossImpactMatrix summedImpactMatrix = sampler.estimateSummedImpactMatrix(input.arguments.sampleSize);
-        EXITresult result = new EXITresult(input, summedImpactMatrix);
+        Integer computeUpToLength = input.options.queryInt("-c");
+        Integer sampleSize = input.options.hasValue("-s") ? input.options.queryInt("-s") : 1000000;
         
-        result.addPrintable("EXIT analysis with the arguments:", input.arguments.toString());
+        Sampler sampler = new QuickSampler(input.directImpactMatrix, computeUpToLength, reportingStream);
+        CrossImpactMatrix summedImpactMatrix = sampler.estimateSummedImpactMatrix(sampleSize);
+        EXITresult result = new EXITresult(summedImpactMatrix);
+        
+        result.addPrintable("EXIT analysis with the arguments:", input.options.toString());
         result.addPrintable("Direct impact matrix:", input.directImpactMatrix.toString());
         result.addPrintable("Direct impact matrix normalized:", input.directImpactMatrix.normalize().toString());
         result.addPrintable("Direct impact matrix variable classification:", input.directImpactMatrix.getInfluenceDependencyClassification());
@@ -48,32 +53,36 @@ public class StratifiedSamplingProcedure extends EXITprocedure {
         return compute(input, null);
     }
     
-    public class ArgumentValidator extends exit.io.Arguments {
-        
-        
-        
-        
-        public ArgumentValidator(String[] args) throws EXITargumentException {
-            super(args);
-        }
-        
+    /**
+     * Provides the <tt>Options</tt> instance to be used with this procedure
+     * @param args
+     * @return 
+     */
+    @Override
+    public Options options(String[] args) {
+        Option<String> optInputfile = new Option<String>("-i", "input file name", true, true, String::valueOf);
+        Option<Double> optMaxImpact = new Option<Double>("-m", "maximum impact", true, true, Double::valueOf);
+        Option<Integer> optSampleSize = new Option<Integer>("-s", "sample size", true, false, Integer::valueOf);
+        Option<Integer> optComputeTo = new Option<Integer>("-c", "full computation up to chain length", true, false, Integer::valueOf);
+        Option<String> optOutputfile = new Option<String>("-o", "output file name", true, false, String::valueOf);
+        Option<Character> optSeparator = new Option<Character>("-sep", "separator character", true, false, (String v) -> v.charAt(0));
 
-        @Override
-        public Map<String, String> knownOptions() {
-            Map<String, String> options = new LinkedHashMap<>();
-            options.put("-max",       "Maximum impact value");
-            options.put("-o",         "Output file name");
-            options.put("-sep",       "Input file separator character");
-            
-            return options;
-        }
+        optMaxImpact.addCondition(v -> v > 0, "Maximum impact value must be greater than 0");
+        optSampleSize.addCondition(v -> v > 0, "Sample size must be greater than 0");
+        optComputeTo.addCondition(v -> v >= 2,  "Computation length must be 2 or greater");
+        optComputeTo.addCondition(v -> v <= 20, "Full computation length greater than 20 is not supported");
 
-        @Override
-        protected void testForInvalidOptions() {
-            throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        }
+        Options ops = new Options();
+        ops.addOption(optInputfile, optMaxImpact, optSampleSize, optComputeTo, optOutputfile, optSeparator);
+        ops.setUsageText("Usage: java -jar exit.jar [-optionid optionvalue]...\n" + 
+                "Example: java -jar exit.jar -i inputfile.csv -m 5 -s 300000 -c 5");
         
+        ops.parse(args);
+        return ops;        
     }
+    
+    
+
     
     
     

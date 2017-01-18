@@ -5,7 +5,7 @@
  */
 package exit.procedures;
 
-import exit.io.EXITarguments;
+import exit.io.Options;
 import exit.matrices.EXITImpactMatrix;
 
 
@@ -15,15 +15,15 @@ import exit.matrices.EXITImpactMatrix;
  */
 public class EXITinput {
     public final EXITImpactMatrix directImpactMatrix;
-    public final EXITarguments arguments;
+    public final Options options;
     
-    public EXITinput(EXITImpactMatrix directImpactMatrix, EXITarguments arguments) {
+    public EXITinput(EXITImpactMatrix directImpactMatrix, Options options) {
         
         assert directImpactMatrix != null;
-        assert arguments != null;
+        assert options != null;
         
         this.directImpactMatrix = directImpactMatrix;
-        this.arguments = arguments;
+        this.options = options;
     }
     
     

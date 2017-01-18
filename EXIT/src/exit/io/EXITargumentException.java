@@ -5,9 +5,8 @@
  */
 package exit.io;
 
-import exit.io.EXITarguments;
 import exit.EXITexception;
-import java.util.Map;
+
 
 /**
  *
@@ -26,54 +25,6 @@ public class EXITargumentException extends EXITexception {
         super(String.format(msg, objs));
         // printUsage();
     }
-    
-    public final void printUsage() {
-        
-        /*
-        FIXME: The usage information should be dependent on the procedure
-        */
-        
-        String s =
-                "Usage:%n" +
-                "exit-cia inputfile [options...]%n" +
-                "e.g.: %n" +
-                "exit-cia inputfile.csv -max 5 -t 0.05%n" +
-                "%n" + 
-                "AVAILABLE OPTIONS:%n" +
-                " -max\tMaximum impact value available in the input matrix in the input file%n" +
-                " -o\tOutput file name; if provided, output is written to this file%n" +
-                " -int\tIf present, the input matrix should contain only integral values%n" +
-                " -t\tTreshold value for mining the significant impact chains in the matrix.%n" + 
-                "\tThe chains having a lower impact value than the treshold will not be included%n" +
-                "\tin the summed impacts and their expansions will not be generated in the mining%n" +
-                " -sep\tThe character used as a separator in the input file.%n" +
-                " -of\tVariable index of impactor; if passed, impact chains starting from variable with this index are printed%n" +
-                " -on\tVariable index of impacted; if passed, impact chains ending to variable with this index are printed%n" +
-                " -extra\tIf present, extra outputs (importance matrices, driver-driven tables) are printed%n";
-        
-        System.out.printf(s);
-        System.exit(1);
-        
-    }
-    
-    public void alternativePrintUsage() {
-        StringBuilder sb = new StringBuilder();
-        
-        sb.append(String.format("Usage:%nexit-cia inputfile [options...]%n" ));
-        sb.append(String.format("e.g.:%n" ));
-        sb.append(String.format("exit-cia inputfile.csv -o savefile.txt -max 5 -t 0.05 -extra%n" ));
-        sb.append(String.format("%n"));
-        
-        sb.append(String.format("AVAILABLE OPTIONS:%n"));
-        for(Map.Entry<String, String> option : EXITarguments.knownOptions().entrySet()) {
-            sb.append(option.getKey()).append(": ").append(option.getValue());
-            sb.append(String.format("%n"));
-        }
-        
-        System.out.printf(sb.toString());
-        System.exit(1);
-    }
-    
     
    
 }

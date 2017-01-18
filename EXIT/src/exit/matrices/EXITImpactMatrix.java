@@ -265,7 +265,11 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
         
         // Absolute value of impact cannot be greater than maxImpact
         if (maxImpact < Math.abs(value)) {
-            throw new IllegalArgumentException(String.format("Value %2.2f is bigger than max value %2.2f", value, maxImpact));
+            throw new IllegalArgumentException(String.format("Impact value from %s to %s  (%2.2f) is greater than the defined maximum value %2.2f", 
+                    this.getNameShort(impactor), 
+                    this.getNameShort(impacted), 
+                    value, 
+                    maxImpact));
         }
         
         super.setValue(impactor, impacted, value);

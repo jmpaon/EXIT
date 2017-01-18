@@ -14,9 +14,9 @@ import java.util.function.Predicate;
 /**
  *
  * @author jmpaon
- * @param <V> Type of the value of this <tt>ArgOption</tt>
+ * @param <V> Type of the value of this <tt>Option</tt>
  */
-public class ArgOption<V> {
+public class Option<V> {
     /** id flag of the option */
     public final String  id;
     /** longer name of the option */
@@ -42,7 +42,7 @@ public class ArgOption<V> {
      * @param isRequired Is this option required?
      * @param parser Function to convert a <tt>String</tt> value to value of type <tt>V</tt>
      */
-    public ArgOption(String id, String name, boolean isValued, boolean isRequired, Function<String, V> parser) {
+    public Option(String id, String name, boolean isValued, boolean isRequired, Function<String, V> parser) {
         if(isRequired && !isValued) throw new IllegalArgumentException("Attempt to create ArgOption with required argument and no value");
         assert parser != null :"Parser is null";
         assert id.charAt(0) == '-' : "option id should start with a hyphen";
@@ -57,14 +57,14 @@ public class ArgOption<V> {
 
     
     /**
-     * Add a validity test and a fail message to this <tt>ArgOption</tt>.
-     * When a value for this <tt>ArgOption</tt> is parsed,
+     * Add a validity test and a fail message to this <tt>Option</tt>.
+     * When a value for this <tt>Option</tt> is parsed,
      * all validity tests are performed before value is assigned.
      * @param condition Predicate that must return <b>true</b> for the value to be valid
      * @param failMessage Message for the exception reporting failed validity test
-     * @return ArgOption : this <tt>ArgOption</tt> to enable method call chaining
+     * @return Option : this <tt>Option</tt> to enable method call chaining
      */
-    public ArgOption addCondition(Predicate<V> condition, String failMessage) {
+    public Option addCondition(Predicate<V> condition, String failMessage) {
         assert condition != null;
         assert failMessage != null;
         assert this.isValued : "This option is set not to have a value";
@@ -75,7 +75,7 @@ public class ArgOption<V> {
     
     /**
      * Parses a <tt>String</tt> value to <tt>V</tt> and sets it as the value 
-     * of this <tt>ArgOption</tt>.
+     * of this <tt>Option</tt>.
      * @param stringValue
      * @throws EXITargumentException 
      */
@@ -96,7 +96,7 @@ public class ArgOption<V> {
 
     
     /**
-     * Sets the value of this <tt>ArgOption</tt>.
+     * Sets the value of this <tt>Option</tt>.
      * @param value 
      * @throws EXITargumentException 
      */
@@ -121,7 +121,7 @@ public class ArgOption<V> {
     }
 
     /**
-     * Returns the value of this <tt>ArgOption</tt>
+     * Returns the value of this <tt>Option</tt>
      * @return V : value
      */
     public V get() {
@@ -140,7 +140,7 @@ public class ArgOption<V> {
     }
     
     /**
-     * String representation of the details of this <tt>ArgOption</tt>
+     * String representation of the details of this <tt>Option</tt>
      * @return String
      */
     public String state() {
@@ -186,7 +186,7 @@ public class ArgOption<V> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ArgOption<?> other = (ArgOption<?>) obj;
+        final Option<?> other = (Option<?>) obj;
         if (!Objects.equals(this.id, other.id)) {
             return false;
         }

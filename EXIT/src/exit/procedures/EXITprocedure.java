@@ -5,6 +5,7 @@
  */
 package exit.procedures;
 
+import exit.io.Options;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
@@ -15,5 +16,6 @@ import java.io.PrintStream;
 public abstract class EXITprocedure {
     public abstract EXITresult compute (EXITinput input, PrintStream reportingStream) throws FileNotFoundException ;
     public abstract EXITresult compute (EXITinput input) throws FileNotFoundException ;
+    public abstract Options options (String[] args);
     
 }
