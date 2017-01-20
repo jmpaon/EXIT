@@ -9,11 +9,8 @@ which describes the direct impacts between variables.
 The main output of the EXIT calculation
 is a new cross-impact matrix which describes 
 the summed direct and indirect impacts
-that are mined in the EXIT calculation process
+that are computed or estimated by the EXIT program
 on the basis of the input matrix.
-Certain transformations 
-on both input and result matrices
-can be helpful in interpreting and analysing the results.
 
 ## Usage
 
