@@ -59,7 +59,9 @@ public class Reader {
             }
 
             if (impact != variableCount) {
-                throw new EXITinputfileException("Wrong number of impact values: number of lines in input file suggests that there are %d variables, but line %d (Variable '%s') contains %d impact values", variableCount, variable, inputMatrix.getName(variable), impact);
+                String msg1 = String.format("Wrong number of impact values: number of lines in input file suggests that there are %d variables, but line %d (Variable '%s') contains %d impact values.", variableCount, variable, inputMatrix.getName(variable), impact);
+                String msg2 = String.format("The used separator is '%c'. Please check if your input file uses this separator character.", separator);
+                throw new EXITinputfileException(msg1 + "\n" + msg2);
             }
 
             variable++;

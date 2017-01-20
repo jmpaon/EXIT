@@ -53,7 +53,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
     private double maxImpact;
     
     /**
-     * Constructor for <code>CrossImpactMatrix</code>.
+     * Constructor for <code>EXITImpactMatrix</code>.
      * @param maxImpact The maximum value allowed in the matrix
      * Minimum allowed value is negative <b>maxImpact</b> and maximum <b>maxImpact</b>.
      * <b>maxImpact</b> must be greater than 0.
@@ -67,6 +67,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
         super(varCount, names, impacts, onlyIntegers);
         
         if(maxImpact <= 0) {throw new IllegalArgumentException("maxImpact must be greater than 0");}
+        for(double d : impacts) if(d > maxImpact) throw new IllegalArgumentException(String.format("impact %f is greater than the defined maximum impact %f", d, maxImpact));
         if(varCount < 2) {throw new IllegalArgumentException("Cross-impact matrix must have at least 2 variables");}
         
         this.maxImpact = maxImpact;
@@ -74,7 +75,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
     
     
     /**
-     * Constructor for <code>CrossImpactMatrix</code>.
+     * Constructor for <code>EXITImpactMatrix</code>.
      * @param maxImpact The maximum value allowed in the matrix
      * Minimum allowed value is negative <b>maxImpact</b> and maximum <b>maxImpact</b>.
      * <b>maxImpact</b> must be greater than 0.
@@ -89,7 +90,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
 
 
     /**
-     * Constructor for <code>CrossImpactMatrix</code>.
+     * Constructor for <code>EXITImpactMatrix</code>.
      * @param maxImpact The maximum value allowed in the matrix
      * Minimum allowed value is <b>-maxImpact</b> and maximum <b>maxImpact</b>.
      * @param varCount The number of variables in the matrix; 
@@ -102,7 +103,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
     
     
     /**
-     * Constructor for <code>CrossImpactMatrix</code>.
+     * Constructor for <code>EXITImpactMatrix</code>.
      * @param maxImpact The maximum value allowed in the matrix
      * Minimum allowed value is <b>-maxImpact</b> and maximum <b>maxImpact</b>.
      * <b>maxImpact</b> must be greater than 0.
@@ -115,35 +116,28 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
     
     
     /**
-     * Creates a <tt>CrossImpactMatrix</tt> from a <tt>SquareMatrix</tt>.
-     * @param matrix <tt>SquareMatrix</tt> that is a valid <tt>EXITImpactMatrix</tt>
-     */
-    public EXITImpactMatrix(SquareMatrix matrix) {
-        this(matrix, matrix.matrixMax());
-    }
-    
-    
-    /**
-     * Creates a <tt>CrossImpactMatrix</tt> from a <tt>SquareMatrix</tt>.
+     * Creates a <tt>EXITImpactMatrix</tt> from a <tt>SquareMatrix</tt>.
      * @param matrix <tt>SquareMatrix</tt> that is a valid <tt>EXITImpactMatrix</tt>
      * @param maxImpact The maximum value allowed in the matrix
      */
     public EXITImpactMatrix(SquareMatrix matrix, double maxImpact) {
-        this(
-                maxImpact, 
-                matrix.varCount, 
-                matrix.allValuesAreIntegers() && SquareMatrix.isInteger(maxImpact), 
-                matrix.names.clone(), 
-                matrix.values.clone());
+        
+        super(matrix);
+        if(this.maxImpact <= 0) throw new IllegalArgumentException("maxImpact value is smaller than 0");
+        this.maxImpact = maxImpact;
+        if (this.testValues(v -> v >= maxImpact)) throw new IllegalArgumentException(String.format("Matrix contains values exceeding the allowed maximum impact %f", maxImpact));
         
         for(int i=1;i<=this.varCount;i++) {
-            assert this.getValue(i, i) == 0: 
-                    "SquareMatrix "+matrix+" is not valid EXITImpactMatrix. Impact of variable on itself not allowed";
+            if(this.getValue(i,i) != 0) throw new IllegalArgumentException("SquareMatrix "+matrix+" is not valid EXITImpactMatrix. Impact of variable on itself not allowed");
         }
-        
-        for(double d : this.values) {
-            assert d <= this.maxImpact;
-        }
+    }
+    
+    /**
+     * Creates a <tt>EXITImpactMatrix</tt> from a <tt>SquareMatrix</tt>.
+     * @param matrix <tt>SquareMatrix</tt> that is a valid <tt>EXITImpactMatrix</tt>
+     */
+    public EXITImpactMatrix(SquareMatrix matrix) {
+        this(matrix, matrix.matrixMax());
     }
     
     

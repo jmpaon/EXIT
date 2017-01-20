@@ -30,11 +30,23 @@ public class StratifiedSamplingProcedure extends EXITprocedure {
         Integer computeUpToLength = input.options.queryInt("-c");
         Integer sampleSize = input.options.hasValue("-s") ? input.options.queryInt("-s") : 1000000;
         
-        Sampler sampler = new QuickSampler(input.directImpactMatrix, computeUpToLength, reportingStream);
+        QuickSampler sampler = new QuickSampler(input.directImpactMatrix, computeUpToLength, reportingStream);
+        Timer samplingTimer = new Timer(true);
         CrossImpactMatrix summedImpactMatrix = sampler.estimateSummedImpactMatrix(sampleSize);
+        Timer.Time duration = samplingTimer.stopGet();
+        // String duration = samplingTimer.stop(Timer.TimeUnit.S);
+        
         EXITresult result = new EXITresult(summedImpactMatrix);
         
-        result.addPrintable("EXIT analysis with the arguments:", input.options.toString());
+        
+        StringBuilder computationDetails = new StringBuilder();
+        String inputfilename = input.options.queryString("-i");
+        computationDetails.append(String.format("%30.30s: %s%n", "Input file name", inputfilename));
+        computationDetails.append(String.format("%30.30s: %s variables%n", "Full computation up to", computeUpToLength != null ? computeUpToLength : sampler.sensibleComputeUpToLength()));
+        computationDetails.append(String.format("%30.30s: %s chains%n", "Sample size", sampleSize));
+        computationDetails.append(String.format("%30.30s: %s%n", "Process duration", duration.value(Timer.TimeUnit.S)));
+        
+        result.addPrintable("EXIT analysis with the arguments:", computationDetails.toString());
         result.addPrintable("Direct impact matrix:", input.directImpactMatrix.toString());
         result.addPrintable("Direct impact matrix normalized:", input.directImpactMatrix.normalize().toString());
         result.addPrintable("Direct impact matrix variable classification:", input.directImpactMatrix.getInfluenceDependencyClassification());

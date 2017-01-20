@@ -8,7 +8,12 @@ package exit.matrices;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * <code>SquareMatrix</code> represents 
@@ -431,6 +436,26 @@ public class SquareMatrix {
      */
     public int getVarCount() {
         return varCount;
+    }
+    
+    /**
+     * Returns true if <b>tester</b> returns true for any value in the matrix
+     * @param tester Predicate&lt;Double&gt; 
+     * @return 
+     */
+    final public boolean testValues(Predicate<Double> tester) {
+        for(Double d : values) if(tester.test(d)) return true;
+        return false;
+    }
+    
+    final public List<Double> collectValues(Predicate<Double> tester) {
+        List<Double> list = new LinkedList<>();
+        for(Double d : values) if(tester.test(d)) list.add(d);
+        return list;
+    }
+    
+    public SquareMatrix transform(Function<SquareMatrix, SquareMatrix> transformer) {
+        return transformer.apply(this);
     }
 
     /**

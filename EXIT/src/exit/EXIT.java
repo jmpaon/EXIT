@@ -17,6 +17,7 @@ import exit.procedures.EXITprocedure;
 import exit.procedures.EXITresult;
 import exit.procedures.StratifiedSamplingProcedure;
 import exit.estimators.QuickSampler;
+import exit.io.EXITinputfileException;
 import exit.io.Option;
 import exit.io.Options;
 import exit.io.Reader;
@@ -41,7 +42,6 @@ public class EXIT {
      */
     public static void main(String[] args)  {
 
-        // System.out.println(Arrays.asList(args));
         // System.out.println(System.getProperty("user.dir"));
         
         /* New standard calculation */
@@ -71,6 +71,8 @@ public class EXIT {
             System.out.printf("Input file not found: %s%n", ex.getMessage());
         }catch(IOException ex) {
             System.out.printf("Error reading input file: %s%n", ex.getMessage());
+        }catch(EXITinputfileException ex) {
+            System.out.printf("Error reading input file: %s%n", ex.getMessage());
         }catch(EXITargumentException ex) {
             System.out.println("Argument error: " + ex.getMessage());
             //Logger.getLogger(EXIT.class.getName()).log(Level.SEVERE, null, ex);
@@ -89,10 +91,10 @@ public class EXIT {
         EXITImpactMatrix sme = new EXITImpactMatrix(RandomInputMatrixGenerator.generateCrossImpactMatrix(15, 1.,2.,0.,4.,5.,3.), 5);
         QuickSampler s = new QuickSampler(sme,System.out);
         
-        Timer t = new Timer();
+
         //CrossImpactMatrix m1 = s.estimateSummedImpactMatrix(500000);
         CrossImpactMatrix m2 = s.estimateSummedImpactMatrix(100000);
-        t.stopTime("Sampling time: ");
+
 
         System.out.println("Sampler::estimate");
         System.out.println(m2.scale(1));

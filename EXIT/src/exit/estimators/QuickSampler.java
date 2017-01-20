@@ -23,9 +23,9 @@ import java.util.List;
 public class QuickSampler extends Sampler {
 
     private final int computeUpToLength;
-    private static final int COMPUTATION_CHAIN_LIMIT = 40000;
-
+    private static final int COMPUTATION_CHAIN_LIMIT = 50000;
     
+
     /**
      * Constructor for <tt>QuickSampler</tt>
      * @param matrix Direct impact matrix that is sampled by this sampler
@@ -69,7 +69,7 @@ public class QuickSampler extends Sampler {
      * should not exceed the constant <i>COMPUTATION_CHAIN_LIMIT</i>.
      * @return int : suggestion for a sensible <i>computeUpToLength</i> value
      */
-    private int sensibleComputeUpToLength() {
+    public int sensibleComputeUpToLength() {
         int suggestion = 2;
         while(suggestion < matrix.getVarCount() && EXITImpactMatrix.chainCount_intermediary(matrix.getVarCount(), suggestion-2) < COMPUTATION_CHAIN_LIMIT) suggestion++;
         return suggestion;
