@@ -48,6 +48,10 @@ Otherwise the results are printed in standard output.
   
 `-c` (OPTIONAL) : Greatest length of chains that are computed fully. 
 If value is not provided, a sensible full computation length value will be determined on the basis of matrix properties.
+Full computation of chains longer than 20 is not supported as the search space becomes too great.
+Full computation of chains longer than 12 is not recommended due to slow computation.
+Estimation strategy based on stratified sampling based on samples greater than 1000000 gives very accurate estimates 
+of the "correct" fully computed total impacts, and reduces computation time from weeks and days to minutes.
 
 `-s` (OPTIONAL) : Sample size for estimation of the relative impact of chains whose length exceeds the full computation length. 
 If value is not provided, estimation of the relative impact of chains of any specific length 
