@@ -17,38 +17,37 @@ can be helpful in interpreting and analysing the results.
 
 ## Usage
 
-    java -jar exit.jar inputfile.csv [options...]
+    java -jar exit.jar -i inputfile.csv -m maximum_impact_value [options...]
 
-Inputfile name is a mandatory argument.
+Input file name and the maximum impact value are mandatory arguments.
     
 Example:
 
-    java -jar exit.jar directimpactmatrix.csv -max 5 -t 0.005 -extra
+    java -jar exit.jar -i directimpactmatrix.csv -max 5 -c 7 -s 50000 -sep ;
     
 Reads the input matrix from file `directimpactmatrix.csv`. 
 Sets the maximum impact value to 5.
-Sets the treshold value to 0.005.
-Asks to print out the extra reports about the cross-impact calculation.
-
+Sets the input file value separator character to ';'.
+Asks to compute the impact of chains of length 7 and shorter fully.
+Asks to use a sample of 50000 chains for estimation of impacts of chains longer than 7.
+Results are printed to standard output as `-o` option for output file name is not used.
 
 ## Options
 
-`-o` Output file name
-  
-`-max` Maximum value allowed in the impact matrix. 
-This value is also used in the EXIT calculation. 
+`-i` (REQUIRED) : Name of the input file that contains the direct impact matrix that is processed.
+
+`-m` (REQUIRED) : Maximum value allowed in the impact matrix. 
+This value is used in the EXIT calculation to compute the relative impacts of impact chains. 
 See EXIT method section for details.
 
-`-t` Threshold value used in mining the indirect impacts from the impact chains.
-The lower the threshold value, the longer the calculation will take 
-and the more indirect impacts through the impact network will be discovered.
-Default threshold is 0.1.
+`-o` (OPTIONAL) : Output file name : If set, results will be printed to a file whose name is set after the option `-o`. 
+Otherwise the results are printed in standard output.
+  
+`-c`
 
-`-sep` Separator character used in input data. Default is ';'.
+`-s`
 
-`-of` Print impact chains starting with variable with this index
 
-`-on` Print impact chains ending in variable with this index
 
 NOTE: If neither `-of` or `-on` options are present, a cross-impact matrix describing 
 all summed direct and indirect impacts between variables is calculated.
