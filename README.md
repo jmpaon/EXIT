@@ -89,14 +89,14 @@ Empty rows in the file will be ignored.
 
 As output, the EXIT program prints
 
-1) Computation details (input file name, full computation length, sample size and process duration)
-2) The unprocessed direct impact matrix (the input matrix)
-3) The normalized direct impact matrix
-4) A variable classification based on the direct impacts
-5) The summed impact matrix, whose values represent the total impacts between variables of the matrix
-6) The normalized summed impact matrix, that can be compared to the normalized direct impact matrix 
+1. Computation details (input file name, full computation length, sample size and process duration)
+2. The unprocessed direct impact matrix (the input matrix)
+3. The normalized direct impact matrix
+4. A variable classification based on the direct impacts
+5. The summed impact matrix, whose values represent the total impacts between variables of the matrix
+6. The normalized summed impact matrix, that can be compared to the normalized direct impact matrix 
 to see how the relationships between variables have changed as the indirect impacts are accounted for
-7) The difference matrix of normalized direct impact matrix and normalized summed impact matrix
+7. The difference matrix of normalized direct impact matrix and normalized summed impact matrix
 				
 The normalization of impact matrices is done by dividing the matrix entry values 
 by the mean of absolute impact values. 
