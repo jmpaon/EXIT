@@ -53,8 +53,8 @@ public class StratifiedSamplingProcedure extends EXITprocedure {
         result.addPrintable("Summed impact matrix:", summedImpactMatrix.toString());
         result.addPrintable("Summed impact matrix normalized:", summedImpactMatrix.normalize().toString());
         result.addPrintable("Summed impact matrix variable classification:", summedImpactMatrix.getInfluenceDependencyClassification());
-        result.addPrintable("Difference matrix of normalized input and output matrices:", 
-                input.directImpactMatrix.normalize().differenceMatrix(summedImpactMatrix.normalize()).toString());
+        result.addPrintable("Difference matrix of normalized output and input matrices (how the impacts change):", 
+                summedImpactMatrix.normalize().differenceMatrix(input.directImpactMatrix.normalize()).toString());
         
         
         return result;
