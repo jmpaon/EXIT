@@ -40,21 +40,23 @@ Results are printed to standard output as `-o` option for output file name is no
 This value is used in the EXIT calculation to compute the relative impacts of impact chains. 
 See EXIT method section for details.
 
+`-sep` (OPTIONAL) : The separator character used in the input file that contains the direct impact matrix.
+If value is not provided, ';' is used as the default separator character.
+
 `-o` (OPTIONAL) : Output file name : If set, results will be printed to a file whose name is set after the option `-o`. 
 Otherwise the results are printed in standard output.
   
-`-c`
+`-c` (OPTIONAL) : Greatest length of chains that are computed fully. 
+If value is not provided, a sensible full computation length value will be determined on the basis of matrix properties.
 
-`-s`
+`-s` (OPTIONAL) : Sample size for estimation of the relative impact of chains whose length exceeds the full computation length. 
+If value is not provided, estimation of the relative impact of chains of any specific length 
+between any two variables in the matrix 
+will be based on a sample of 1000000.
 
 
 
-NOTE: If neither `-of` or `-on` options are present, a cross-impact matrix describing 
-all summed direct and indirect impacts between variables is calculated.
 
-`-int` If this flag is present, input matrix values are assumed to be integers
-
-`-extra` If this flag is present, extra reports are printed
 
 ## Input file
 
@@ -83,7 +85,26 @@ Empty rows in the file will be ignored.
         V11;3;5;3;-5;5;-1;1;2;3;-1;0;-5
         V12;4;-3;-5;0;3;5;-1;5;-4;5;4;0
 
+## Output
+
+As output, the EXIT program prints
+
+1) Computation details (input file name, full computation length, sample size and process duration)
+2) The unprocessed direct impact matrix (the input matrix)
+3) The normalized direct impact matrix
+4) A variable classification based on the direct impacts
+5) The summed impact matrix, whose values represent the total impacts between variables of the matrix
+6) The normalized summed impact matrix, that can be compared to the normalized direct impact matrix 
+to see how the relationships between variables have changed as the indirect impacts are accounted for
+7) The difference matrix of normalized direct impact matrix and normalized summed impact matrix
+				
+The normalization of impact matrices is done by dividing the matrix entry values 
+by the mean of absolute impact values. 
+After this transformation, the unit of the values in the normalized cross-impact matrix 
+will be a "cross-impact unit", the average impact of an average variable on another average variable.
+				
 ## EXIT method
+
 
 
 
