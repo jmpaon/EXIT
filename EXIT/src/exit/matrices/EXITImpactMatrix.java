@@ -123,9 +123,9 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
     public EXITImpactMatrix(SquareMatrix matrix, double maxImpact) {
         
         super(matrix);
-        if(this.maxImpact <= 0) throw new IllegalArgumentException("maxImpact value is smaller than 0");
+        if(maxImpact <= 0) throw new IllegalArgumentException("maxImpact value is smaller than or equal to 0");
         this.maxImpact = maxImpact;
-        if (this.testValues(v -> v >= maxImpact)) throw new IllegalArgumentException(String.format("Matrix contains values exceeding the allowed maximum impact %f", maxImpact));
+        if (this.testValues(v -> v > maxImpact)) throw new IllegalArgumentException(String.format("Matrix contains values exceeding the allowed maximum impact %f", maxImpact));
         
         for(int i=1;i<=this.varCount;i++) {
             if(this.getValue(i,i) != 0) throw new IllegalArgumentException("SquareMatrix "+matrix+" is not valid EXITImpactMatrix. Impact of variable on itself not allowed");

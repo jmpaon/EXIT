@@ -45,7 +45,8 @@ public class EXIT {
         // System.out.println(System.getProperty("user.dir"));
         
         /* New standard calculation */
-        new_exit_analysis(args);
+        // new_exit_analysis(args);
+        test_new_features();
     }
     
     
@@ -88,8 +89,10 @@ public class EXIT {
     
     public static void test_new_features() {
         
-        EXITImpactMatrix sme = new EXITImpactMatrix(RandomInputMatrixGenerator.generateCrossImpactMatrix(15, 1.,2.,0.,4.,5.,3.), 5);
-        QuickSampler s = new QuickSampler(sme,System.out);
+        CrossImpactMatrix testImpactMatrix = RandomInputMatrixGenerator.generateCrossImpactMatrix(10, 1., 2., 3., -4., 5., 3., -2., -1.);
+        EXITImpactMatrix testEXITMatrix = new EXITImpactMatrix(testImpactMatrix, 5);
+        
+        QuickSampler s = new QuickSampler(testEXITMatrix,System.out);
         
 
         //CrossImpactMatrix m1 = s.estimateSummedImpactMatrix(500000);
