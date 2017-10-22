@@ -6,6 +6,7 @@
 package exit;
 
 
+import exit.estimators.ImpactChainSampler;
 import exit.procedures.Timer;
 import exit.matrices.RandomInputMatrixGenerator;
 import exit.matrices.CrossImpactMatrix;
@@ -46,7 +47,10 @@ public class EXIT {
         
         /* New standard calculation */
         // new_exit_analysis(args);
-        test_new_features();
+        
+
+        //test_new_features();
+        printPhases();
     }
     
     
@@ -85,6 +89,18 @@ public class EXIT {
             //Logger.getLogger(EXIT.class.getName()).log(Level.SEVERE, null, ex);
         }        
     }
+    
+    public static void printPhases() {
+        CrossImpactMatrix testImpactMatrix = RandomInputMatrixGenerator.generateCrossImpactMatrix(5, 1., 2., 3., -4., 5., 3., -2., -1.);
+        EXITImpactMatrix testEXITMatrix = new EXITImpactMatrix(testImpactMatrix, 5);
+        
+        ImpactChainSampler s = new ImpactChainSampler(testEXITMatrix);
+        for(int i=2;i<=5;i++) {
+            System.out.printf("Summed impacts of chains of length %d:\n", i);
+            System.out.println(s.estimateSummedImpactMatrix(100000, i));
+        }
+    }
+    
 
     
     public static void test_new_features() {
