@@ -49,7 +49,7 @@ public class ImpactThresholdPruner extends Pruner {
      * @return <code>EXITImpactMatrix</code> with the summed direct and indirect values between variables
      */
     private CrossImpactMatrix prunedSummedImpactMatrix(double impactThreshold, EXITImpactMatrix exitImpactMatrix) {
-        CrossImpactMatrix resultMatrix = new CrossImpactMatrix(new SquareMatrix(exitImpactMatrix).copy().flush());
+        CrossImpactMatrix resultMatrix = new CrossImpactMatrix(new SquareMatrix(exitImpactMatrix).copy().copyWithoutValues());
         double totalCount = 0;
         for (int impactor = 1; impactor <= resultMatrix.getVarCount(); impactor++) {
             ImpactChain chain = new ImpactChain(exitImpactMatrix, Arrays.asList(impactor));

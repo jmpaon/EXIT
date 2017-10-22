@@ -148,7 +148,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
      * @return CrossImpactMatrix : summed direct and indirect impacts between variables
      */
     public CrossImpactMatrix computeSummedImpactMatrix() {
-        CrossImpactMatrix result = new CrossImpactMatrix(new SquareMatrix(this).flush());
+        CrossImpactMatrix result = new CrossImpactMatrix(new SquareMatrix(this).copyWithoutValues());
         for(int impactor=1;impactor<=varCount;impactor++) {
             for(int impacted=1;impacted<=varCount;impacted++) {
                 if (impactor == impacted) continue;
@@ -316,7 +316,7 @@ public final class EXITImpactMatrix extends CrossImpactMatrix {
     }
     
     @Override
-    public EXITImpactMatrix flush() {
+    public EXITImpactMatrix copyWithoutValues() {
         return new EXITImpactMatrix(maxImpact, varCount, onlyIntegers, names.clone());
     }
 

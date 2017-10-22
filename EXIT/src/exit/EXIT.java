@@ -22,6 +22,7 @@ import exit.io.EXITinputfileException;
 import exit.io.Option;
 import exit.io.Options;
 import exit.io.Reader;
+import exit.matrices.EasyChainMatrix;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -100,6 +101,22 @@ public class EXIT {
             System.out.printf("Summed impacts of chains of length %d:\n", i);
             System.out.println(s.estimateSummedImpactMatrix(10000, i));
         }
+        
+        EasyChainMatrix orig = new EasyChainMatrix(testImpactMatrix.scale(1.0));
+        EasyChainMatrix easy = new EasyChainMatrix(testImpactMatrix.scale(1.0));
+        System.out.println(easy); // 2
+        
+        easy = easy.power(easy);
+        System.out.println(easy); // 3
+        
+        easy = easy.power(easy);        
+        System.out.println(easy); // 4
+        
+        easy = easy.power(easy);        
+        System.out.println(easy); // 5
+        
+        
+        
     }
     
 

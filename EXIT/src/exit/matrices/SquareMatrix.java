@@ -602,7 +602,7 @@ public class SquareMatrix {
      * Returns a copy of this <tt>SquareMatrix</tt> with no matrix entry values
      * @return 
      */
-    public SquareMatrix flush() {
+    public SquareMatrix copyWithoutValues() {
         return new SquareMatrix(this.varCount, this.names.clone());
     }
     

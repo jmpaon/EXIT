@@ -35,10 +35,11 @@ public class EasyChainMatrix extends CrossImpactMatrix {
     
     
     public EasyChainMatrix power(EasyChainMatrix m) {
-        EasyChainMatrix powerMatrix = new EasyChainMatrix(this.flush());
+        EasyChainMatrix powerMatrix = new EasyChainMatrix(this.copyWithoutValues());
+        
         for (int row = 1; row <= varCount; row++) {
             for (int col = 1; col <= varCount; col++) {
-                powerMatrix.setValue(row, col, this.multiplyEntries(row, col));
+                powerMatrix.setValue(row, col, this.multiplyEntries(m, row, col));
             }
         }
         return powerMatrix;

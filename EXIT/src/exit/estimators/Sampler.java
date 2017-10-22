@@ -101,7 +101,7 @@ public abstract class Sampler {
      */
     public CrossImpactMatrix computeAll() {
         
-        CrossImpactMatrix summedImpactMatrix = new CrossImpactMatrix(matrix.copy().flush());
+        CrossImpactMatrix summedImpactMatrix = new CrossImpactMatrix(matrix.copy().copyWithoutValues());
         
         report("Computing all summed impacts in input matrix");
         for(int impactor=1; impactor<=summedImpactMatrix.getVarCount(); impactor++) {

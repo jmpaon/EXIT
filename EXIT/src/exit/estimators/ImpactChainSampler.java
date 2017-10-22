@@ -47,7 +47,7 @@ public class ImpactChainSampler extends Sampler {
      */
     @Override
     public CrossImpactMatrix estimateSummedImpactMatrix(int sampleSize) {
-        CrossImpactMatrix im = new CrossImpactMatrix(matrix.copy().flush());
+        CrossImpactMatrix im = new CrossImpactMatrix(matrix.copy().copyWithoutValues());
         for(int impactor=1;impactor<=matrix.getVarCount();impactor++) {
             for(int impacted=1;impacted<=matrix.getVarCount();impacted++) {
                 if (impactor != impacted) {
@@ -60,7 +60,7 @@ public class ImpactChainSampler extends Sampler {
     }
     
     public CrossImpactMatrix estimateSummedImpactMatrix(int sampleSize, int chainLength) {
-        CrossImpactMatrix im = new CrossImpactMatrix(matrix.copy().flush());
+        CrossImpactMatrix im = new CrossImpactMatrix(matrix.copy().copyWithoutValues());
         for(int impactor=1;impactor<=matrix.getVarCount();impactor++) {
             for(int impacted=1;impacted<=matrix.getVarCount();impacted++) {
                 if (impactor != impacted) {

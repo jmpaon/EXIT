@@ -89,7 +89,7 @@ public class QuickSampler extends Sampler {
     @Override
     public CrossImpactMatrix estimateSummedImpactMatrix(int sampleSize) {
         assert sampleSize > 0 : "SampleSize must be greater than 0";
-        CrossImpactMatrix summedImpactMatrix = new CrossImpactMatrix(new SquareMatrix(matrix).copy().flush());
+        CrossImpactMatrix summedImpactMatrix = new CrossImpactMatrix(new SquareMatrix(matrix).copy().copyWithoutValues());
         
         report("Estimating summed impacts...");
         for(int impactor = 1; impactor <= matrix.getVarCount(); impactor++) {
