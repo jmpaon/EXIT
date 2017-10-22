@@ -99,20 +99,28 @@ public class EXIT {
         
         for(int i=2;i<=5;i++) {
             System.out.printf("Summed impacts of chains of length %d:\n", i);
-            System.out.println(s.estimateSummedImpactMatrix(10000, i));
+            System.out.println(s.estimateSummedImpactMatrix(100000, i));
         }
         
         EasyChainMatrix orig = new EasyChainMatrix(testImpactMatrix.scale(1.0));
         EasyChainMatrix easy = new EasyChainMatrix(testImpactMatrix.scale(1.0));
+        EasyChainMatrix temp = new EasyChainMatrix(testImpactMatrix.scale(1.0));
+        
+        System.out.println("Chains of length 2");
         System.out.println(easy); // 2
         
-        easy = easy.power(easy);
+        System.out.println("Chains of length 3");
+        easy = easy.power(orig);        
         System.out.println(easy); // 3
         
-        easy = easy.power(easy);        
+        System.out.println("Chains of length 4");
+        temp = new EasyChainMatrix(easy.copy());
+        easy = easy.power(temp);
         System.out.println(easy); // 4
         
-        easy = easy.power(easy);        
+        System.out.println("Chains of length 5");
+        temp = new EasyChainMatrix(easy.copy());
+        easy = easy.power(orig);        
         System.out.println(easy); // 5
         
         
