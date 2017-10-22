@@ -59,6 +59,18 @@ public class ImpactChainSampler extends Sampler {
         return im;
     }
     
+    public CrossImpactMatrix estimateSummedImpactMatrix(int sampleSize, int chainLength) {
+        CrossImpactMatrix im = new CrossImpactMatrix(matrix.copy().flush());
+        for(int impactor=1;impactor<=matrix.getVarCount();impactor++) {
+            for(int impacted=1;impacted<=matrix.getVarCount();impacted++) {
+                if (impactor != impacted) {
+                    reportf("Estimating impact of chains of length %d, impact of impactor %s on %s...%n", chainLength, matrix.getNameShort(impactor), matrix.getNameShort(impacted));
+                    im.setValue(impactor, impacted, estimateSummedImpact(impactor, impacted, chainLength, sampleSize));
+                }
+            }
+        }
+        return im;
+    }    
 
     /**
      * Estimates 
