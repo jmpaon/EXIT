@@ -521,6 +521,36 @@ public class SquareMatrix {
         return flatArray;
     }
     
+    
+    /**
+     * Sums the products of each entry in <b>row</b> and corresponding entry in <b>col</b>.
+     * @param row Index of row
+     * @param col Index of col
+     * @return Sum of pairwise products of entries in row <b>row</b> and column <b>col</b>.
+     */
+    protected double multiplyEntries(int row, int col) {
+        double result=0;
+        for (int i = 1; i <= varCount; i++) {
+            result += getValue(row, i) * getValue(i, col);
+        }
+        return result;
+    }
+
+    /**
+     * Multiplies the matrix by itself (resulting in power matrix).
+     * @return Squared matrix
+     */
+    public MicmacMatrix power() {
+        MicmacMatrix powerMatrix = new MicmacMatrix(this);
+        for (int row = 1; row <= varCount; row++) {
+            for (int col = 1; col <= varCount; col++) {
+                powerMatrix.setValue(row, col, this.multiplyEntries(row, col));
+            }
+        }
+        return powerMatrix;
+    }
+    
+    
 
     /**
      * Tests if values of this matrix deviate

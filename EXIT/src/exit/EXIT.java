@@ -95,9 +95,10 @@ public class EXIT {
         EXITImpactMatrix testEXITMatrix = new EXITImpactMatrix(testImpactMatrix, 5);
         
         ImpactChainSampler s = new ImpactChainSampler(testEXITMatrix);
+        
         for(int i=2;i<=5;i++) {
             System.out.printf("Summed impacts of chains of length %d:\n", i);
-            System.out.println(s.estimateSummedImpactMatrix(100000, i));
+            System.out.println(s.estimateSummedImpactMatrix(10000, i));
         }
     }
     
