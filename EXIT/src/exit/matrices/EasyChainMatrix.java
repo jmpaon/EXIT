@@ -19,7 +19,30 @@ public class EasyChainMatrix extends CrossImpactMatrix {
         super(cim);
     }
     
+    public EasyChainMatrix(SquareMatrix sm) {
+        super(sm);
+    }
     
+    @Override
+    protected double multiplyEntries(int row, int col) {
+        return multiplyEntries(this, row, col);
+    }
+    
+    protected double multiplyEntries(SquareMatrix colMatrix, int row, int col) {
+        if(row == col) return 0;
+        return EasyChainMatrix.multiplyEntries(this, colMatrix, row, col);
+    }
+    
+    
+    public EasyChainMatrix power(EasyChainMatrix m) {
+        EasyChainMatrix powerMatrix = new EasyChainMatrix(this.flush());
+        for (int row = 1; row <= varCount; row++) {
+            for (int col = 1; col <= varCount; col++) {
+                powerMatrix.setValue(row, col, this.multiplyEntries(row, col));
+            }
+        }
+        return powerMatrix;
+    }
     
     
     

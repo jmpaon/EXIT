@@ -529,18 +529,29 @@ public class SquareMatrix {
      * @return Sum of pairwise products of entries in row <b>row</b> and column <b>col</b>.
      */
     protected double multiplyEntries(int row, int col) {
+        return multiplyEntries(this, this, row, col);
+        
+        //double result=0;
+        //for (int i = 1; i <= varCount; i++) {
+        //    result += getValue(row, i) * getValue(i, col);
+        //}
+        //return result;
+    }
+    
+    protected static double multiplyEntries(SquareMatrix rowMatrix, SquareMatrix colMatrix, int row, int col) {
+        assert rowMatrix.varCount == colMatrix.varCount : "Differently sized matrices";
         double result=0;
-        for (int i = 1; i <= varCount; i++) {
-            result += getValue(row, i) * getValue(i, col);
+        for (int i = 1; i <= rowMatrix.varCount; i++) {
+            result += rowMatrix.getValue(row, i) * colMatrix.getValue(i, col);
         }
-        return result;
+        return result;        
     }
 
     /**
      * Multiplies the matrix by itself (resulting in power matrix).
      * @return Squared matrix
      */
-    public MicmacMatrix power() {
+    public SquareMatrix power() {
         MicmacMatrix powerMatrix = new MicmacMatrix(this);
         for (int row = 1; row <= varCount; row++) {
             for (int col = 1; col <= varCount; col++) {
@@ -549,6 +560,8 @@ public class SquareMatrix {
         }
         return powerMatrix;
     }
+    
+    
     
     
 

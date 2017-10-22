@@ -75,7 +75,7 @@ public class MicmacMatrix extends CrossImpactMatrix {
     public MicmacMatrix MICMACiteration(Orientation orientation) {
         
         Ordering currentOrdering = new Ordering(this, orientation);
-        Ordering powerOrdering = new Ordering(this.power(), orientation);
+        Ordering powerOrdering = new Ordering(new MicmacMatrix(this.power()), orientation);
         
         MicmacMatrix powerMatrix = new MicmacMatrix(this);
         
@@ -93,7 +93,7 @@ public class MicmacMatrix extends CrossImpactMatrix {
             System.out.println(currentOrdering.equals(powerOrdering));
             
             currentOrdering = powerMatrix.getOrdering(orientation);
-            powerMatrix     = powerMatrix.power();            
+            powerMatrix     = new MicmacMatrix(powerMatrix.power());            
             powerOrdering   = powerMatrix.getOrdering(orientation);
             
             System.out.println(powerMatrix);
